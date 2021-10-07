@@ -425,6 +425,7 @@ function mapStateToProps(state) {
     const { loggingIn } = state.authentication;
     return { loggingIn };
 }
+
 /*
 <Alert severity="error" 
 color="warning"
@@ -433,6 +434,7 @@ className={classes.text}
 >
 Sorry, we can't find an account with this username. Please try again.
 </Alert>*/
+
 const actionCreators = {
   login: userActions.login,
   logout: userActions.logout

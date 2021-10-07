@@ -77,7 +77,7 @@ async function getRefreshTokens(userId) {
 //TEST
 function generateAccessToken(user) {
     // create a jwt token containing the user id that expires in 15 minutes
-    return jwt.sign({ sub: user.id }, config.secret, { expiresIn: '60s' });
+    return jwt.sign({ sub: user.id }, config.secret, { expiresIn: '600s' });
 }
 
 //TEST
@@ -105,7 +105,6 @@ async function create(params) {
     if (await db.User.findOne({ where: { username: params.username } })) {
         throw 'Username "' + params.username + '" is already taken';
     }
-
     // hash password
     if (params.password) {
         const salt = await bcrypt.genSalt()
@@ -117,10 +116,7 @@ async function create(params) {
 
     // save user
     await db.User.create(params);
-    
-    // create an associated user profile
-    const user = await db.User.findOne({order: [ [ 'createdAt', 'DESC' ]]});
-    await db.Profile.create({name: '', bio: '', imageType: '', imageName: '', imageData: '', userId: user.id});
+    //await db.Profile.create();
 }
 
 async function update(id, params) {

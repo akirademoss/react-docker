@@ -1,0 +1,112 @@
+POST http://localhost:4000/users/register
+Content-Type: application/json
+
+{
+  "email": "Jason",
+  "username": "jason",
+  "password": "my-super-secret-password"
+}
+
+###
+
+POST http://localhost:4000/users/register
+Content-Type: application/json
+
+{
+  "email": "kai@gmail.com",
+  "username": "kai",
+  "password": "123456"
+}
+
+###
+
+POST http://localhost:4000/users/authenticate
+Content-Type: application/json
+
+{
+  "username": "kai",
+  "password": "123456"
+}
+
+###
+
+POST http://localhost:4000/users/authenticate
+Content-Type: application/json
+
+{
+  "username": "kai-PUT-Updated@gmail.com",
+  "password": "123456"
+}
+
+###
+
+GET http://localhost:4000/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYyNDA0MDE1OSwiZXhwIjoxNjI0MDQwMjE5fQ.x7elyQ17mIJxvoMjiE2ICTx5j_iZBPBYZf8CMxStP5o
+
+###
+
+GET http://localhost:4000/users/1/refresh-token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYyNDAzMDMwNiwiZXhwIjoxNjI0MDMwMzY2fQ.cU-EaJ2nhlRHdiOecasBKCmphayE2-GU1aaOxq1uqG8
+
+###
+POST http://localhost:4000/users/token
+Content-Type: application/json
+
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYyNDA0MDU0M30._VuGqd-5-A1JyAthUdUjHQGW5wIIHqzaAgT3iLcxj4E"
+}
+
+###
+
+POST http://localhost:4000/users/token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYyNDA0MDIyOSwiZXhwIjoxNjI0MDQwMjg5fQ.fUhNfT7pGz1x_KJfKShzDYEZgWcTTyAgH2VpQT1H-Vo
+
+
+###
+
+POST http://localhost:4000/protected
+Content-Type: application/json
+
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYyNDA0MDM5N30.JXokVHEy2_TLpxkYNtpY-Hmd92MbJMeB0E90Ina9wSU"
+}
+
+###
+
+PUT http://localhost:4000/users/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYzMjI0Nzk4MywiZXhwIjoxNjMyMjQ4MDQzfQ.YWl21abe0wHQKNDOXvFyUjNktTxqpniRANZ9Q2cNmrg
+
+{
+  "email": "kai-PUT-Updated@gmail.com",
+  "username": "kai-PUT-Updated",
+  "password": "123456"
+}
+
+###
+
+PUT http://localhost:4000/users/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYzMjI1MjYwMywiZXhwIjoxNjMyMjUyNjYzfQ.FxwuBug_fKw-kjhYK0aB8wsBhbFe0Yqd1tF2siNua9I
+
+{
+  "email": "kai@gmail.com",
+  "username": "kai",
+  "password": "123456"
+}
+
+
+###
+
+PUT http://localhost:4000/profile/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTYzMjI2NTE3MywiZXhwIjoxNjMyMjY1MjMzfQ.z48sINwI-v_tbsp2W3hsWFcj9_p6zoynXNsIcytO0mw
+
+{
+  "profile_pic": "kai",
+  "name": "Kai DeMoss",
+  "bio": "i'm da best yo"
+}

@@ -273,7 +273,7 @@ export default function App() {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              //onClick={handleProfileMenuOpen}
+              onClick={handleProfileMenuOpen}
               color="inherit"
             >
               <AccountCircle />
@@ -285,7 +285,7 @@ export default function App() {
             aria-label="show more"
             aria-controls={mobileMenuId}
             aria-haspopup="true"
-            //onClick={handleMobileMenuOpen}
+            onClick={handleMobileMenuOpen}
             color="inherit"
           >
             <MoreIcon />

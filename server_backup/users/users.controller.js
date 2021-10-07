@@ -3,7 +3,7 @@ const app = express();
 const router = express.Router();
 const Joi = require('joi');
 const validateRequest = require('../_middleware/validate-request');
-const authorize = require('../_middleware/authorize');
+const authorize = require('../_middleware/authorize')
 const userService = require('./user.service');
 
 const { secret } = require('../config.json');
@@ -91,6 +91,7 @@ function registerSchema(req, res, next) {
         username: Joi.string().required(),
         password: Joi.string().min(6).required()
     });
+    console.log(schema.email);
     validateRequest(req, next, schema);
 }
 

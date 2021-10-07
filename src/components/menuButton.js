@@ -40,16 +40,10 @@ const styles = theme => ({
         boxShadow: 'none',
         height: 'auto',
         background: 'transparent',
-        //backgroundColor: fade(darkTheme.palette.common.black, 0.5),
-        //backgroundColor: fade(darkTheme.palette.common.black, 0.5),
-        //color: fade(darkTheme.palette.common.black, 0.5)
       },
       menu: {
         boxShadow: 'none',
-        height: 500,
         backgroundColor: fade(darkTheme.palette.common.black, 0.5),
-        marginTop: 0,
-        border: 0,
       },
 });
 
