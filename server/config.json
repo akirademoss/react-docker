@@ -1,4 +1,9 @@
 {
+    "AWS_BUCKET_NAME": "tlts", 
+    "AWS_ACCESS_KEY_ID": "AKIATQ6TA4KSBBZ7IJYH",
+    "AWS_SECRET_ACCESS_KEY": "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",
+    "AWS_REGION": "us-east-2",
+    "AWS_Uploaded_File_URL_LINK": "https://ttls.s3-us-east-2.amazonaws.com/",
     "database": {
         "host": "localhost",
         "port": 3306,

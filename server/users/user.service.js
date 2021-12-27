@@ -17,16 +17,15 @@ module.exports = {
 let refreshTokens = []
 
 async function authenticate({ username, password }) {
-    console.log("test")
-    console.log(username)
-    const user = await db.User.scope('withHash').findOne({ where: { username } });
 
+    const user = await db.User.scope('withHash').findOne({ where: { username } });
+   // console.log(user)
     if (!user || !(await bcrypt.compare(password, user.hash)))
         throw 'Username or password is incorrect';
 
     // authentication successful
     const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign({ sub: user.id }, config.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign({ sub: user.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     refreshTokens.push(refreshToken)
     return { ...omitHash(user.get()), accessToken, refreshToken };
 }
@@ -77,7 +76,7 @@ async function getRefreshTokens(userId) {
 //TEST
 function generateAccessToken(user) {
     // create a jwt token containing the user id that expires in 15 minutes
-    return jwt.sign({ sub: user.id }, config.secret, { expiresIn: '60s' });
+    return jwt.sign({ sub: user.id }, config.secret, { expiresIn: '6000s' });
 }
 
 //TEST
@@ -120,7 +119,7 @@ async function create(params) {
     
     // create an associated user profile
     const user = await db.User.findOne({order: [ [ 'createdAt', 'DESC' ]]});
-    await db.Profile.create({name: '', bio: '', imageType: '', imageName: '', imageData: '', userId: user.id});
+    await db.Profile.create({name: '', bio: '', imageType: '', imageName: '', imageData: '', smallImageData: '',userId: user.id});
 }
 
 async function update(id, params) {

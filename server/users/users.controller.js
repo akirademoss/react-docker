@@ -119,6 +119,7 @@ function getById(req, res, next) {
 }
 
 function updateSchema(req, res, next) {
+    console.log("update schema executed")
     const schema = Joi.object({
         email: Joi.string().empty(''),
         username: Joi.string().empty(''),

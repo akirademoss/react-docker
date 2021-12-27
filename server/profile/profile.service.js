@@ -1,7 +1,17 @@
+const express = require('express');
 const db = require('../_helpers/db');
+const config = require('../config.json');
+const sharp = require("sharp");
+const AWS = require("aws-sdk");
+const app = express();
+const path = require('path');
+const fs = require('fs');
+
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 module.exports = {
     update,
+    upload
 };
 
 async function update(id, params) {
@@ -14,9 +24,11 @@ async function update(id, params) {
     }*/
 
     // copy params to user and save
-    console.log(params.profile_pic);
     console.log(params.name);
     console.log(params.bio);
+    console.log(params.imageType);
+    console.log(params.imageName);
+    console.log(params.imageData);
 
     Object.assign(profile, params);
     await profile.save();
@@ -32,3 +44,90 @@ async function getProfile(id) {
     const profile = await db.Profile.findByPk(id);
     return profile;
 }
+
+
+
+//Image resizing function
+async function resizeImage(){
+    //need to check that file exists first
+    console.log("testing resize image")
+    
+    let imgBuffer = await sharp('./uploads/avatar.jpeg').toBuffer()
+    console.log("testing resize image")
+    let avatar_thumb = await sharp(imgBuffer).resize(40,40).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
+    let avatar_thumb_mobile = await sharp(imgBuffer).resize(30,30).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
+    let avatar_preview = await sharp(imgBuffer).resize(180,180).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
+    let avatar_preview_mobile = await sharp(imgBuffer).resize(110,110).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
+    console.log("testing buffers set")
+/
+    fs.writeFile('./uploads/avatar_thumb.jpg', avatar_thumb, err => {
+        if (err) console.log(err);
+        else{
+           uploadFile('./uploads/avatar_thumb.jpg', 'avatar_thumb.jpg');
+        }
+    });
+    
+    fs.writeFile('./uploads/avatar_thumb_mobile.jpg', avatar_thumb_mobile, err => {
+        if(err) console.log(err)
+        else{
+            uploadFile('./uploads/avatar_thumb_mobile.jpg', 'avatar_thumb_mobile.jpg');
+         }
+    });
+    fs.writeFile('./uploads/avatar_preview.jpg', avatar_preview, err => {
+        if(err) console.log(err)
+        else{
+            uploadFile('./uploads/avatar_preview.jpg', 'avatar_preview.jpg');
+         }
+    });
+    fs.writeFile('./uploads/avatar_preview_mobile.jpg', avatar_preview_mobile, err => {
+        if(err) console.log(err)
+        else{
+            uploadFile('./uploads/avatar_preview_mobile.jpg', 'avatar_preview_mobile.jpg');
+         }
+    });
+}
+// Enter copied or downloaded access ID and secret key here
+const ID = config.AWS_ACCESS_KEY_ID;
+const SECRET = config.AWS_SECRET_ACCESS_KEY;
+
+// The name of the bucket that you have created
+const BUCKET_NAME = config.AWS_BUCKET_NAME;
+
+//AWS code portion
+//initialize the s3 interface
+const s3 = new AWS.S3({
+    accessKeyId: ID,
+    secretAccessKey: SECRET
+});
+
+//here we upload the file
+const uploadFile = (fileName, s3_name) => {
+    // Read content from the file
+    const fileContent = fs.readFileSync(fileName);
+
+    // Setting up S3 upload parameters
+    const params = {
+        Bucket: BUCKET_NAME,
+        Key: s3_name, // File name you want to save as in S3
+        Body: fileContent
+    };
+
+    // Uploading files to the bucket
+    s3.upload(params, function(err, data) {
+        if (err) {
+            throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+    });
+};
+
+function upload(req, res, next){
+    const file = req.file
+    if (!file) {
+      const error = new Error('Please upload a file')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+      resizeImage();
+      res.send(file);
+};

@@ -13,15 +13,15 @@ POST http://localhost:4000/users/authenticate
 Content-Type: application/json
 
 {
-  "username": "jason",
-  "password": "my-super-secret-password"
+  "username": "kai",
+  "password": "123456"
 }
 
 ###
 
 GET http://localhost:4000/users
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYyNDA0MDE1OSwiZXhwIjoxNjI0MDQwMjE5fQ.x7elyQ17mIJxvoMjiE2ICTx5j_iZBPBYZf8CMxStP5o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY0MDUzMjU1NCwiZXhwIjoxNjQwNTM4NTU0fQ.pqt6DyHpvwJP26Chgoos5HFkoyz6lL9aitdX3F0m9yg
 
 ###
 
