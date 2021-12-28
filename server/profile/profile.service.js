@@ -6,12 +6,36 @@ const AWS = require("aws-sdk");
 const app = express();
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+// Create storage for image upload
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads');
+    },
+    filename: (req, file, cb) => {
+        console.log(file);
+        cb(null, "avatar" + path.extname(file.originalname));
+    }
+});
+
+// Create a file filter
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+
+// Create multer instance
+const upload_multer = multer({ storage: storage, fileFilter: fileFilter});
 
 module.exports = {
     update,
-    upload
+    upload,
+    upload_multer
 };
 
 async function update(id, params) {
