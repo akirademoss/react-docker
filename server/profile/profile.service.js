@@ -100,7 +100,7 @@ async function resizeImage(username){
     let avatar_preview = await sharp(imgBuffer).resize(180,180).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
     let avatar_preview_mobile = await sharp(imgBuffer).resize(110,110).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
     console.log("testing buffers set")
-/
+
     fs.writeFile('./uploads/' + username + '/avatar_thumb.jpg', avatar_thumb, err => {
         if (err) console.log(err);
         else{
@@ -126,32 +126,32 @@ async function resizeImage(username){
             uploadFile('./uploads/' + username + '/avatar_preview_mobile.jpg', 'avatar_preview_mobile.jpg');
          }
     });
-}
-// Enter copied or downloaded access ID and secret key here
-const ID = config.AWS_ACCESS_KEY_ID;
-const SECRET = config.AWS_SECRET_ACCESS_KEY;
 
-// The name of the bucket that you have created
-const BUCKET_NAME = config.AWS_BUCKET_NAME;
+    // Enter copied or downloaded access ID and secret key here
+    const ID = config.AWS_ACCESS_KEY_ID;
+    const SECRET = config.AWS_SECRET_ACCESS_KEY;
 
-//AWS code portion
-//initialize the s3 interface
-const s3 = new AWS.S3({
-    accessKeyId: ID,
-    secretAccessKey: SECRET
-});
+    // The name of the bucket that you have created
+    const BUCKET_NAME = config.AWS_BUCKET_NAME;
 
-//here we upload the file
-const uploadFile = (fileName, s3_name) => {
-    // Read content from the file
-    const fileContent = fs.readFileSync(fileName);
+    //AWS code portion
+    //initialize the s3 interface
+    const s3 = new AWS.S3({
+        accessKeyId: ID,
+        secretAccessKey: SECRET
+    });
 
-    // Setting up S3 upload parameters
-    const params = {
-        Bucket: BUCKET_NAME,
-        Key: s3_name, // File name you want to save as in S3
-        Body: fileContent
-    };
+    //here we upload the file
+   const uploadFile = (fileName, avatarName) => {
+     // Read content from the file
+     const fileContent = fs.readFileSync(fileName);
+
+     // Setting up S3 upload parameters
+     const params = {
+         Bucket: BUCKET_NAME,
+         Key: username + '/' + avatarName, // File name you want to save as in S3
+         Body: fileContent
+     };
 
     // Uploading files to the bucket
     s3.upload(params, function(err, data) {
@@ -160,7 +160,11 @@ const uploadFile = (fileName, s3_name) => {
         }
         console.log(`File uploaded successfully. ${data.Location}`);
     });
-};
+   };
+
+
+}
+
 
 function upload(req, res, next){
     const file = req.file
