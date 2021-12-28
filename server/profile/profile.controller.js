@@ -9,8 +9,8 @@ const { secret } = require('../config.json');
 const path = require('path');
 
 router.put('/:id', authorize(), validateUpdate, updateProfile)
+//router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
 router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
-
 module.exports = router;
 
 function validateUpdate(req, res, next) {
@@ -33,3 +33,4 @@ function updateProfile(req, res, next) {
 function upload(req, res, next) {
     profileService.upload(req, res, next)
 }
+

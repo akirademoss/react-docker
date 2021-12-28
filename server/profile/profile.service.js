@@ -7,12 +7,21 @@ const app = express();
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const jwt = require('express-jwt');
+const { secret } = require('../config.json');
+
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 // Create storage for image upload
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads');
+
+        const path = 'uploads/'+req.user.username
+        if (!fs.existsSync(path)){
+          fs.mkdirSync(path);
+        }
+        cb(null, path);
     },
     filename: (req, file, cb) => {
         console.log(file);
@@ -35,7 +44,8 @@ const upload_multer = multer({ storage: storage, fileFilter: fileFilter});
 module.exports = {
     update,
     upload,
-    upload_multer
+    upload_multer,
+    makeDir
 };
 
 async function update(id, params) {
@@ -69,14 +79,21 @@ async function getProfile(id) {
     return profile;
 }
 
-
+//make directory
+function makeDir(req){
+    console.log(req.user.username)
+    fs.mkdir('./uploads/' + req.user.username,  { recursive: true }, (err) => {
+      if (err)
+        return console.error(err.code);
+    });
+}
 
 //Image resizing function
-async function resizeImage(){
+async function resizeImage(username){
     //need to check that file exists first
     console.log("testing resize image")
     
-    let imgBuffer = await sharp('./uploads/avatar.jpeg').toBuffer()
+    let imgBuffer = await sharp('./uploads/' + username + '/avatar.jpeg').toBuffer()
     console.log("testing resize image")
     let avatar_thumb = await sharp(imgBuffer).resize(40,40).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
     let avatar_thumb_mobile = await sharp(imgBuffer).resize(30,30).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
@@ -84,29 +101,29 @@ async function resizeImage(){
     let avatar_preview_mobile = await sharp(imgBuffer).resize(110,110).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
     console.log("testing buffers set")
 /
-    fs.writeFile('./uploads/avatar_thumb.jpg', avatar_thumb, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_thumb.jpg', avatar_thumb, err => {
         if (err) console.log(err);
         else{
-           uploadFile('./uploads/avatar_thumb.jpg', 'avatar_thumb.jpg');
+           uploadFile('./uploads/' + username + '/avatar_thumb.jpg', 'avatar_thumb.jpg');
         }
     });
     
-    fs.writeFile('./uploads/avatar_thumb_mobile.jpg', avatar_thumb_mobile, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile.jpg', avatar_thumb_mobile, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/avatar_thumb_mobile.jpg', 'avatar_thumb_mobile.jpg');
+            uploadFile('./uploads/' + username + '/avatar_thumb_mobile.jpg', 'avatar_thumb_mobile.jpg');
          }
     });
-    fs.writeFile('./uploads/avatar_preview.jpg', avatar_preview, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_preview.jpg', avatar_preview, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/avatar_preview.jpg', 'avatar_preview.jpg');
+            uploadFile('./uploads/' + username + '/avatar_preview.jpg', 'avatar_preview.jpg');
          }
     });
-    fs.writeFile('./uploads/avatar_preview_mobile.jpg', avatar_preview_mobile, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_preview_mobile.jpg', avatar_preview_mobile, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/avatar_preview_mobile.jpg', 'avatar_preview_mobile.jpg');
+            uploadFile('./uploads/' + username + '/avatar_preview_mobile.jpg', 'avatar_preview_mobile.jpg');
          }
     });
 }
@@ -152,6 +169,6 @@ function upload(req, res, next){
       error.httpStatusCode = 400
       return next(error)
     }
-      resizeImage();
+      resizeImage(req.user.username);
       res.send(file);
 };
