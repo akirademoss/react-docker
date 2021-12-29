@@ -11,8 +11,10 @@ function model(sequelize) {
        /* imageBucket: { type: DataTypes.STRING, allowNull: true },
         imageKey: { type: DataTypes.STRING, allowNull: true },
         updatedAt: { type: DataTypes.DATE, allowNull: true },*/
-        imageData: { type: DataTypes.BLOB("long"), allowNull: true },
-        smallImageData: { type: DataTypes.BLOB("long"), allowNull: true },
+        previewImg: { type: DataTypes.STRING, allowNull: true  },
+        previewImgMobile: { type: DataTypes.STRING, allowNull: true  },
+        thumbImg: { type: DataTypes.STRING, allowNull: true  },
+        thumbImgMobile: { type: DataTypes.STRING, allowNull: true  },
         userId: { type: DataTypes.INTEGER, allowNull: true },
     };
 

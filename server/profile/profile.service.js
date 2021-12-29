@@ -9,6 +9,7 @@ const fs = require('fs');
 const multer = require('multer');
 const jwt = require('express-jwt');
 const { secret } = require('../config.json');
+const { promisify } = require('util')
 
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
@@ -106,8 +107,7 @@ async function resizeImage(username){
         else{
            uploadFile('./uploads/' + username + '/avatar_thumb.jpg', 'avatar_thumb.jpg');
         }
-    });
-    
+    });   
     fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile.jpg', avatar_thumb_mobile, err => {
         if(err) console.log(err)
         else{
@@ -161,18 +161,24 @@ async function resizeImage(username){
         console.log(`File uploaded successfully. ${data.Location}`);
     });
    };
+   
 
 
 }
 
+const rmAsync = promisify(fs.rm)
 
-function upload(req, res, next){
+async function upload(req, res, next){
     const file = req.file
     if (!file) {
       const error = new Error('Please upload a file')
       error.httpStatusCode = 400
       return next(error)
     }
-      resizeImage(req.user.username);
-      res.send(file);
+    
+    const username = req.user.username
+    await resizeImage(username);
+    await rmAsync('./uploads/' + username, { recursive: true, force: true })
+    res.send(file);
+    
 };

@@ -119,7 +119,7 @@ async function create(params) {
     
     // create an associated user profile
     const user = await db.User.findOne({order: [ [ 'createdAt', 'DESC' ]]});
-    await db.Profile.create({name: '', bio: '', imageType: '', imageName: '', imageData: '', smallImageData: '',userId: user.id});
+    await db.Profile.create({name: '', bio: '', previewImg: '', previewImgMobile: '', thumbImg: '', thumbImgMobile: '',userId: user.id});
 }
 
 async function update(id, params) {
