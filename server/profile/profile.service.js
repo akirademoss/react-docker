@@ -51,19 +51,13 @@ module.exports = {
 
 async function update(id, params) {
     const profile = await getProfile(id);
-
-    // validate
-/*    const nameChanged = params.name && profile.name !== params.name;
-    if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
-        throw 'Username "' + params.username + '" is already taken';
-    }*/
-
-    // copy params to user and save
+    //console.log(profile)
     console.log(params.name);
     console.log(params.bio);
-    console.log(params.imageType);
-    console.log(params.imageName);
-    console.log(params.imageData);
+    console.log(params.previewImg);
+    console.log(params.previewImgMobile);
+    console.log(params.thumbImg);
+    console.log(params.thumbImgMobile); 
 
     Object.assign(profile, params);
     await profile.save();
@@ -90,7 +84,7 @@ function makeDir(req){
 }
 
 //Image resizing function
-async function resizeImage(username){
+async function resizeImage(id, username){
     //need to check that file exists first
     console.log("testing resize image")
     
@@ -126,7 +120,7 @@ async function resizeImage(username){
             uploadFile('./uploads/' + username + '/avatar_preview_mobile.jpg', 'avatar_preview_mobile.jpg');
          }
     });
-
+    
     // Enter copied or downloaded access ID and secret key here
     const ID = config.AWS_ACCESS_KEY_ID;
     const SECRET = config.AWS_SECRET_ACCESS_KEY;
@@ -161,8 +155,6 @@ async function resizeImage(username){
         console.log(`File uploaded successfully. ${data.Location}`);
     });
    };
-   
-
 
 }
 
@@ -176,9 +168,21 @@ async function upload(req, res, next){
       return next(error)
     }
     
+    const id = req.user.id
     const username = req.user.username
-    await resizeImage(username);
+    await resizeImage(req.params.id, username);
     await rmAsync('./uploads/' + username, { recursive: true, force: true })
-    res.send(file);
-    
+
+    const profile = await getProfile(id);
+
+    var params = {
+        thumbImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb.jpg',
+        thumbImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb_mobile.jpg',
+        previewImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview.jpg',
+        previewImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview_mobile.jpg'
+    }
+
+    Object.assign(profile, params);
+    await profile.save();
+    res.send(file);   
 };
