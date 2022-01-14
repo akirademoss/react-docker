@@ -75,7 +75,7 @@ function login(username, password){
     
       user => {
         dispatch(success(user));
-        history.push('/home');
+        history.push('/' + username + '/profile');
       },
       error => {
         dispatch(failure(error.toString()));

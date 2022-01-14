@@ -40,6 +40,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import { history } from '../_helpers';
 
 import { userActions } from '../actions/auth';
+import { profileActions } from '../actions/profile';
 
 //custom component import
 import MenuButton from '../components/menuButton';
@@ -251,17 +252,19 @@ class EditProfile extends React.Component {
       msgOpen: false,
       notificationsOpen: false,
       profileOpen: false,
-      isLoggedIn: false
+      isLoggedIn: false,
+      submitted: false,
+      name: '',
+      bio: '',
+      link: '',
+
 
     };
 
     this.handleLogout = this.handleLogout.bind(this);
-
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
-
-  handleChange = (event, checked) => {
-    this.setState({ auth: checked });
-  };
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -295,7 +298,7 @@ class EditProfile extends React.Component {
     this.setState({ profileOpen: false });
     this.setState({ messagesOpen: false });
     this.setState({ notificationsOpen: false });
-    history.push('/edit')
+    history.push('/' + this.props.user.username + '/edit')
   };
 
   handleViewProfile = () => {
@@ -303,7 +306,7 @@ class EditProfile extends React.Component {
     this.setState({ profileOpen: false });
     this.setState({ messagesOpen: false });
     this.setState({ notificationsOpen: false });
-    history.push('/profile')
+    history.push('/' + this.props.user.username + '/profile')
   };
 
   handleLogout = () => {
@@ -318,10 +321,31 @@ class EditProfile extends React.Component {
     if (!Boolean(this.state.anchorEl.name)) {
 
     }
-  }
+  };
+
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    this.setState({ submitted: true });
+
+    const { name, bio, link} = this.state;
+
+    const username = this.props.user.username
+    const id = this.props.user.id
+    const token = this.props.user.accessToken
+    if ((name || bio  || link) && username && id && token) {           
+        const dispatch = await this.props.update(name, bio, link, username, id, token);
+    }
+    
+};
 
   render() {
-    const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen } = this.state;
+    const { anchorEl, msgOpen, notificationsOpen, profileOpen, name, bio, link } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     return (
@@ -332,7 +356,7 @@ class EditProfile extends React.Component {
             <Toolbar>
               <div>
                 <Button className={classes.homeButton}
-                  onClick={() => history.push('/home')}
+                  onClick={() => history.push('/' + this.props.user.username + '/home')}
                 >
                   <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
                 </Button>
@@ -448,7 +472,7 @@ class EditProfile extends React.Component {
           </AppBar>
         </div>
         <div className={classes.formholder}>
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={this.handleSubmit}>
             <Box m={3} />
             <Grid container spacing={4} direction="row" alignItems="center" justify="center">
               <Grid item >
@@ -473,7 +497,7 @@ class EditProfile extends React.Component {
                 <Box m={3} />
 
                 <Typography component="h1" variant="h4">
-                  siriwatknp
+                  {this.props.user.username}
                 </Typography>
                 <Link className={classes.link}>
                   <Typography component="h1" variant="subtitle1">
@@ -503,11 +527,11 @@ class EditProfile extends React.Component {
                       id="name"
                       name="name"
                       type="name"
-                      //value={name}
+                      value={name}
                       autoComplete="name"
                       autoFocus
                       className={classes.text}
-                      //onChange={this.handleChange}
+                      onChange={this.handleChange}
                       //error={usernameError}
                       FormHelperTextProps={{
                         className: classes.text
@@ -534,16 +558,16 @@ class EditProfile extends React.Component {
                       color="primary"
                       variant="outlined"
                       margin="normal"
-                      id="name"
-                      name="name"
-                      type="name"
-                      //value={name}
-                      autoComplete="name"
+                      id="bio"
+                      name="bio"
+                      type="bio"
+                      value={bio}
+                      autoComplete="bio"
                       autoFocus
                       multiline
                       rows={4}
                       className={classes.text}
-                      //onChange={this.handleChange}
+                      onChange={this.handleChange}
                       //error={usernameError}
                       FormHelperTextProps={{
                         className: classes.text
@@ -557,7 +581,7 @@ class EditProfile extends React.Component {
                 <Grid container spacing={2} direction="row" alignItems="center" justify="center">
                   <Grid item >
                     <Typography component="h1" variant="h6" style={{marginTop: 60}}>
-                      <b>Email</b>
+                      <b>Link</b>
                     </Typography>
                   </Grid>
                   <Grid item>
@@ -569,7 +593,7 @@ class EditProfile extends React.Component {
                       </Grid>
                       <Grid item>
                         <Typography component="h1" variant="caption" className={classes.text} color="secondary">
-                          Help people discover your account by using the name you're known by: either your full name, nickname, or business name.
+                          Add a link to your personal or professional website
                     </Typography>
                       </Grid>
                       <Grid item >
@@ -577,14 +601,14 @@ class EditProfile extends React.Component {
                           color="primary"
                           variant="outlined"
                           margin="normal"
-                          id="name"
-                          name="name"
-                          type="name"
-                          //value={name}
-                          autoComplete="name"
+                          id="link"
+                          name="link"
+                          type="link"
+                          value={link}
+                          autoComplete="link"
                           autoFocus
                           className={classes.text}
-                          //onChange={this.handleChange}
+                          onChange={this.handleChange}
                           //error={usernameError}
                           FormHelperTextProps={{
                             className: classes.text
@@ -629,7 +653,10 @@ function mapStateToProps(state) {
 }
 
 const actionCreators = {
-  logout: userActions.logout
+  logout: userActions.logout,
+  update: profileActions.update
+
+  
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(EditProfile));

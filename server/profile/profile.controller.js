@@ -9,8 +9,8 @@ const { secret } = require('../config.json');
 const path = require('path');
 
 router.put('/:id', authorize(), validateUpdate, updateProfile)
-//router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
 router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
+//router.get('/avatar', authorize(), getAvatar)
 module.exports = router;
 
 function validateUpdate(req, res, next) {
@@ -22,7 +22,7 @@ function validateUpdate(req, res, next) {
 }
 
 function updateProfile(req, res, next) {
-    console.log(req.params.id);
+    console.log(req.params);
     console.log(req.body)
     profileService.update(req.params.id, req.body)
         .then(profile => res.json(profile))
@@ -32,4 +32,8 @@ function updateProfile(req, res, next) {
 function upload(req, res, next) {
     profileService.upload(req, res, next)
 }
+
+/*function getAvatar(req, res, next){
+
+}*/
 

@@ -37,9 +37,11 @@ class App extends React.Component {
                         }
                         <Router history={history}>
                             <Switch>
-                                <PrivateRoute exact path="/home" component={HomePrivate} />
-                                <Route path="/profile" component={ProfilePage} />
-                                <PrivateRoute exact path="/edit" component={EditProfile} />
+                               {/* <PrivateRoute exact path="/:username/home" component={HomePrivate} /> */}
+
+                                <PrivateRoute exact path="/:username/home" component={HomePrivate} />
+                                <Route path="/:username/profile" component={ProfilePage} />
+                                <PrivateRoute exact path="/:username/edit" component={EditProfile} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/register" component={RegisterPage} />
                                 <Route path="/" component={HomePage} />

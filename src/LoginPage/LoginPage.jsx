@@ -213,7 +213,7 @@ class LoginPage extends React.Component {
         
     }
 
-    handleSubmit(e) {
+    handleSubmit = async (e) => {
         e.preventDefault();
         
         let errors = {};
@@ -230,8 +230,8 @@ class LoginPage extends React.Component {
         });
         
         const { username, password } = this.state;
-        if (username && password) {
-            this.props.login(username, password);
+        if (username && password) {           
+            const dispatch = await this.props.login(username, password);
         }
         if (!username) {
 
@@ -246,7 +246,11 @@ class LoginPage extends React.Component {
         this.setState({
             errors: errors
           });
+
+        
     }
+
+    //handleAuth()
 
     render() {
         const { classes } = this.props;

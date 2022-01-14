@@ -247,12 +247,12 @@ class ProfilePage extends React.Component {
             msgOpen: false,
             notificationsOpen: false,
             profileOpen: false,
-            isLoggedIn: false,
-            tab: 0,
-
+            tab: 0, 
         };
 
         this.handleLogout = this.handleLogout.bind(this);
+
+        
 
     }
 
@@ -296,7 +296,8 @@ class ProfilePage extends React.Component {
         this.setState({ profileOpen: false });
         this.setState({ messagesOpen: false });
         this.setState({ notificationsOpen: false });
-        history.push('/edit')
+        //history.push('/' + this.username + '/edit')
+        history.push('/' + this.props.user.username + '/edit')
     };
 
     handleViewProfile = () => {
@@ -304,7 +305,7 @@ class ProfilePage extends React.Component {
         this.setState({ profileOpen: false });
         this.setState({ messagesOpen: false });
         this.setState({ notificationsOpen: false });
-        history.push('/profile')
+        history.push('/' + this.props.user.username + '/profile')
     };
 
     handleLogout = () => {
@@ -325,7 +326,9 @@ class ProfilePage extends React.Component {
         const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
+        console.log(this.props.user.username);
         return (
+            
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <div className={classes.grow}>
@@ -333,7 +336,7 @@ class ProfilePage extends React.Component {
                         <Toolbar>
                             <div>
                                 <Button className={classes.homeButton}
-                                    onClick={() => history.push('/home')}
+                                    onClick={() => history.push('/' + this.props.user.username + '/home')}
                                 >
                                     <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
                                 </Button>
@@ -499,7 +502,7 @@ class ProfilePage extends React.Component {
                                         <Grid container alignItems="center" spacing={4}>
                                             <Grid item>
                                                 <Typography component="h1" variant="h4">
-                                                    siriwatknp
+                                                    {this.props.user.username}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
@@ -532,9 +535,9 @@ class ProfilePage extends React.Component {
                                         </Grid>
                                     </Box>
                                     <Typography variant="subtitle1" bold>
-                                        <b>Siriwat Kunaporn</b>
+                                        <b>Full Name</b>
                                     </Typography>
-                                    <Typography variant="subtitle1">Bangkok Christian College.  CU intania 96.  Work hard play hard, holla</Typography>
+                                    <Typography variant="subtitle1">Enter Bio Here</Typography>
                                 </Grid>
                             </Grid>
                         </Box>

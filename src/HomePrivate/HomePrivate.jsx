@@ -244,7 +244,7 @@ class HomePrivate extends React.Component {
     this.setState({profileOpen: false});
     this.setState({messagesOpen: false});
     this.setState({notificationsOpen: false});
-    history.push('/edit')
+    history.push('/' + this.props.user.username + '/edit')
   };
 
   handleViewProfile = () => {
@@ -252,7 +252,7 @@ class HomePrivate extends React.Component {
     this.setState({profileOpen: false});
     this.setState({messagesOpen: false});
     this.setState({notificationsOpen: false});
-    history.push('/profile')
+    history.push('/' + this.props.user.username + '/profile')
   };
 
   handleLogout = () => {

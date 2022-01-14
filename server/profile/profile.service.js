@@ -68,8 +68,6 @@ async function update(id, params) {
 // helper functions
 
 async function getProfile(id) {
-
-    console.log(id);
     const profile = await db.Profile.findByPk(id);
     return profile;
 }
