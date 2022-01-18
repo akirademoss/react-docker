@@ -46,7 +46,8 @@ module.exports = {
     update,
     upload,
     upload_multer,
-    makeDir
+    makeDir,
+    getProfile
 };
 
 async function update(id, params) {

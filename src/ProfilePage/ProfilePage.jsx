@@ -18,7 +18,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Divider from '@material-ui/core/Divider';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -45,6 +45,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import { history } from '../_helpers';
 
 import { userActions } from '../actions/auth';
+import { profileActions } from '../actions/profile';
 
 //custom component import
 import MenuButton from '../components/menuButton';
@@ -247,6 +248,7 @@ class ProfilePage extends React.Component {
             msgOpen: false,
             notificationsOpen: false,
             profileOpen: false,
+            profile: {name: '', bio: '', link: ''},
             tab: 0, 
         };
 
@@ -322,11 +324,33 @@ class ProfilePage extends React.Component {
         }
     }
 
+    getProfile = async (e) => {
+        //e.preventDefault();
+        const username = this.props.user.username;
+        const id = this.props.user.id;
+        const token = this.props.user.accessToken;
+        this.profile = await this.props.getInfo(username, id, token);
+        console.log("ultimate test")
+        
+        this.setState({profile: this.props.profile})
+        console.log(this.state.profile)
+        
+     }
+
+    componentDidMount(){
+        this.getProfile();
+        
+    }
+
     render() {
-        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab } = this.state;
+        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, profile } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
-        console.log(this.props.user.username);
+        const {loadingProfile} = this.props;
+        console.log(this.props.profile)
+        console.log("test")        
+        //this.setState({profile: this.props.profile})
+        console.log(this.props.profile)
         return (
             
             <ThemeProvider theme={darkTheme}>
@@ -535,9 +559,9 @@ class ProfilePage extends React.Component {
                                         </Grid>
                                     </Box>
                                     <Typography variant="subtitle1" bold>
-                                        <b>Full Name</b>
+                                        <b>{this.props.profile.name}</b>
                                     </Typography>
-                                    <Typography variant="subtitle1">Enter Bio Here</Typography>
+                            <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
                                 </Grid>
                             </Grid>
                         </Box>
@@ -634,11 +658,13 @@ class ProfilePage extends React.Component {
 function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
-    return { user, users };
+    const { profile, loadingProfile } = state.getProfile;
+    return { user, users, profile, loadingProfile};
 }
 
 const actionCreators = {
-    logout: userActions.logout
+    logout: userActions.logout,
+    getInfo: profileActions.getInfo
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));

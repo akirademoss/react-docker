@@ -10,7 +10,8 @@ const path = require('path');
 
 router.put('/:id', authorize(), validateUpdate, updateProfile)
 router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
-//router.get('/avatar', authorize(), getAvatar)
+router.get('/:id/info', authorize(), getInfo);
+//router.get('/avatar', authorize(), getAvatar) 
 module.exports = router;
 
 function validateUpdate(req, res, next) {
@@ -31,6 +32,13 @@ function updateProfile(req, res, next) {
 
 function upload(req, res, next) {
     profileService.upload(req, res, next)
+}
+
+function getInfo(req, res, next) {
+    //console.log(req.params.id)
+    profileService.getProfile(req.params.id)
+    .then(profile => res.json(profile))
+    .catch(next);
 }
 
 /*function getAvatar(req, res, next){
