@@ -202,11 +202,11 @@ class HomePrivate extends React.Component {
     profileOpen: false,
     isLoggedIn: false
 
-  };
+    };
 
   this.handleLogout = this.handleLogout.bind(this);
 
-}
+  }
 
   handleChange = (event, checked) => {
     this.setState({ auth: checked });

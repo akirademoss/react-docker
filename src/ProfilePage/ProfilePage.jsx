@@ -25,6 +25,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
+import StyledDemo from './index.js';
 
 //menu stuff
 import MenuItem from "@material-ui/core/MenuItem";
@@ -54,6 +55,13 @@ import Typography from '@material-ui/core/Typography';
 //responsive UI
 import Hidden from '@material-ui/core/Hidden';
 
+//cropper tool helper inputs
+import Cropper from 'react-easy-crop'
+import Slider from '@material-ui/core/Slider'
+import { getOrientation } from 'get-orientation/browser'
+import ImgDialog from './ImgDialog'
+import { getCroppedImg, getRotatedImage } from './canvasUtils'
+import { styles2 } from './styles'
 
 
 // CSS styling
@@ -236,8 +244,64 @@ const styles = darkTheme => ({
     },
     posts: {
         marginTop: 5,
-    }
+    },
+    // styling for viewing image cropper tool
+    cropContainer: {
+        position: 'relative',
+        width: '100%',
+        height: 200,
+        background: '#333',
+        [darkTheme.breakpoints.up('sm')]: {
+          height: 400,
+        },
+      },
+      cropButton: {
+        width: 10,
+      },
+      controls: {
+        padding: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        [darkTheme.breakpoints.up('sm')]: {
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
+      },
+      sliderContainer: {
+        display: 'flex',
+        flex: '1',
+        alignItems: 'center',
+      },
+      sliderLabel: {
+        [darkTheme.breakpoints.down('xs')]: {
+          minWidth: 65,
+        },
+      },
+      slider: {
+        padding: '22px 0px',
+        marginLeft: 16,
+        [darkTheme.breakpoints.up('sm')]: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          margin: '0 16px',
+        },
+      },
 });
+
+const ORIENTATION_TO_ANGLE = {
+    '3': 180,
+    '6': 90,
+    '8': -90,
+  }
+
+function readFile(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.addEventListener('load', () => resolve(reader.result), false)
+      reader.readAsDataURL(file)
+    })
+  }
 
 class ProfilePage extends React.Component {
     constructor(props) {
@@ -250,6 +314,12 @@ class ProfilePage extends React.Component {
             profileOpen: false,
             profile: {name: '', bio: '', link: ''},
             tab: 0, 
+            imageSrc: null,
+            crop: { x: 0, y: 0 },
+            rotation: 0,
+            zoom: 1,
+            croppedAreaPixels: null,
+            croppedImage: null,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -324,17 +394,64 @@ class ProfilePage extends React.Component {
         }
     }
 
+    setCrop = () => {
+        this.setState({crop: this.state.crop});
+    }
+
+    setRotation = () => {
+        this.setState({rotation: this.state.rotation});
+    }
+
+    setZoom = () => {
+        this.setState({zoom: this.state.zoom});
+    }
+    //when image is added 
+    onFileChange = async (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        let imageDataUrl = await readFile(file);
+ 
+        // apply rotation if needed
+        const orientation = await getOrientation(file);
+        const rotation = ORIENTATION_TO_ANGLE[orientation];
+        if (rotation) {
+         imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+        }
+
+        this.setState({imageSrc: imageDataUrl});
+      }
+    }
+
+    onCropComplete = (croppedArea, croppedAreaPixels) => {
+        this.setState({croppedAreaPixels :croppedArea})
+      }
+    
+    showCroppedImage = async () => {
+        try {
+          const croppedImage = await getCroppedImg(
+            this.state.imageSrc,
+            this.state.croppedAreaPixels,
+            this.state.rotation
+          )
+          console.log('donee', {croppedImage })
+          this.setState({croppedImage: this.state.croppedImage})
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    
+      onClose = () => {
+        this.setState({croppedImage: null})
+      }
+
     getProfile = async (e) => {
         //e.preventDefault();
         const username = this.props.user.username;
         const id = this.props.user.id;
         const token = this.props.user.accessToken;
-        this.profile = await this.props.getInfo(username, id, token);
-        console.log("ultimate test")
-        
+        const page = '/profile';
+        this.profile = await this.props.getInfo(username, id, token, '/profile'); 
         this.setState({profile: this.props.profile})
-        console.log(this.state.profile)
-        
      }
 
     componentDidMount(){
@@ -343,14 +460,10 @@ class ProfilePage extends React.Component {
     }
 
     render() {
-        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, profile } = this.state;
+        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, profile } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const {loadingProfile} = this.props;
-        console.log(this.props.profile)
-        console.log("test")        
-        //this.setState({profile: this.props.profile})
-        console.log(this.props.profile)
         return (
             
             <ThemeProvider theme={darkTheme}>
@@ -484,13 +597,77 @@ class ProfilePage extends React.Component {
                         <Box mb="44px" className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
+                                <div>
+      {imageSrc ? (
+        <React.Fragment>
+          <div className={classes.cropContainer}>
+            <Cropper
+              image={imageSrc}
+              crop={crop}
+              rotation={rotation}
+              zoom={zoom}
+              aspect={1/1}
+              cropShape="round"
+              onCropChange={this.setCrop}
+              onRotationChange={this.setRotation}
+              onCropComplete={this.onCropComplete}
+              onZoomChange={this.setZoom}
+            />
+          </div>
+          <div className={classes.controls}>
+            <div className={classes.sliderContainer}>
+              <Typography
+                variant="overline"
+                classes={{ root: classes.sliderLabel }}
+              >
+                Zoom
+              </Typography>
+              <Slider
+                value={zoom}
+                min={1}
+                max={3}
+                step={0.1}
+                aria-labelledby="Zoom"
+                classes={{ root: classes.slider }}
+                onChange={(e, zoom) => this.setZoom(zoom)}
+              />
+            </div>
+            <div className={classes.sliderContainer}>
+              <Typography
+                variant="overline"
+                classes={{ root: classes.sliderLabel }}
+              >
+                Rotation
+              </Typography>
+              <Slider
+                value={rotation}
+                min={0}
+                max={360}
+                step={1}
+                aria-labelledby="Rotation"
+                classes={{ root: classes.slider }}
+                onChange={(e, rotation) => this.setRotation(rotation)}
+              />
+            </div>
+            <Button
+              onClick={this.showCroppedImage}
+              variant="contained"
+              color="primary"
+              classes={{ root: classes.cropButton }}
+            >
+              Save
+            </Button>
+          </div>
+          <ImgDialog img={this.croppedImage} onClose={this.onClose} />
+        </React.Fragment>
+      ) : (
                                     <Hidden smDown> 
                                     <input
-                                        accept="image/*"
                                         className={classes.input}
                                         id="contained-button-file"
-                                        multiple
+                                        onChange={this.onFileChange}
                                         type="file"
+                                        accept="image/*"
                                     />
                                     <label htmlFor="contained-button-file">
 
@@ -502,6 +679,8 @@ class ProfilePage extends React.Component {
 
                                     </label>
                                     </Hidden>
+                                    )}
+                                    </div>
                                     <Hidden mdUp>
                                     <input
                                         accept="image/*"
@@ -520,6 +699,7 @@ class ProfilePage extends React.Component {
 
                                     </label>
                                     </Hidden>
+                                    
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Box clone mb="20px">

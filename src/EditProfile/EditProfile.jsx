@@ -254,9 +254,10 @@ class EditProfile extends React.Component {
       profileOpen: false,
       isLoggedIn: false,
       submitted: false,
-      name: '',
-      bio: '',
-      link: '',
+      name: this.props.profile.name,
+      bio: this.props.profile.bio,
+      link: this.props.profile.link,
+      profile: {name: '', bio: '', link: ''},
 
 
     };
@@ -344,10 +345,26 @@ class EditProfile extends React.Component {
     
 };
 
+getProfile = async (e) => {
+  //e.preventDefault();
+  const username = this.props.user.username;
+  const id = this.props.user.id;
+  const token = this.props.user.accessToken;
+  const page = '/edit';
+  this.profile = await this.props.getInfo(username, id, token, page);       
+  this.setState({profile: this.props.profile})   
+}
+
+componentDidMount(){
+  this.getProfile();
+  
+}
+
   render() {
     const { anchorEl, msgOpen, notificationsOpen, profileOpen, name, bio, link } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
+    const {loadingProfile} = this.props;
     return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
@@ -649,12 +666,14 @@ class EditProfile extends React.Component {
 function mapStateToProps(state) {
   const { users, authentication } = state;
   const { user } = authentication;
-  return { user, users };
+  const { profile, loadingProfile } = state.getProfile;
+  return { user, users, profile, loadingProfile};
 }
 
 const actionCreators = {
   logout: userActions.logout,
-  update: profileActions.update
+  update: profileActions.update,
+  getInfo: profileActions.getInfo
 
   
 };

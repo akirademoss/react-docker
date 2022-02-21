@@ -34,7 +34,7 @@ function update(name, bio, link, username, id, token){
   function failure(error) { return { type: profileConstants.UPDATE_FAILURE, error } }
 }
 
-function getInfo(username, id, token){
+function getInfo(username, id, token, page){
   return dispatch =>{
     dispatch(request(username));
 
@@ -44,7 +44,7 @@ function getInfo(username, id, token){
       profile => {
         dispatch(success(profile));
         console.log(profile)
-        history.push('/' + username + '/profile');
+        history.push('/' + username + page);
       },
       error => {
         dispatch(failure(error.toString()));
