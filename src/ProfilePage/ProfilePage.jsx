@@ -62,7 +62,7 @@ import { getOrientation } from 'get-orientation/browser'
 import ImgDialog from './ImgDialog'
 import { getCroppedImg, getRotatedImage } from './canvasUtils'
 import { styles2 } from './styles'
-
+import Modal from 'react-modal';
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -320,6 +320,7 @@ class ProfilePage extends React.Component {
             zoom: 1,
             croppedAreaPixels: null,
             croppedImage: null,
+            show: true,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -398,12 +399,12 @@ class ProfilePage extends React.Component {
         this.setState({crop: this.state.crop});
     }
 
-    setRotation = () => {
-        this.setState({rotation: this.state.rotation});
+    setRotation = (e, rotation) => {
+        this.setState({rotation: rotation});
     }
 
-    setZoom = () => {
-        this.setState({zoom: this.state.zoom});
+    setZoom = (e, zoom) => {
+        this.setState({zoom: zoom});
     }
     //when image is added 
     onFileChange = async (e) => {
@@ -444,6 +445,14 @@ class ProfilePage extends React.Component {
         this.setState({croppedImage: null})
       }
 
+    handleClose = () => {
+        this.setState({show: false})
+    }
+
+    handleShow = () => {
+        this.setState({show: true})
+    }
+
     getProfile = async (e) => {
         //e.preventDefault();
         const username = this.props.user.username;
@@ -460,10 +469,13 @@ class ProfilePage extends React.Component {
     }
 
     render() {
-        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, profile } = this.state;
+        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const {loadingProfile} = this.props;
+        
+
+
         return (
             
             <ThemeProvider theme={darkTheme}>
@@ -599,6 +611,7 @@ class ProfilePage extends React.Component {
                                 <Grid item xs={4}>
                                 <div>
       {imageSrc ? (
+
         <React.Fragment>
           <div className={classes.cropContainer}>
             <Cropper
@@ -629,7 +642,7 @@ class ProfilePage extends React.Component {
                 step={0.1}
                 aria-labelledby="Zoom"
                 classes={{ root: classes.slider }}
-                onChange={(e, zoom) => this.setZoom(zoom)}
+                onChange={this.setZoom}
               />
             </div>
             <div className={classes.sliderContainer}>
@@ -646,17 +659,10 @@ class ProfilePage extends React.Component {
                 step={1}
                 aria-labelledby="Rotation"
                 classes={{ root: classes.slider }}
-                onChange={(e, rotation) => this.setRotation(rotation)}
+                onChange={this.setRotation}
               />
             </div>
-            <Button
-              onClick={this.showCroppedImage}
-              variant="contained"
-              color="primary"
-              classes={{ root: classes.cropButton }}
-            >
-              Save
-            </Button>
+
           </div>
           <ImgDialog img={this.croppedImage} onClose={this.onClose} />
         </React.Fragment>
