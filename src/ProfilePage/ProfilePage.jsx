@@ -25,6 +25,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
+import blue from '@material-ui/core/colors/blue';
 import StyledDemo from './index.js';
 
 //menu stuff
@@ -62,7 +63,8 @@ import { getOrientation } from 'get-orientation/browser'
 import ImgDialog from './ImgDialog'
 import { getCroppedImg, getRotatedImage } from './canvasUtils'
 import { styles2 } from './styles'
-import Modal from 'react-modal';
+import Modal from "@material-ui/core/Modal";
+import { styled } from '@material-ui/core/styles';
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -76,7 +78,7 @@ const darkTheme = createMuiTheme({
                 borderRight: '1px solid grey',
                 borderColor: fade('#ffffff', 0.5),
             }
-        }
+        },
     },
     palette: {
         type: 'dark',
@@ -125,6 +127,15 @@ const styles = darkTheme => ({
     },
     iconButton: {
 
+    },
+    iconButtonAvatar: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        height: '100%',
+        width: '100%'
     },
     rightToolbar: {
         marginLeft: "auto",
@@ -250,12 +261,21 @@ const styles = darkTheme => ({
         position: 'relative',
         width: '100%',
         height: 200,
-        background: '#333',
+        background: darkTheme.palette.common.black,
         [darkTheme.breakpoints.up('sm')]: {
           height: 400,
         },
       },
       cropButton: {
+        marginLeft: 310,
+        width: 10,
+      },
+      cancelButton: {
+        marginLeft: 16,
+        backgroundColor: grey[500],
+        '&:hover': {
+            backgroundColor: grey[600],
+        },
         width: 10,
       },
       controls: {
@@ -285,9 +305,54 @@ const styles = darkTheme => ({
           flexDirection: 'row',
           alignItems: 'center',
           margin: '0 16px',
+          minWidth: 100,
         },
       },
+      modalUpload: {
+        [darkTheme.breakpoints.up('sm')]: {
+            minheight: 200,
+            minWidth: 400,
+          },
+        position: 'absolute',
+        backgroundColor: grey[700],
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        top: '35%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        boxShadow: darkTheme.shadows[5],
+        padding: darkTheme.spacing(1),
+        "&:focus": {
+            outline: "none"
+          },
+        borderRadius: darkTheme.shape.borderRadius,
+      },
+      modalButton: {
+        width: '95%',
+        minWidth: 380,
+      },
+      modalButtonRemove: {
+        width: '95%',
+        backgroundColor: blue[700],
+        '&:hover': {
+            backgroundColor: blue[800],
+        },
+        minWidth: 380,
+      },
+      modalButtonCancel: {
+        width: '95%',
+        backgroundColor: grey[500],
+        '&:hover': {
+            backgroundColor: grey[600],
+        },
+        minWidth: 380,
+      }
 });
+
+const Input = styled('input')({
+    display: 'none',
+  });
 
 const ORIENTATION_TO_ANGLE = {
     '3': 180,
@@ -320,7 +385,8 @@ class ProfilePage extends React.Component {
             zoom: 1,
             croppedAreaPixels: null,
             croppedImage: null,
-            show: true,
+            show: false,
+            showImageCrop: false,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -395,8 +461,8 @@ class ProfilePage extends React.Component {
         }
     }
 
-    setCrop = () => {
-        this.setState({crop: this.state.crop});
+    setCrop = crop => {
+        this.setState({crop});
     }
 
     setRotation = (e, rotation) => {
@@ -420,11 +486,15 @@ class ProfilePage extends React.Component {
         }
 
         this.setState({imageSrc: imageDataUrl});
+        this.setState({showImageCrop: true})
+        this.setState({show: false})
+        console.log(this.state.imageSrc)
       }
     }
 
     onCropComplete = (croppedArea, croppedAreaPixels) => {
         this.setState({croppedAreaPixels :croppedArea})
+        console.log(croppedArea, croppedAreaPixels)
       }
     
     showCroppedImage = async () => {
@@ -445,12 +515,20 @@ class ProfilePage extends React.Component {
         this.setState({croppedImage: null})
       }
 
-    handleClose = () => {
+    handleCloseModal = () => {
         this.setState({show: false})
     }
 
     handleShow = () => {
         this.setState({show: true})
+    }
+
+    handleShowImageCrop = () => {
+        this.setState({showImageCrop: true})
+    }
+
+    handleCloseImageModal = () => {
+        this.setState({showImageCrop: false})
     }
 
     getProfile = async (e) => {
@@ -469,7 +547,7 @@ class ProfilePage extends React.Component {
     }
 
     render() {
-        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile } = this.state;
+        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const {loadingProfile} = this.props;
@@ -537,7 +615,7 @@ class ProfilePage extends React.Component {
                                 open={msgOpen}
                                 onClose={this.handleClose}
                             >
-                                <MenuItem onClick={this.handleClose} className={classes.menuItem}>notifications</MenuItem>
+                                <MenuItem onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
                             </Menu>
 
                             <IconButton
@@ -566,7 +644,7 @@ class ProfilePage extends React.Component {
                                 open={notificationsOpen}
                                 onClose={this.handleClose}
                             >
-                                <MenuItem onClick={this.handleClose} className={classes.menuItem}>notifications</MenuItem>
+                                <MenuItem onClick={this.handleClose} className={classes.menuItem}>Notifications</MenuItem>
                             </Menu>
 
                             <IconButton
@@ -605,106 +683,22 @@ class ProfilePage extends React.Component {
 
                         </Toolbar>
                     </AppBar>
-                    <Box component="main" maxWidth={935} margin="auto" padding="60px 60px 0">
+                    <Box component="main" maxWidth={935} margin="auto" padding="60px 10px 0">
                         <Box mb="44px" className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
-                                <div>
-      {imageSrc ? (
 
-        <React.Fragment>
-          <div className={classes.cropContainer}>
-            <Cropper
-              image={imageSrc}
-              crop={crop}
-              rotation={rotation}
-              zoom={zoom}
-              aspect={1/1}
-              cropShape="round"
-              onCropChange={this.setCrop}
-              onRotationChange={this.setRotation}
-              onCropComplete={this.onCropComplete}
-              onZoomChange={this.setZoom}
-            />
-          </div>
-          <div className={classes.controls}>
-            <div className={classes.sliderContainer}>
-              <Typography
-                variant="overline"
-                classes={{ root: classes.sliderLabel }}
-              >
-                Zoom
-              </Typography>
-              <Slider
-                value={zoom}
-                min={1}
-                max={3}
-                step={0.1}
-                aria-labelledby="Zoom"
-                classes={{ root: classes.slider }}
-                onChange={this.setZoom}
-              />
-            </div>
-            <div className={classes.sliderContainer}>
-              <Typography
-                variant="overline"
-                classes={{ root: classes.sliderLabel }}
-              >
-                Rotation
-              </Typography>
-              <Slider
-                value={rotation}
-                min={0}
-                max={360}
-                step={1}
-                aria-labelledby="Rotation"
-                classes={{ root: classes.slider }}
-                onChange={this.setRotation}
-              />
-            </div>
-
-          </div>
-          <ImgDialog img={this.croppedImage} onClose={this.onClose} />
-        </React.Fragment>
-      ) : (
-                                    <Hidden smDown> 
-                                    <input
-                                        className={classes.input}
+                                    
+                                    <IconButton
                                         id="contained-button-file"
-                                        onChange={this.onFileChange}
-                                        type="file"
-                                        accept="image/*"
-                                    />
-                                    <label htmlFor="contained-button-file">
+                                        color="inherit"
+                                        className={classes.iconButtonAvatar}
+                                        onClick={this.handleShow}
+                                        component="span"
+                                    >
+                                    {<AccountCircle className={classes.iconButtonAvatar}/>}
+                                    </IconButton>    
 
-                                        <Avatar
-                                            src="/images/example.jpg"
-                                            className={classes.avatar}
-                                            color="white"
-                                        />
-
-                                    </label>
-                                    </Hidden>
-                                    )}
-                                    </div>
-                                    <Hidden mdUp>
-                                    <input
-                                        accept="image/*"
-                                        className={classes.input}
-                                        id="contained-button-file"
-                                        multiple
-                                        type="file"
-                                    />
-                                    <label htmlFor="contained-button-file">
-
-                                        <Avatar
-                                            src="/images/example.jpg"
-                                            className={classes.avatarSm}
-                                            color="white"
-                                        />
-
-                                    </label>
-                                    </Hidden>
                                     
                                 </Grid>
                                 <Grid item xs={8}>
@@ -719,7 +713,7 @@ class ProfilePage extends React.Component {
                                                 <Button className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                     Edit Profile
                                             </Button>
-                                                <IconButton>
+                                                <IconButton onClick={this.handleShowImageCrop}>
                                                     {<Settings />}
                                                 </IconButton>
                                             </Grid>
@@ -832,6 +826,128 @@ class ProfilePage extends React.Component {
 
 
                     </Box>
+                    
+                                    <Modal
+                                       open={show}
+                                       onClose={this.handleCloseModal}
+                                       aria-labelledby="modal-modal-title"
+                                       aria-describedby="modal-modal-description"
+                                    > 
+                                    <div className={classes.modalUpload}>
+
+                                    <label htmlFor="icon-button-file">
+                                    <input
+                                        accept="image/*"
+                                        id="icon-button-file"
+                                        multiple
+                                        type="file"
+                                        className={classes.input}
+                                        onChange={this.onFileChange}
+                                    />
+                                       <Button
+                                          variant="contained"
+                                          color="primary"
+                                          component="span"
+                                          classes={{ root: classes.modalButton }}
+                                       >
+                                          Upload Photo
+                                       </Button>
+                                    </label>
+
+                                    <Button
+                                       variant="contained"
+                                       color="primary"
+                                       classes={{ root: classes.modalButtonRemove }}
+                                    >
+                                         Remove Photo
+                                    </Button>                                
+                                    <Button
+                                       variant="contained"
+                                       color="primary"
+                                       classes={{ root: classes.modalButtonCancel }}
+                                       onClick={this.handleCloseModal}
+                                    >
+                                         Cancel
+                                    </Button>
+                                    </div>                      
+                                    </Modal>
+
+                                    <Modal
+                                       open={showImageCrop}
+                                       onClose={this.handleCloseImageModal}
+                                       aria-labelledby="modal-modal-title"
+                                       aria-describedby="modal-modal-description"
+                                    > 
+<div className={classes.modalUpload}>
+
+<div className={classes.cropContainer}>
+            <Cropper
+              image={imageSrc}
+              crop={crop}
+              rotation={rotation}
+              zoom={zoom}
+              aspect={1/1}
+              cropShape="round"
+              onCropChange={this.setCrop}
+              onRotationChange={this.setRotation}
+              onCropComplete={this.onCropComplete}
+              onZoomChange={this.setZoom}
+            />
+          </div>
+          <div className={classes.controls}>
+            <div className={classes.sliderContainer}>
+              <Typography
+                variant="overline"
+                classes={{ root: classes.sliderLabel }}
+              >
+                Zoom
+              </Typography>
+              <Slider
+                value={zoom}
+                min={1}
+                max={3}
+                step={0.1}
+                aria-labelledby="Zoom"
+                classes={{ root: classes.slider }}
+                onChange={this.setZoom}
+              />
+            </div>
+            <div className={classes.sliderContainer}>
+              <Typography
+                variant="overline"
+                classes={{ root: classes.sliderLabel }}
+              >
+                Rotation
+              </Typography>
+              <Slider
+                value={rotation}
+                min={0}
+                max={360}
+                step={1}
+                aria-labelledby="Rotation"
+                classes={{ root: classes.slider }}
+                onChange={this.setRotation}
+              />
+            </div>
+            <Button
+              variant="contained"
+              color="primary"
+              classes={{ root: classes.cropButton }}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              classes={{ root: classes.cancelButton }}
+              onClick={this.handleCloseImageModal}
+            >
+              Cancel
+            </Button>
+          </div>
+          <ImgDialog img={this.croppedImage} onClose={this.onClose} />          
+                                       </div>
+                                    </Modal>
                 </div>
 
 
