@@ -8,7 +8,7 @@ const profileService = require('./profile.service');
 const { secret } = require('../config.json');
 const path = require('path');
 
-router.put('/:id', authorize(), validateUpdate, updateProfile)
+router.put('/:id', authorize(), updateProfile)
 router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
 router.get('/:id/info', authorize(), getInfo);
 //router.get('/avatar', authorize(), getAvatar) 
@@ -18,13 +18,15 @@ function validateUpdate(req, res, next) {
     const schema = Joi.object({
         name: Joi.string().required(),
         bio: Joi.string().required(),
+        link: Joi.string().required(),
     });
     validateRequest(req, next, schema);
 }
 
 function updateProfile(req, res, next) {
-    console.log(req.params);
+    console.log(req.body.link);
     console.log(req.body)
+
     profileService.update(req.params.id, req.body)
         .then(profile => res.json(profile))
         .catch(next);

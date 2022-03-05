@@ -335,7 +335,8 @@ class EditProfile extends React.Component {
     this.setState({ submitted: true });
 
     const { name, bio, link} = this.state;
-
+    console.log(link)
+    console.log("testing")
     const username = this.props.user.username
     const id = this.props.user.id
     const token = this.props.user.accessToken
@@ -655,6 +656,11 @@ componentDidMount(){
 
             <Box m={4} />
           </form>
+
+          <Box m={2} />
+          <Typography variant="body2" color="secondary" align="center">
+            Copyright © Too Legit To Submit, Inc 2022
+          </Typography>   
         </div>
 
 

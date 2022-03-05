@@ -256,19 +256,24 @@ const styles = darkTheme => ({
     posts: {
         marginTop: 5,
     },
+    linkText:  {
+        color: blue[700],
+    },
     // styling for viewing image cropper tool
     cropContainer: {
         position: 'relative',
         width: '100%',
-        height: 200,
+        minWidth: 400,
+        minHeight: 400,
         background: darkTheme.palette.common.black,
         [darkTheme.breakpoints.up('sm')]: {
           height: 400,
         },
       },
       cropButton: {
-        marginLeft: 310,
+        marginLeft: 16,
         width: 10,
+        flex: '1',
       },
       cancelButton: {
         marginLeft: 16,
@@ -277,42 +282,41 @@ const styles = darkTheme => ({
             backgroundColor: grey[600],
         },
         width: 10,
+        flex: '1',
       },
       controls: {
         padding: 16,
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'stretch',
         [darkTheme.breakpoints.up('sm')]: {
-          flexDirection: 'row',
-          alignItems: 'center',
         },
       },
       sliderContainer: {
         display: 'flex',
-        flex: '1',
+        flex: '2',
         alignItems: 'center',
+        flexDirection: 'row',
       },
       sliderLabel: {
+        marginLeft: 16,
         [darkTheme.breakpoints.down('xs')]: {
-          minWidth: 65,
+
         },
       },
       slider: {
         padding: '22px 0px',
         marginLeft: 16,
+        minWidth: 100,
         [darkTheme.breakpoints.up('sm')]: {
-          flexDirection: 'row',
-          alignItems: 'center',
           margin: '0 16px',
-          minWidth: 100,
         },
       },
       modalUpload: {
         [darkTheme.breakpoints.up('sm')]: {
-            minheight: 200,
-            minWidth: 400,
           },
+        minheight: 200,
+        minWidth: 400,
         position: 'absolute',
         backgroundColor: grey[700],
         alignItems: 'center',
@@ -742,6 +746,7 @@ class ProfilePage extends React.Component {
                                         <b>{this.props.profile.name}</b>
                                     </Typography>
                             <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
+                            <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
                                 </Grid>
                             </Grid>
                         </Box>

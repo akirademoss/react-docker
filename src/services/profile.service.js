@@ -4,11 +4,14 @@ const API_URL = "http://localhost:4000";
 
 class ProfileService {
   async updateProfile(name, bio, link, id, token){
+    console.log(link)
+    console.log("just testing link")
+    const cite = bio
     const config = {
       headers: { Authorization: 'Bearer ' + token }
     };
       const response = await axios
-      .put(API_URL + "/profile/" + id, { name, bio, link }, config);
+      .put(API_URL + "/profile/" + id, {name, bio, link, cite}, config);
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
     }

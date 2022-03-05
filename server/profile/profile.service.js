@@ -52,14 +52,6 @@ module.exports = {
 
 async function update(id, params) {
     const profile = await getProfile(id);
-    //console.log(profile)
-    console.log(params.name);
-    console.log(params.bio);
-    console.log(params.previewImg);
-    console.log(params.previewImgMobile);
-    console.log(params.thumbImg);
-    console.log(params.thumbImgMobile); 
-
     Object.assign(profile, params);
     await profile.save();
 
