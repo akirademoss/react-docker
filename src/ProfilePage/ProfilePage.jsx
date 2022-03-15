@@ -493,6 +493,7 @@ class ProfilePage extends React.Component {
         this.setState({showImageCrop: true})
         this.setState({show: false})
         console.log(this.state.imageSrc)
+        console.log(imageDataUrl)
       }
     }
 
@@ -935,6 +936,7 @@ class ProfilePage extends React.Component {
               />
             </div>
             <Button
+              onClick={this.showCroppedImage}
               variant="contained"
               color="primary"
               classes={{ root: classes.cropButton }}
@@ -950,9 +952,10 @@ class ProfilePage extends React.Component {
               Cancel
             </Button>
           </div>
-          <ImgDialog img={this.croppedImage} onClose={this.onClose} />          
+                   
                                        </div>
                                     </Modal>
+                                    <ImgDialog img={this.croppedImage} onClose={this.onClose} /> 
                 </div>
 
 

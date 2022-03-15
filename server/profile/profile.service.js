@@ -14,7 +14,7 @@ const { promisify } = require('util')
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
-// Create storage for image upload
+// Creates a directory with a user's username on server in uploads directory and resaves image as avatar
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
 
@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
 
 // Create a file filter
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png' || file.mimetype == 'image/jpg') {
         cb(null, true);
     } else {
         cb(null, false);
@@ -75,40 +75,43 @@ function makeDir(req){
 }
 
 //Image resizing function
-async function resizeImage(id, username){
+async function resizeImage(id, username, fileExt){
     //need to check that file exists first
     console.log("testing resize image")
+    console.log('./uploads/' + username + '/avatar.jpeg')
+  
+    let imgBuffer = await sharp('./uploads/' + username + '/avatar' + fileExt).toBuffer()
     
-    let imgBuffer = await sharp('./uploads/' + username + '/avatar.jpeg').toBuffer()
-    console.log("testing resize image")
-    let avatar_thumb = await sharp(imgBuffer).resize(40,40).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
-    let avatar_thumb_mobile = await sharp(imgBuffer).resize(30,30).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
-    let avatar_preview = await sharp(imgBuffer).resize(180,180).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
-    let avatar_preview_mobile = await sharp(imgBuffer).resize(110,110).toFormat('jpeg').jpeg({quality : 100}).toBuffer();
+    //convert to a standard file format to ensure no duplicates in bucket
+    fileExt = ".png"
+    let avatar_thumb = await sharp(imgBuffer).resize(40,40).toFormat(fileExt.substring(1)).toBuffer();
+    let avatar_thumb_mobile = await sharp(imgBuffer).resize(30,30).toFormat(fileExt.substring(1)).toBuffer();
+    let avatar_preview = await sharp(imgBuffer).resize(180,180).toFormat(fileExt.substring(1)).toBuffer();
+    let avatar_preview_mobile = await sharp(imgBuffer).resize(110,110).toFormat(fileExt.substring(1)).toBuffer();
     console.log("testing buffers set")
 
-    fs.writeFile('./uploads/' + username + '/avatar_thumb.jpg', avatar_thumb, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_thumb' + fileExt, avatar_thumb, err => {
         if (err) console.log(err);
         else{
-           uploadFile('./uploads/' + username + '/avatar_thumb.jpg', 'avatar_thumb.jpg');
+           uploadFile('./uploads/' + username + '/avatar_thumb' + fileExt, 'avatar_thumb' + fileExt);
         }
     });   
-    fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile.jpg', avatar_thumb_mobile, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile' + fileExt, avatar_thumb_mobile, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/' + username + '/avatar_thumb_mobile.jpg', 'avatar_thumb_mobile.jpg');
+            uploadFile('./uploads/' + username + '/avatar_thumb_mobile' + fileExt, 'avatar_thumb_mobile' + fileExt);
          }
     });
-    fs.writeFile('./uploads/' + username + '/avatar_preview.jpg', avatar_preview, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_preview' + fileExt, avatar_preview, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/' + username + '/avatar_preview.jpg', 'avatar_preview.jpg');
+            uploadFile('./uploads/' + username + '/avatar_preview' + fileExt, 'avatar_preview' + fileExt);
          }
     });
-    fs.writeFile('./uploads/' + username + '/avatar_preview_mobile.jpg', avatar_preview_mobile, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_preview_mobile' + fileExt, avatar_preview_mobile, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/' + username + '/avatar_preview_mobile.jpg', 'avatar_preview_mobile.jpg');
+            uploadFile('./uploads/' + username + '/avatar_preview_mobile' + fileExt, 'avatar_preview_mobile' + fileExt);
          }
     });
     
@@ -153,24 +156,25 @@ const rmAsync = promisify(fs.rm)
 
 async function upload(req, res, next){
     const file = req.file
+    console.log(req.file)
     if (!file) {
       const error = new Error('Please upload a file')
       error.httpStatusCode = 400
       return next(error)
     }
-    
+    var fileExt = path.extname(file.originalname)
     const id = req.user.id
     const username = req.user.username
-    await resizeImage(req.params.id, username);
+    await resizeImage(req.params.id, username, fileExt);
     await rmAsync('./uploads/' + username, { recursive: true, force: true })
 
     const profile = await getProfile(id);
-
+    fileExt = ".png"
     var params = {
-        thumbImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb.jpg',
-        thumbImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb_mobile.jpg',
-        previewImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview.jpg',
-        previewImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview_mobile.jpg'
+        thumbImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb' + fileExt,
+        thumbImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb_mobile' + fileExt,
+        previewImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview' + fileExt,
+        previewImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview_mobile' + fileExt
     }
 
     Object.assign(profile, params);
