@@ -17,6 +17,17 @@ class ProfileService {
     }
     return response.data;
   }
+  async uploadAvatar(token, avatar){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token }
+    }; 
+    const response = await axios
+    .put(API_URL + "/profile/upload", {avatar}, config);
+    if (response.data) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+    }
+    return response.data;   
+  }
 
   async getInfo(id, token){
     const config = {

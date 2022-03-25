@@ -936,7 +936,7 @@ class ProfilePage extends React.Component {
               />
             </div>
             <Button
-              onClick={this.showCroppedImage}
+              onClick={()=> {this.showCroppedImage(); this.handleCloseImageModal()}}
               variant="contained"
               color="primary"
               classes={{ root: classes.cropButton }}

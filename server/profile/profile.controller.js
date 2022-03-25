@@ -9,19 +9,20 @@ const { secret } = require('../config.json');
 const path = require('path');
 
 router.put('/:id', authorize(), updateProfile)
+//First uploads the image to server using multer, then resizes and uploads to Amazon s3 bucket
 router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
 router.get('/:id/info', authorize(), getInfo);
 //router.get('/avatar', authorize(), getAvatar) 
 module.exports = router;
 
-function validateUpdate(req, res, next) {
+/*function validateUpdate(req, res, next) {
     const schema = Joi.object({
         name: Joi.string().required(),
         bio: Joi.string().required(),
         link: Joi.string().required(),
     });
     validateRequest(req, next, schema);
-}
+}*/
 
 function updateProfile(req, res, next) {
     console.log(req.body.link);

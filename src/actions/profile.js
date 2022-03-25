@@ -6,7 +6,8 @@ import { history } from '../_helpers';
 
 export const profileActions = {
   update,
-  getInfo
+  getInfo,
+  uploadAvatar
 };
 
 
@@ -45,6 +46,29 @@ function getInfo(username, id, token, page){
         dispatch(success(profile));
         console.log(profile)
         history.push('/' + username + page);
+      },
+      error => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request(profile) { return { type: profileConstants.PROFILE_REQUEST, profile } }
+  function success(profile) { return { type: profileConstants.PROFILE_SUCCESS, profile } }
+  function failure(error) { return { type: profileConstants.PROFILE_FAILURE, error } }
+}
+
+function uploadAvatar(username, token, avatar){
+  return dispatch =>{
+    dispatch(request(username));
+
+    ProfileService.uploadAvatar(token, avatar)
+    .then(
+    
+      profile => {
+        dispatch(success(profile));
+        console.log(profile)
       },
       error => {
         dispatch(failure(error.toString()));

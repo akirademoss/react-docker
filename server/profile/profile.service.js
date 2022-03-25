@@ -81,7 +81,7 @@ async function resizeImage(id, username, fileExt){
     console.log('./uploads/' + username + '/avatar.jpeg')
   
     let imgBuffer = await sharp('./uploads/' + username + '/avatar' + fileExt).toBuffer()
-    
+
     //convert to a standard file format to ensure no duplicates in bucket
     fileExt = ".png"
     let avatar_thumb = await sharp(imgBuffer).resize(40,40).toFormat(fileExt.substring(1)).toBuffer();
@@ -94,24 +94,28 @@ async function resizeImage(id, username, fileExt){
         if (err) console.log(err);
         else{
            uploadFile('./uploads/' + username + '/avatar_thumb' + fileExt, 'avatar_thumb' + fileExt);
+           //img1 = "s3://tlts/" + username + "/avatar_thumb" + fileExt;
         }
     });   
     fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile' + fileExt, avatar_thumb_mobile, err => {
         if(err) console.log(err)
         else{
             uploadFile('./uploads/' + username + '/avatar_thumb_mobile' + fileExt, 'avatar_thumb_mobile' + fileExt);
+            //img2 = "s3://tlts/" + username + "/avatar_thumb_mobile" + fileExt;
          }
     });
     fs.writeFile('./uploads/' + username + '/avatar_preview' + fileExt, avatar_preview, err => {
         if(err) console.log(err)
         else{
             uploadFile('./uploads/' + username + '/avatar_preview' + fileExt, 'avatar_preview' + fileExt);
+            //img3 = "s3://tlts/" + username + "/avatar_preview" + fileExt;
          }
     });
     fs.writeFile('./uploads/' + username + '/avatar_preview_mobile' + fileExt, avatar_preview_mobile, err => {
         if(err) console.log(err)
         else{
             uploadFile('./uploads/' + username + '/avatar_preview_mobile' + fileExt, 'avatar_preview_mobile' + fileExt);
+            //img4 = "s3://tlts/" + username + "/avatar_preview_mobile" + fileExt;
          }
     });
     
@@ -133,12 +137,15 @@ async function resizeImage(id, username, fileExt){
    const uploadFile = (fileName, avatarName) => {
      // Read content from the file
      const fileContent = fs.readFileSync(fileName);
+     console.log(fileName.mimetype)
 
      // Setting up S3 upload parameters
      const params = {
          Bucket: BUCKET_NAME,
          Key: username + '/' + avatarName, // File name you want to save as in S3
-         Body: fileContent
+         Body: fileContent,
+         ContentType: 'image/png',
+         ACL: 'public-read'
      };
 
     // Uploading files to the bucket
