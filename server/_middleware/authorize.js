@@ -9,17 +9,14 @@ function authorize() {
 
         // authenticate JWT token and attach decoded token to request as req.user
         jwt({ secret, algorithms: ['HS256'] }),
-        
+
         // attach full user record to request object
         async (req, res, next) => {
-            
+
             // get user with id from token 'sub' (subject) property
             const id = req.user.sub
-            const user = await db.User.findByPk(id);
-           
-
-            
-
+            const user = await db.User.findByPk(id);         
+            console.log(req.user)
             // check user still exists
             if (!user)
                 return res.status(401).json({ message: 'Unauthorized' });

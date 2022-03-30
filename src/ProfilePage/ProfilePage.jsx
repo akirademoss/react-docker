@@ -470,6 +470,7 @@ class ProfilePage extends React.Component {
     }
 
     setRotation = (e, rotation) => {
+        console.log(rotation)
         this.setState({rotation: rotation});
     }
 
@@ -493,27 +494,36 @@ class ProfilePage extends React.Component {
         this.setState({showImageCrop: true})
         this.setState({show: false})
         console.log(this.state.imageSrc)
-        console.log(imageDataUrl)
+
       }
     }
 
     onCropComplete = (croppedArea, croppedAreaPixels) => {
-        this.setState({croppedAreaPixels :croppedArea})
         console.log(croppedArea, croppedAreaPixels)
+        this.setState({croppedAreaPixels :croppedAreaPixels})
+        console.log(croppedArea, croppedAreaPixels)
+        console.log("(oncropcomplete) croppedAreaPixels: ", croppedAreaPixels)
       }
     
     showCroppedImage = async () => {
+        console.log("(showCroppedImage) croppedAreaPixels: ", this.state.croppedAreaPixels)
         try {
           const croppedImage = await getCroppedImg(
             this.state.imageSrc,
             this.state.croppedAreaPixels,
             this.state.rotation
           )
-          console.log('donee', {croppedImage })
-          this.setState({croppedImage: this.state.croppedImage})
+          console.log('donee', {croppedImage });
+          this.setState({croppedImage: croppedImage});
+          console.log(this.state.croppedImage)
+
+          if (croppedImage) {           
+            const dispatch = await this.props.uploadAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken, croppedImage);
+        }
         } catch (e) {
           console.error(e)
         }
+
       }
     
       onClose = () => {
@@ -535,7 +545,7 @@ class ProfilePage extends React.Component {
     handleCloseImageModal = () => {
         this.setState({showImageCrop: false})
     }
-
+    //Get all of our profile props to display the user information
     getProfile = async (e) => {
         //e.preventDefault();
         const username = this.props.user.username;
@@ -546,6 +556,7 @@ class ProfilePage extends React.Component {
         this.setState({profile: this.props.profile})
      }
 
+    //Each time page refreshes we call this function 
     componentDidMount(){
         this.getProfile();
         
@@ -974,7 +985,8 @@ function mapStateToProps(state) {
 
 const actionCreators = {
     logout: userActions.logout,
-    getInfo: profileActions.getInfo
+    getInfo: profileActions.getInfo,
+    uploadAvatar: profileActions.uploadAvatar
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));

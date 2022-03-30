@@ -50,10 +50,15 @@ export async function getCroppedImg(
     image.height,
     rotation
   )
-
+  console.log(pixelCrop)
+  console.log("x: ", image.width)
+  console.log('y: ', image.height)
+  
   // set canvas size to match the bounding box
   canvas.width = bBoxWidth
   canvas.height = bBoxHeight
+
+
 
   // translate canvas context to a central location to allow rotating and flipping around the center
   ctx.translate(bBoxWidth / 2, bBoxHeight / 2)
@@ -63,6 +68,11 @@ export async function getCroppedImg(
 
   // draw rotated image
   ctx.drawImage(image, 0, 0)
+
+  console.log(pixelCrop.x)
+  console.log(pixelCrop.y)
+  console.log(pixelCrop.width)
+  console.log(pixelCrop.height)
 
   // croppedAreaPixels values are bounding box relative
   // extract the cropped image using these values
@@ -81,14 +91,14 @@ export async function getCroppedImg(
   ctx.putImageData(data, 0, 0)
 
   // As Base64 string
-  // return canvas.toDataURL('image/jpeg');
+  return canvas.toDataURL('image/png');
 
   // As a blob
-  return new Promise((resolve, reject) => {
+  /*return new Promise((resolve, reject) => {
     canvas.toBlob((file) => {
       resolve(URL.createObjectURL(file))
     }, 'image/png')
-  })
+  })*/
 }
 
 export async function getRotatedImage(imageSrc, rotation = 0) {

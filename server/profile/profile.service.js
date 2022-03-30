@@ -10,7 +10,8 @@ const multer = require('multer');
 const jwt = require('express-jwt');
 const { secret } = require('../config.json');
 const { promisify } = require('util')
-
+//disable cache so we can upload a new photo
+sharp.cache(false);
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
@@ -26,7 +27,9 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         console.log(file);
-        cb(null, "avatar" + path.extname(file.originalname));
+        console.log("path.extname: ")
+        console.log(path.extname(file.originalname))
+        cb(null, "avatar" );
     }
 });
 
@@ -75,12 +78,9 @@ function makeDir(req){
 }
 
 //Image resizing function
-async function resizeImage(id, username, fileExt){
-    //need to check that file exists first
-    console.log("testing resize image")
-    console.log('./uploads/' + username + '/avatar.jpeg')
-  
-    let imgBuffer = await sharp('./uploads/' + username + '/avatar' + fileExt).toBuffer()
+async function resizeImage(id, username){
+ 
+    let imgBuffer = await sharp('./uploads/' + username + '/avatar').toBuffer()
 
     //convert to a standard file format to ensure no duplicates in bucket
     fileExt = ".png"
@@ -145,7 +145,8 @@ async function resizeImage(id, username, fileExt){
          Key: username + '/' + avatarName, // File name you want to save as in S3
          Body: fileContent,
          ContentType: 'image/png',
-         ACL: 'public-read'
+         ACL: 'public-read',
+         
      };
 
     // Uploading files to the bucket
@@ -169,14 +170,13 @@ async function upload(req, res, next){
       error.httpStatusCode = 400
       return next(error)
     }
-    var fileExt = path.extname(file.originalname)
     const id = req.user.id
     const username = req.user.username
-    await resizeImage(req.params.id, username, fileExt);
+    await resizeImage(req.params.id, username);
     await rmAsync('./uploads/' + username, { recursive: true, force: true })
 
     const profile = await getProfile(id);
-    fileExt = ".png"
+    const fileExt = ".png"
     var params = {
         thumbImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb' + fileExt,
         thumbImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb_mobile' + fileExt,
@@ -186,5 +186,5 @@ async function upload(req, res, next){
 
     Object.assign(profile, params);
     await profile.save();
-    res.send(file);   
+    return profile.get();  
 };

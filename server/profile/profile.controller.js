@@ -10,7 +10,7 @@ const path = require('path');
 
 router.put('/:id', authorize(), updateProfile)
 //First uploads the image to server using multer, then resizes and uploads to Amazon s3 bucket
-router.post('/upload', authorize(), profileService.upload_multer.single('image'), upload);
+router.put('/:id/upload', authorize(), profileService.upload_multer.single('image'), upload);
 router.get('/:id/info', authorize(), getInfo);
 //router.get('/avatar', authorize(), getAvatar) 
 module.exports = router;
@@ -34,7 +34,10 @@ function updateProfile(req, res, next) {
 }
 
 function upload(req, res, next) {
+    console.log("testing upload");
     profileService.upload(req, res, next)
+    .then(profile => res.json(profile))
+    .catch(next);
 }
 
 function getInfo(req, res, next) {
