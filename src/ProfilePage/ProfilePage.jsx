@@ -236,16 +236,25 @@ const styles = darkTheme => ({
         marginTop: 20,
     },
     avatar: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
         margin: "auto",
         width: "150px",
         height: "150px",
-        backgroundColor: darkTheme.palette.common.white,
+        borderRadius: 100
     },
     avatarSm: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
         margin: "auto",
         width: "100px",
         height: "100px",
-        backgroundColor: darkTheme.palette.common.white,
     },
     editButton: {
         borderBottom: '1px solid white',
@@ -554,12 +563,12 @@ class ProfilePage extends React.Component {
         const page = '/profile';
         this.profile = await this.props.getInfo(username, id, token, '/profile'); 
         this.setState({profile: this.props.profile})
+
      }
 
     //Each time page refreshes we call this function 
     componentDidMount(){
-        this.getProfile();
-        
+        this.getProfile();        
     }
 
     render() {
@@ -705,7 +714,7 @@ class ProfilePage extends React.Component {
                                 <Grid item xs={4}>
 
                                     
-                                    <IconButton
+                           {/*  <IconButton
                                         id="contained-button-file"
                                         color="inherit"
                                         className={classes.iconButtonAvatar}
@@ -713,7 +722,40 @@ class ProfilePage extends React.Component {
                                         component="span"
                                     >
                                     {<AccountCircle className={classes.iconButtonAvatar}/>}
-                                    </IconButton>    
+                                </IconButton>    */}
+                                <Hidden smDown> 
+                                    <label htmlFor="contained-button-file">
+
+                                        <IconButton
+                                            id="contained-button-file"
+                                            color="inherit"
+                                            className={classes.iconButtonAvatar}
+                                            onClick={this.handleShow}
+                                            component="span"
+                                        >
+                                              {/*<AccountCircle className={classes.avatar}/>*/}
+                                              <img src={this.props.profile.previewImg} className={classes.avatar}/>
+                                        </IconButton>
+                                    
+
+                                    </label>
+                                </Hidden>
+                                <Hidden mdUp>
+                                    <label htmlFor="contained-button-file">
+                                        <IconButton
+                                            id="contained-button-file"
+                                            color="inherit"
+                                            className={classes.iconButtonAvatar}
+                                            onClick={this.handleShow}
+                                            component="span"
+                                        >
+                                           {/* <AccountCircle className={classes.avatarSm}/>*/}
+                                        </IconButton>
+
+                                    </label>
+                                    </Hidden>
+
+
 
                                     
                                 </Grid>

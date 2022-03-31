@@ -78,7 +78,7 @@ function makeDir(req){
 }
 
 //Image resizing function
-async function resizeImage(id, username){
+async function resizeImage(id, username, dt){
  
     let imgBuffer = await sharp('./uploads/' + username + '/avatar').toBuffer()
 
@@ -90,31 +90,31 @@ async function resizeImage(id, username){
     let avatar_preview_mobile = await sharp(imgBuffer).resize(110,110).toFormat(fileExt.substring(1)).toBuffer();
     console.log("testing buffers set")
 
-    fs.writeFile('./uploads/' + username + '/avatar_thumb' + fileExt, avatar_thumb, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_thumb' + dt + fileExt, avatar_thumb, err => {
         if (err) console.log(err);
         else{
-           uploadFile('./uploads/' + username + '/avatar_thumb' + fileExt, 'avatar_thumb' + fileExt);
+           uploadFile('./uploads/' + username + '/avatar_thumb' + dt + fileExt, 'avatar_thumb' + dt + fileExt);
            //img1 = "s3://tlts/" + username + "/avatar_thumb" + fileExt;
         }
     });   
-    fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile' + fileExt, avatar_thumb_mobile, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_thumb_mobile' + dt + fileExt, avatar_thumb_mobile, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/' + username + '/avatar_thumb_mobile' + fileExt, 'avatar_thumb_mobile' + fileExt);
+            uploadFile('./uploads/' + username + '/avatar_thumb_mobile' + dt + fileExt, 'avatar_thumb_mobile' + dt + fileExt);
             //img2 = "s3://tlts/" + username + "/avatar_thumb_mobile" + fileExt;
          }
     });
-    fs.writeFile('./uploads/' + username + '/avatar_preview' + fileExt, avatar_preview, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_preview' + dt + fileExt, avatar_preview, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/' + username + '/avatar_preview' + fileExt, 'avatar_preview' + fileExt);
+            uploadFile('./uploads/' + username + '/avatar_preview' + dt + fileExt, 'avatar_preview' + dt + fileExt);
             //img3 = "s3://tlts/" + username + "/avatar_preview" + fileExt;
          }
     });
-    fs.writeFile('./uploads/' + username + '/avatar_preview_mobile' + fileExt, avatar_preview_mobile, err => {
+    fs.writeFile('./uploads/' + username + '/avatar_preview_mobile' + dt + fileExt, avatar_preview_mobile, err => {
         if(err) console.log(err)
         else{
-            uploadFile('./uploads/' + username + '/avatar_preview_mobile' + fileExt, 'avatar_preview_mobile' + fileExt);
+            uploadFile('./uploads/' + username + '/avatar_preview_mobile' + dt + fileExt, 'avatar_preview_mobile' + fileExt);
             //img4 = "s3://tlts/" + username + "/avatar_preview_mobile" + fileExt;
          }
     });
@@ -172,16 +172,19 @@ async function upload(req, res, next){
     }
     const id = req.user.id
     const username = req.user.username
-    await resizeImage(req.params.id, username);
+    const dt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+    console.log(dt)
+    console.log("waiting for resize")
+    await resizeImage(req.params.id, username, dt);
     await rmAsync('./uploads/' + username, { recursive: true, force: true })
 
     const profile = await getProfile(id);
     const fileExt = ".png"
     var params = {
-        thumbImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb' + fileExt,
-        thumbImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb_mobile' + fileExt,
-        previewImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview' + fileExt,
-        previewImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview_mobile' + fileExt
+        thumbImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb' + dt + fileExt,
+        thumbImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_thumb_mobile' + dt + fileExt,
+        previewImg: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview' + dt + fileExt,
+        previewImgMobile: 'https://tlts.s3.amazonaws.com/' + username + '/avatar_preview_mobile' + dt + fileExt
     }
 
     Object.assign(profile, params);
