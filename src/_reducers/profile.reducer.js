@@ -17,6 +17,7 @@ export function getProfile(state = initialState, action) {
       };
     case profileConstants.PROFILE_FAILURE:
       return {};
+      
     default:
       return state
   }

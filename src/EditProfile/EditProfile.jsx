@@ -17,7 +17,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Avatar from '@material-ui/core/Avatar';
-
+import Skeleton from "@material-ui/lab/Skeleton";
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -45,6 +45,15 @@ import { profileActions } from '../actions/profile';
 //custom component import
 import MenuButton from '../components/menuButton';
 
+//cropper tool helper inputs
+import Cropper from 'react-easy-crop'
+import Slider from '@material-ui/core/Slider'
+import { getOrientation } from 'get-orientation/browser'
+import ImgDialog from '../ProfilePage/ImgDialog'
+import { getCroppedImg, getRotatedImage } from '../ProfilePage/canvasUtils'
+import { styles2 } from '../ProfilePage/styles'
+import Modal from "@material-ui/core/Modal";
+import { styled } from '@material-ui/core/styles';
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -58,7 +67,12 @@ const darkTheme = createMuiTheme({
         borderRight: '1px solid grey',
         borderColor: fade('#ffffff', 0.5),
       }
-    }
+    },
+    MuiButton: {
+      label: {
+        color: 'white',
+      }
+    },
   },
   palette: {
     // type: 'dark',
@@ -224,12 +238,6 @@ const styles = darkTheme => ({
     borderWidth: "1px",
     borderColor: darkTheme.palette.common.blue
   },
-  avatarSm: {
-    margin: "auto",
-    width: "100px",
-    height: "100px",
-    backgroundColor: darkTheme.palette.common.grey,
-  },
   input: {
     opacity: 0,
     height: 0,
@@ -240,8 +248,177 @@ const styles = darkTheme => ({
     textDecoration: 'none',
     color: blue[700]
   },
+    // styling for viewing image cropper tool
+  avatarSm: {
+      background: 'transparent',
+      background: 'transparent',
+      "&:hover": {
+          background: 'transparent',
+      },
+      margin: "auto",
+      width: "30px",
+      height: "30px",
+      borderRadius: 100
+  },
+  avatarMd: {
+    background: 'transparent',
+    background: 'transparent',
+    "&:hover": {
+        background: 'transparent',
+    },
+    margin: "auto",
+    width: "100px",
+    height: "100px",
+    borderRadius: 100
+  },
+  avatar: {
+    background: 'transparent',
+    background: 'transparent',
+    "&:hover": {
+        background: 'transparent',
+    },
+    margin: "auto",
+    width: "100px",
+    height: "100px",
+    borderRadius: 100
+},
+avatarEditProf: {
+ 
+  background: 'transparent',
+  background: 'transparent',
+  "&:hover": {
+      background: 'transparent',
+  },
+  margin: "auto",
+  width: "150px",
+  height: "150px",
+  borderRadius: 100,
+  color: grey[600],
+},
+  iconButtonAvatar: {
+      background: 'transparent',
+      background: 'transparent',
+      "&:hover": {
+        background: 'transparent',
+      },
+      height: '100%',
+      width: '100%'
+  },
+    cropContainer: {
+      position: 'relative',
+      width: '100%',
+      minWidth: 400,
+      minHeight: 400,
+      background: darkTheme.palette.common.black,
+      [darkTheme.breakpoints.up('sm')]: {
+          height: 400,
+      },
+  },
+  cropButton: {
+      marginLeft: 16,
+      width: 10,
+      flex: '1',
+      backgroundColor: red[700],
+  },
+  cancelButton: {
+      marginLeft: 16,
+      backgroundColor: grey[500],
+      '&:hover': {
+          backgroundColor: grey[600],
+      },
+      width: 10,
+      flex: '1',
+  },
+  controls: {
+      padding: 16,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      [darkTheme.breakpoints.up('sm')]: {
+      },
+  },
+  sliderContainer: {
+      display: 'flex',
+      flex: '2',
+      alignItems: 'center',
+      flexDirection: 'row',
+  },
+  sliderLabel: {
+      marginLeft: 16,
+      [darkTheme.breakpoints.down('xs')]: {
 
+      },
+      color: 'white',
+  },
+  slider: {
+      padding: '22px 0px',
+      marginLeft: 16,
+      minWidth: 100,
+      [darkTheme.breakpoints.up('sm')]: {
+          margin: '0 16px',
+      },
+      color: red[700],
+  },
+  modalUpload: {
+      [darkTheme.breakpoints.up('sm')]: {
+      },
+      minheight: 200,
+      minWidth: 400,
+      position: 'absolute',
+      backgroundColor: grey[700],
+      alignItems: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      top: '35%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      boxShadow: darkTheme.shadows[5],
+      padding: darkTheme.spacing(1),
+      "&:focus": {
+          outline: "none"
+      },
+      borderRadius: darkTheme.shape.borderRadius,
+  },
+  modalButton: {
+      width: '95%',
+      minWidth: 380,
+      backgroundColor: red[700],
+      '&:hover': {
+          backgroundColor: red[800],
+      },
+  },
+  modalButtonRemove: {
+      width: '95%',
+      backgroundColor: blue[700],
+      '&:hover': {
+          backgroundColor: blue[800],
+      },
+      minWidth: 380,
+  },
+  modalButtonCancel: {
+      width: '95%',
+      backgroundColor: grey[500],
+      '&:hover': {
+          backgroundColor: grey[600],
+      },
+      minWidth: 380,
+  }
 });
+
+//Image edit rotation helper
+const ORIENTATION_TO_ANGLE = {
+  '3': 180,
+  '6': 90,
+  '8': -90,
+}
+
+function readFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.addEventListener('load', () => resolve(reader.result), false)
+    reader.readAsDataURL(file)
+  })
+}
 
 class EditProfile extends React.Component {
   constructor(props) {
@@ -257,9 +434,16 @@ class EditProfile extends React.Component {
       name: this.props.profile.name,
       bio: this.props.profile.bio,
       link: this.props.profile.link,
-      profile: {name: '', bio: '', link: ''},
-
-
+      profile: { name: '', bio: '', link: '' },
+      //states for profile image edit 
+      imageSrc: null,
+      crop: { x: 0, y: 0 },
+      rotation: 0,
+      zoom: 1,
+      croppedAreaPixels: null,
+      croppedImage: null,
+      show: false,
+      showImageCrop: false,
     };
 
     this.handleLogout = this.handleLogout.bind(this);
@@ -331,41 +515,126 @@ class EditProfile extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     this.setState({ submitted: true });
 
-    const { name, bio, link} = this.state;
+    const { name, bio, link } = this.state;
     console.log(link)
     console.log("testing")
     const username = this.props.user.username
     const id = this.props.user.id
     const token = this.props.user.accessToken
-    if ((name || bio  || link) && username && id && token) {           
-        const dispatch = await this.props.update(name, bio, link, username, id, token);
+    if ((name || bio || link) && username && id && token) {
+      const dispatch = await this.props.update(name, bio, link, username, id, token);
     }
-    
-};
 
-getProfile = async (e) => {
-  //e.preventDefault();
-  const username = this.props.user.username;
-  const id = this.props.user.id;
-  const token = this.props.user.accessToken;
-  const page = '/edit';
-  this.profile = await this.props.getInfo(username, id, token, page);       
-  this.setState({profile: this.props.profile})   
-}
+  };
 
-componentDidMount(){
-  this.getProfile();
-  
-}
+  //Events for profile image functionality
+  setCrop = crop => {
+    this.setState({ crop });
+  }
+
+  setRotation = (e, rotation) => {
+    console.log(rotation)
+    this.setState({ rotation: rotation });
+  }
+
+  setZoom = (e, zoom) => {
+    this.setState({ zoom: zoom });
+  }
+  //when image is added 
+  onFileChange = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      let imageDataUrl = await readFile(file);
+
+      // apply rotation if needed
+      const orientation = await getOrientation(file);
+      const rotation = ORIENTATION_TO_ANGLE[orientation];
+      if (rotation) {
+        imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+      }
+
+      this.setState({ imageSrc: imageDataUrl });
+      this.setState({ showImageCrop: true })
+      this.setState({ show: false })
+      console.log(this.state.imageSrc)
+
+    }
+  }
+
+  onCropComplete = (croppedArea, croppedAreaPixels) => {
+    console.log(croppedArea, croppedAreaPixels)
+    this.setState({ croppedAreaPixels: croppedAreaPixels })
+    console.log(croppedArea, croppedAreaPixels)
+    console.log("(oncropcomplete) croppedAreaPixels: ", croppedAreaPixels)
+  }
+
+  //save the new image to database
+  showCroppedImage = async () => {
+    console.log("(showCroppedImage) croppedAreaPixels: ", this.state.croppedAreaPixels)
+    try {
+      const croppedImage = await getCroppedImg(
+        this.state.imageSrc,
+        this.state.croppedAreaPixels,
+        this.state.rotation
+      )
+      console.log('donee', { croppedImage });
+      this.setState({ croppedImage: croppedImage });
+      console.log(this.state.croppedImage)
+
+      if (croppedImage) {
+        //const page = '/edit';
+        const dispatch = await this.props.uploadAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken, croppedImage);
+      }
+    } catch (e) {
+      console.error(e)
+    }
+
+  }
+
+  handleCloseModal = () => {
+    this.setState({ show: false })
+  }
+
+  onClose = () => {
+    this.setState({ croppedImage: null })
+  }
+
+  handleShow = () => {
+    this.setState({ show: true })
+  }
+
+  handleShowImageCrop = () => {
+    this.setState({ showImageCrop: true })
+  }
+
+  handleCloseImageModal = () => {
+    this.setState({ showImageCrop: false })
+
+  }
+
+  //get the user information
+  getProfile = async (e) => {
+    //e.preventDefault();
+    const username = this.props.user.username;
+    const id = this.props.user.id;
+    const token = this.props.user.accessToken;
+    const page = '/edit';
+    this.profile = await this.props.getInfo(username, id, token, page);
+    this.setState({ profile: this.props.profile })
+  }
+
+  componentDidMount() {
+    this.getProfile();
+  }
 
   render() {
-    const { anchorEl, msgOpen, notificationsOpen, profileOpen, name, bio, link } = this.state;
+    const { anchorEl, msgOpen, notificationsOpen, profileOpen, name, bio, link, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
-    const {loadingProfile} = this.props;
+    const { loadingProfile } = this.props;
     return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
@@ -461,7 +730,10 @@ componentDidMount(){
                 onClick={this.handleMenu}
                 color="inherit"
               >
-                {<AccountCircle className={classes.iconButton} />}
+                  {loadingProfile && <Skeleton variant="circle" className={classes.avatarSm}/>}
+                  {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarSm} />}
+                  {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
+                  
               </IconButton>
               <Menu
                 color="secondary"
@@ -494,6 +766,7 @@ componentDidMount(){
             <Box m={3} />
             <Grid container spacing={4} direction="row" alignItems="center" justify="center">
               <Grid item >
+                {/*}
                 <input
                   accept="image/*"
                   className={classes.input}
@@ -509,7 +782,26 @@ componentDidMount(){
                     color="white"
                   />
 
-                </label>
+              </label> */}
+              <label htmlFor="contained-button-file">
+
+              <IconButton
+                id="contained-button-file"
+                color="inherit"
+                className={classes.iconButtonAvatar}
+                onClick={this.handleShow}
+                component="span"
+              >
+              {/*<AccountCircle className={classes.avatar}/>*/}
+              {loadingProfile && <Skeleton variant="circle" className={classes.avatarMd}/>}
+              {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarMd} />}
+              {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarEditProf}/>}
+              
+      
+              </IconButton>
+
+
+              </label>
               </Grid>
               <Grid item>
                 <Box m={3} />
@@ -517,11 +809,11 @@ componentDidMount(){
                 <Typography component="h1" variant="h4">
                   {this.props.user.username}
                 </Typography>
-                <Link className={classes.link}>
+                <a className={classes.link} onClick={this.handleShow}>
                   <Typography component="h1" variant="subtitle1">
                     <b>Change Profile Photo</b>
                   </Typography>
-                </Link>
+                </a>
               </Grid>
 
             </Grid>
@@ -533,7 +825,7 @@ componentDidMount(){
               <Grid item>
                 <Grid container spacing={2} direction="row" alignItems="top" justify="center">
                   <Grid item >
-                    <Typography component="h1" variant="h6" style={{marginTop: 30}}>
+                    <Typography component="h1" variant="h6" style={{ marginTop: 30 }}>
                       <b>Name</b>
                     </Typography>
                   </Grid>
@@ -567,7 +859,7 @@ componentDidMount(){
               <Grid item>
                 <Grid container spacing={2} direction="row" alignItems="center" justify="center">
                   <Grid item >
-                    <Typography component="h1" variant="h6" style={{marginLeft: 20}}>
+                    <Typography component="h1" variant="h6" style={{ marginLeft: 20 }}>
                       <b>Bio </b>
                     </Typography>
                   </Grid>
@@ -593,12 +885,12 @@ componentDidMount(){
                     />
                   </Grid>
                 </Grid>
-                </Grid>
+              </Grid>
 
               <Grid item>
                 <Grid container spacing={2} direction="row" alignItems="center" justify="center">
                   <Grid item >
-                    <Typography component="h1" variant="h6" style={{marginTop: 60}}>
+                    <Typography component="h1" variant="h6" style={{ marginTop: 60 }}>
                       <b>Link</b>
                     </Typography>
                   </Grid>
@@ -607,7 +899,7 @@ componentDidMount(){
                       <Grid item>
                         <Typography component="h1" variant="subtitle2" className={classes.text} color="secondary">
                           <b>Personal Information</b>
-                  </Typography>
+                        </Typography>
                       </Grid>
                       <Grid item>
                         <Typography component="h1" variant="caption" className={classes.text} color="secondary">
@@ -638,13 +930,13 @@ componentDidMount(){
                 </Grid>
               </Grid>
               <Grid item>
-              <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              className={classes.submitButton}
-            >
-              Submit
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submitButton}
+                >
+                  Submit
             </Button>
               </Grid>
             </Grid>
@@ -660,7 +952,130 @@ componentDidMount(){
           <Box m={2} />
           <Typography variant="body2" color="secondary" align="center">
             Copyright © Too Legit To Submit, Inc 2022
-          </Typography>   
+          </Typography>
+
+          <Modal
+            open={show}
+            onClose={this.handleCloseModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <div className={classes.modalUpload}>
+
+              <label htmlFor="icon-button-file">
+                <input
+                  accept="image/*"
+                  id="icon-button-file"
+                  multiple
+                  type="file"
+                  className={classes.input}
+                  onChange={this.onFileChange}
+                />
+                <Button
+                  variant="contained"
+                  component="span"
+                  classes={{ root: classes.modalButton }}
+                >
+                  Upload Photo
+                </Button>
+              </label>
+
+              <Button
+                variant="contained"
+                color="primary"
+                classes={{ root: classes.modalButtonRemove }}
+              >
+                Remove Photo
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                classes={{ root: classes.modalButtonCancel }}
+                onClick={this.handleCloseModal}
+              >
+                Cancel
+              </Button>
+            </div>
+          </Modal>
+
+          <Modal
+            open={showImageCrop}
+            onClose={this.handleCloseImageModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <div className={classes.modalUpload}>
+
+              <div className={classes.cropContainer}>
+                <Cropper
+                  image={imageSrc}
+                  crop={crop}
+                  rotation={rotation}
+                  zoom={zoom}
+                  aspect={1 / 1}
+                  cropShape="round"
+                  onCropChange={this.setCrop}
+                  onRotationChange={this.setRotation}
+                  onCropComplete={this.onCropComplete}
+                  onZoomChange={this.setZoom}
+                />
+              </div>
+              <div className={classes.controls}>
+                <div className={classes.sliderContainer}>
+                  <Typography
+                    variant="overline"
+                    classes={{ root: classes.sliderLabel }}
+                  >
+                    Zoom
+                  </Typography>
+                  <Slider
+                    value={zoom}
+                    min={1}
+                    max={3}
+                    step={0.1}
+                    aria-labelledby="Zoom"
+                    classes={{ root: classes.slider }}
+                    onChange={this.setZoom}
+                  />
+                </div>
+                <div className={classes.sliderContainer}>
+                  <Typography
+                    variant="overline"
+                    classes={{ root: classes.sliderLabel }}
+                  >
+                    Rotation
+                  </Typography>
+                  <Slider
+                    value={rotation}
+                    min={0}
+                    max={360}
+                    step={1}
+                    aria-labelledby="Rotation"
+                    classes={{ root: classes.slider }}
+                    onChange={this.setRotation}
+                  />
+                </div>
+                <Button
+                  onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
+                  variant="contained"
+                  
+                  classes={{ root: classes.cropButton }}
+                >
+                  Save
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  classes={{ root: classes.cancelButton }}
+                  onClick={this.handleCloseImageModal}
+                >
+                  Cancel
+                </Button>
+              </div>
+
+            </div>
+          </Modal>
+          <ImgDialog img={this.croppedImage} onClose={this.onClose} />
         </div>
 
 
@@ -673,15 +1088,15 @@ function mapStateToProps(state) {
   const { users, authentication } = state;
   const { user } = authentication;
   const { profile, loadingProfile } = state.getProfile;
-  return { user, users, profile, loadingProfile};
+  return { user, users, profile, loadingProfile };
 }
 
 const actionCreators = {
   logout: userActions.logout,
   update: profileActions.update,
-  getInfo: profileActions.getInfo
+  getInfo: profileActions.getInfo,
+  uploadAvatar: profileActions.uploadAvatar
 
-  
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(EditProfile));

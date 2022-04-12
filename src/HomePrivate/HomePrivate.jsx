@@ -10,6 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { ThemeProvider } from "@material-ui/styles";
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from "@material-ui/core/IconButton";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -32,6 +33,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import { history } from '../_helpers';
 
 import { userActions } from '../actions/auth';
+import { profileActions } from '../actions/profile';
 
 //custom component import
 import MenuButton from '../components/menuButton';
@@ -188,7 +190,17 @@ const darkTheme = createMuiTheme({
       margin: darkTheme.spacing(3, 0, 0),
       width: 290,
     },
-  
+    avatarSm: {
+      background: 'transparent',
+      background: 'transparent',
+      "&:hover": {
+          background: 'transparent',
+      },
+      margin: "auto",
+      width: "30px",
+      height: "30px",
+      borderRadius: 100
+  },  
   });
 
 class HomePrivate extends React.Component {
@@ -268,11 +280,25 @@ class HomePrivate extends React.Component {
 
     }
   }
+  //get the user information
+  getProfile = async (e) => {
+    //e.preventDefault();
+    const username = this.props.user.username;
+    const id = this.props.user.id;
+    const token = this.props.user.accessToken;
+    const page = '/home';
+    this.profile = await this.props.getInfo(username, id, token, page);
+    this.setState({ profile: this.props.profile })
+  }
 
+  componentDidMount() {
+    this.getProfile();
+  }
     render() {
         const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
+        const { loadingProfile } = this.props;
         return (
             <ThemeProvider theme={darkTheme}>
             <CssBaseline />
@@ -368,7 +394,9 @@ class HomePrivate extends React.Component {
                     onClick={this.handleMenu}
                     color="inherit"
                     >
-                    {<AccountCircle className={classes.iconButton} />}
+                    {loadingProfile && <Skeleton variant="circle" className={classes.avatarSm}/>}
+                    {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarSm} />}
+                    {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
                     </IconButton>
                     <Menu
                       color="secondary"
@@ -408,11 +436,13 @@ class HomePrivate extends React.Component {
 function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
-    return { user, users };
+    const { profile, loadingProfile } = state.getProfile;
+    return { user, users, profile, loadingProfile };
 }
 
 const actionCreators = {
-  logout: userActions.logout
+  logout: userActions.logout,
+  getInfo: profileActions.getInfo
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, {withTheme: true})(HomePrivate));

@@ -57,6 +57,7 @@ class ProfileService {
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
     }
+    window.location.reload();
     return response.data;   
   }
 

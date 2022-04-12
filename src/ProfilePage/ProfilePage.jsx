@@ -19,6 +19,7 @@ import Tab from '@material-ui/core/Tab';
 import Divider from '@material-ui/core/Divider';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Skeleton from "@material-ui/lab/Skeleton";
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -114,7 +115,7 @@ const styles = darkTheme => ({
         minHeight: 5,
         height: 'auto',
         backgroundColor: fade(grey[500], 0.4),
-        position: 'fixed',
+
     },
     menuItem: {
         boxShadow: 'none',
@@ -244,6 +245,17 @@ const styles = darkTheme => ({
         margin: "auto",
         width: "150px",
         height: "150px",
+        borderRadius: 100,
+    },
+    avatarMd: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        margin: "auto",
+        width: "100px",
+        height: "100px",
         borderRadius: 100
     },
     avatarSm: {
@@ -253,8 +265,9 @@ const styles = darkTheme => ({
             background: 'transparent',
         },
         margin: "auto",
-        width: "100px",
-        height: "100px",
+        width: "30px",
+        height: "30px",
+        borderRadius: 100
     },
     editButton: {
         borderBottom: '1px solid white',
@@ -265,7 +278,7 @@ const styles = darkTheme => ({
     posts: {
         marginTop: 5,
     },
-    linkText:  {
+    linkText: {
         color: blue[700],
     },
     // styling for viewing image cropper tool
@@ -276,15 +289,15 @@ const styles = darkTheme => ({
         minHeight: 400,
         background: darkTheme.palette.common.black,
         [darkTheme.breakpoints.up('sm')]: {
-          height: 400,
+            height: 400,
         },
-      },
-      cropButton: {
+    },
+    cropButton: {
         marginLeft: 16,
         width: 10,
         flex: '1',
-      },
-      cancelButton: {
+    },
+    cancelButton: {
         marginLeft: 16,
         backgroundColor: grey[500],
         '&:hover': {
@@ -292,38 +305,38 @@ const styles = darkTheme => ({
         },
         width: 10,
         flex: '1',
-      },
-      controls: {
+    },
+    controls: {
         padding: 16,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'stretch',
         [darkTheme.breakpoints.up('sm')]: {
         },
-      },
-      sliderContainer: {
+    },
+    sliderContainer: {
         display: 'flex',
         flex: '2',
         alignItems: 'center',
         flexDirection: 'row',
-      },
-      sliderLabel: {
+    },
+    sliderLabel: {
         marginLeft: 16,
         [darkTheme.breakpoints.down('xs')]: {
 
         },
-      },
-      slider: {
+    },
+    slider: {
         padding: '22px 0px',
         marginLeft: 16,
         minWidth: 100,
         [darkTheme.breakpoints.up('sm')]: {
-          margin: '0 16px',
+            margin: '0 16px',
         },
-      },
-      modalUpload: {
+    },
+    modalUpload: {
         [darkTheme.breakpoints.up('sm')]: {
-          },
+        },
         minheight: 200,
         minWidth: 400,
         position: 'absolute',
@@ -338,49 +351,51 @@ const styles = darkTheme => ({
         padding: darkTheme.spacing(1),
         "&:focus": {
             outline: "none"
-          },
+        },
         borderRadius: darkTheme.shape.borderRadius,
-      },
-      modalButton: {
+    },
+    modalButton: {
         width: '95%',
         minWidth: 380,
-      },
-      modalButtonRemove: {
+    },
+    modalButtonRemove: {
         width: '95%',
         backgroundColor: blue[700],
         '&:hover': {
             backgroundColor: blue[800],
         },
         minWidth: 380,
-      },
-      modalButtonCancel: {
+    },
+    modalButtonCancel: {
         width: '95%',
         backgroundColor: grey[500],
         '&:hover': {
             backgroundColor: grey[600],
         },
         minWidth: 380,
-      }
+    }
 });
 
 const Input = styled('input')({
     display: 'none',
-  });
+});
 
+//Profile image edit rotation helpers
 const ORIENTATION_TO_ANGLE = {
     '3': 180,
     '6': 90,
     '8': -90,
-  }
+}
 
 function readFile(file) {
     return new Promise((resolve) => {
-      const reader = new FileReader()
-      reader.addEventListener('load', () => resolve(reader.result), false)
-      reader.readAsDataURL(file)
+        const reader = new FileReader()
+        reader.addEventListener('load', () => resolve(reader.result), false)
+        reader.readAsDataURL(file)
     })
-  }
+}
 
+// Profile page class
 class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
@@ -390,8 +405,9 @@ class ProfilePage extends React.Component {
             msgOpen: false,
             notificationsOpen: false,
             profileOpen: false,
-            profile: {name: '', bio: '', link: ''},
-            tab: 0, 
+            profile: { name: '', bio: '', link: '' },
+            tab: 0,
+            //states for profile image edit 
             imageSrc: null,
             crop: { x: 0, y: 0 },
             rotation: 0,
@@ -404,7 +420,7 @@ class ProfilePage extends React.Component {
 
         this.handleLogout = this.handleLogout.bind(this);
 
-        
+
 
     }
 
@@ -474,86 +490,90 @@ class ProfilePage extends React.Component {
         }
     }
 
+    //Events for profile image functionality
     setCrop = crop => {
-        this.setState({crop});
+        this.setState({ crop });
     }
 
     setRotation = (e, rotation) => {
         console.log(rotation)
-        this.setState({rotation: rotation});
+        this.setState({ rotation: rotation });
     }
 
     setZoom = (e, zoom) => {
-        this.setState({zoom: zoom});
+        this.setState({ zoom: zoom });
     }
     //when image is added 
     onFileChange = async (e) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const file = e.target.files[0];
-        let imageDataUrl = await readFile(file);
- 
-        // apply rotation if needed
-        const orientation = await getOrientation(file);
-        const rotation = ORIENTATION_TO_ANGLE[orientation];
-        if (rotation) {
-         imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            let imageDataUrl = await readFile(file);
+
+            // apply rotation if needed
+            const orientation = await getOrientation(file);
+            const rotation = ORIENTATION_TO_ANGLE[orientation];
+            if (rotation) {
+                imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+            }
+
+            this.setState({ imageSrc: imageDataUrl });
+            this.setState({ showImageCrop: true })
+            this.setState({ show: false })
+            console.log(this.state.imageSrc)
+
         }
-
-        this.setState({imageSrc: imageDataUrl});
-        this.setState({showImageCrop: true})
-        this.setState({show: false})
-        console.log(this.state.imageSrc)
-
-      }
     }
 
     onCropComplete = (croppedArea, croppedAreaPixels) => {
         console.log(croppedArea, croppedAreaPixels)
-        this.setState({croppedAreaPixels :croppedAreaPixels})
+        this.setState({ croppedAreaPixels: croppedAreaPixels })
         console.log(croppedArea, croppedAreaPixels)
         console.log("(oncropcomplete) croppedAreaPixels: ", croppedAreaPixels)
-      }
-    
+    }
+
+    //save the new image to database
     showCroppedImage = async () => {
         console.log("(showCroppedImage) croppedAreaPixels: ", this.state.croppedAreaPixels)
         try {
-          const croppedImage = await getCroppedImg(
-            this.state.imageSrc,
-            this.state.croppedAreaPixels,
-            this.state.rotation
-          )
-          console.log('donee', {croppedImage });
-          this.setState({croppedImage: croppedImage});
-          console.log(this.state.croppedImage)
+            const croppedImage = await getCroppedImg(
+                this.state.imageSrc,
+                this.state.croppedAreaPixels,
+                this.state.rotation
+            )
+            console.log('donee', { croppedImage });
+            this.setState({ croppedImage: croppedImage });
+            console.log(this.state.croppedImage)
 
-          if (croppedImage) {           
-            const dispatch = await this.props.uploadAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken, croppedImage);
-        }
+            if (croppedImage) {
+                const dispatch = await this.props.uploadAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken, croppedImage);
+            }
         } catch (e) {
-          console.error(e)
+            console.error(e)
         }
 
-      }
-    
-      onClose = () => {
-        this.setState({croppedImage: null})
-      }
+    }
 
     handleCloseModal = () => {
-        this.setState({show: false})
+        this.setState({ show: false })
+    }
+
+    onClose = () => {
+        this.setState({ croppedImage: null })
     }
 
     handleShow = () => {
-        this.setState({show: true})
+        this.setState({ show: true })
     }
 
     handleShowImageCrop = () => {
-        this.setState({showImageCrop: true})
+        this.setState({ showImageCrop: true })
     }
 
     handleCloseImageModal = () => {
-        this.setState({showImageCrop: false})
+        this.setState({ showImageCrop: false })
+
     }
+
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
         //e.preventDefault();
@@ -561,26 +581,26 @@ class ProfilePage extends React.Component {
         const id = this.props.user.id;
         const token = this.props.user.accessToken;
         const page = '/profile';
-        this.profile = await this.props.getInfo(username, id, token, '/profile'); 
-        this.setState({profile: this.props.profile})
+        this.profile = await this.props.getInfo(username, id, token, '/profile');
+        this.setState({ profile: this.props.profile })
 
-     }
+    }
 
     //Each time page refreshes we call this function 
-    componentDidMount(){
-        this.getProfile();        
+    componentDidMount() {
+        this.getProfile();
     }
 
     render() {
         const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
-        const {loadingProfile} = this.props;
-        
+        const { loadingProfile } = this.props;
+
 
 
         return (
-            
+
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <div className={classes.grow}>
@@ -679,7 +699,10 @@ class ProfilePage extends React.Component {
                                 onClick={this.handleMenu}
                                 color="inherit"
                             >
-                                {<AccountCircle className={classes.iconButton} />}
+                                {loadingProfile && <Skeleton variant="circle" className={classes.avatarSm}/>}
+                                {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarSm} />}
+                                {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
+                                    
                             </IconButton>
                             <Menu
                                 disableScrollLock={true}
@@ -713,8 +736,8 @@ class ProfilePage extends React.Component {
                             <Grid container>
                                 <Grid item xs={4}>
 
-                                    
-                           {/*  <IconButton
+
+                                    {/*  <IconButton
                                         id="contained-button-file"
                                         color="inherit"
                                         className={classes.iconButtonAvatar}
@@ -723,41 +746,54 @@ class ProfilePage extends React.Component {
                                     >
                                     {<AccountCircle className={classes.iconButtonAvatar}/>}
                                 </IconButton>    */}
-                                <Hidden smDown> 
-                                    <label htmlFor="contained-button-file">
+                                    <Hidden smDown>
+                                        <label htmlFor="contained-button-file">
 
-                                        <IconButton
-                                            id="contained-button-file"
-                                            color="inherit"
-                                            className={classes.iconButtonAvatar}
-                                            onClick={this.handleShow}
-                                            component="span"
-                                        >
-                                              {/*<AccountCircle className={classes.avatar}/>*/}
-                                              <img src={this.props.profile.previewImg} className={classes.avatar}/>
-                                        </IconButton>
-                                    
+                                            <IconButton
+                                                id="contained-button-file"
+                                                color="inherit"
+                                                className={classes.iconButtonAvatar}
+                                                onClick={this.handleShow}
+                                                component="span"
+                                            >
+                                             {/* {loadingProfile && this.props.profile.previewImg ? (
+                                                    <Skeleton variant="circular" className={classes.avatar}/>
+                                                    ) : (
+                                                        <img src={this.props.profile.previewImg} className={classes.avatar} />
+                                                    )}*/}
+                                               
+                                              {loadingProfile && <Skeleton variant="circle" className={classes.avatar}/>}
+                                              {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatar} />}
+                                              {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatar}/>}
+                                                    
+                                              
 
-                                    </label>
-                                </Hidden>
-                                <Hidden mdUp>
-                                    <label htmlFor="contained-button-file">
-                                        <IconButton
-                                            id="contained-button-file"
-                                            color="inherit"
-                                            className={classes.iconButtonAvatar}
-                                            onClick={this.handleShow}
-                                            component="span"
-                                        >
-                                           {/* <AccountCircle className={classes.avatarSm}/>*/}
-                                        </IconButton>
 
-                                    </label>
+                                            </IconButton>
+
+
+                                        </label>
+                                    </Hidden>
+                                    <Hidden mdUp>
+                                        <label htmlFor="contained-button-file">
+                                            <IconButton
+                                                id="contained-button-file"
+                                                color="inherit"
+                                                className={classes.iconButtonAvatar}
+                                                onClick={this.handleShow}
+                                                component="span"
+                                            >
+                                                {loadingProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
+                                                {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarMd} />}
+                                                {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarMd}/>}
+                                            </IconButton>
+
+                                        </label>
                                     </Hidden>
 
 
 
-                                    
+
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Box clone mb="20px">
@@ -799,24 +835,24 @@ class ProfilePage extends React.Component {
                                     <Typography variant="subtitle1" bold>
                                         <b>{this.props.profile.name}</b>
                                     </Typography>
-                            <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
-                            <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
+                                    <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
+                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
                                 </Grid>
                             </Grid>
                         </Box>
-                        
+
                         <Tabs
                             value={tab}
                             centered
                             onChange={this.handleTabChange}
                             indicatorColor="primary"
                         >
-                            <Tab label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary/>} />
-                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn/>} />
-                            <Tab label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList/>} />
-                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder/>} />
+                            <Tab label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
+                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />
+                            <Tab label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
+                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />
                         </Tabs>
-                        <Divider style={{ background: 'grey' }}/>
+                        <Divider style={{ background: 'grey' }} />
                         <Grid container spacing={5} className={classes.posts}>
                             <Grid item xs={4}>
                                 <img
@@ -885,130 +921,130 @@ class ProfilePage extends React.Component {
 
 
                     </Box>
-                    
-                                    <Modal
-                                       open={show}
-                                       onClose={this.handleCloseModal}
-                                       aria-labelledby="modal-modal-title"
-                                       aria-describedby="modal-modal-description"
-                                    > 
-                                    <div className={classes.modalUpload}>
 
-                                    <label htmlFor="icon-button-file">
-                                    <input
-                                        accept="image/*"
-                                        id="icon-button-file"
-                                        multiple
-                                        type="file"
-                                        className={classes.input}
-                                        onChange={this.onFileChange}
+                    <Modal
+                        open={show}
+                        onClose={this.handleCloseModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <div className={classes.modalUpload}>
+
+                            <label htmlFor="icon-button-file">
+                                <input
+                                    accept="image/*"
+                                    id="icon-button-file"
+                                    multiple
+                                    type="file"
+                                    className={classes.input}
+                                    onChange={this.onFileChange}
+                                />
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    component="span"
+                                    classes={{ root: classes.modalButton }}
+                                >
+                                    Upload Photo
+                                </Button>
+                            </label>
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                classes={{ root: classes.modalButtonRemove }}
+                            >
+                                Remove Photo
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                classes={{ root: classes.modalButtonCancel }}
+                                onClick={this.handleCloseModal}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </Modal>
+
+                    <Modal
+                        open={showImageCrop}
+                        onClose={this.handleCloseImageModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <div className={classes.modalUpload}>
+
+                            <div className={classes.cropContainer}>
+                                <Cropper
+                                    image={imageSrc}
+                                    crop={crop}
+                                    rotation={rotation}
+                                    zoom={zoom}
+                                    aspect={1 / 1}
+                                    cropShape="round"
+                                    onCropChange={this.setCrop}
+                                    onRotationChange={this.setRotation}
+                                    onCropComplete={this.onCropComplete}
+                                    onZoomChange={this.setZoom}
+                                />
+                            </div>
+                            <div className={classes.controls}>
+                                <div className={classes.sliderContainer}>
+                                    <Typography
+                                        variant="overline"
+                                        classes={{ root: classes.sliderLabel }}
+                                    >
+                                        Zoom
+                                    </Typography>
+                                    <Slider
+                                        value={zoom}
+                                        min={1}
+                                        max={3}
+                                        step={0.1}
+                                        aria-labelledby="Zoom"
+                                        classes={{ root: classes.slider }}
+                                        onChange={this.setZoom}
                                     />
-                                       <Button
-                                          variant="contained"
-                                          color="primary"
-                                          component="span"
-                                          classes={{ root: classes.modalButton }}
-                                       >
-                                          Upload Photo
-                                       </Button>
-                                    </label>
-
-                                    <Button
-                                       variant="contained"
-                                       color="primary"
-                                       classes={{ root: classes.modalButtonRemove }}
+                                </div>
+                                <div className={classes.sliderContainer}>
+                                    <Typography
+                                        variant="overline"
+                                        classes={{ root: classes.sliderLabel }}
                                     >
-                                         Remove Photo
-                                    </Button>                                
-                                    <Button
-                                       variant="contained"
-                                       color="primary"
-                                       classes={{ root: classes.modalButtonCancel }}
-                                       onClick={this.handleCloseModal}
-                                    >
-                                         Cancel
-                                    </Button>
-                                    </div>                      
-                                    </Modal>
+                                        Rotation
+                                    </Typography>
+                                    <Slider
+                                        value={rotation}
+                                        min={0}
+                                        max={360}
+                                        step={1}
+                                        aria-labelledby="Rotation"
+                                        classes={{ root: classes.slider }}
+                                        onChange={this.setRotation}
+                                    />
+                                </div>
+                                <Button
+                                    onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
+                                    variant="contained"
+                                    color="primary"
+                                    classes={{ root: classes.cropButton }}
+                                >
+                                    Save
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    classes={{ root: classes.cancelButton }}
+                                    onClick={this.handleCloseImageModal}
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
 
-                                    <Modal
-                                       open={showImageCrop}
-                                       onClose={this.handleCloseImageModal}
-                                       aria-labelledby="modal-modal-title"
-                                       aria-describedby="modal-modal-description"
-                                    > 
-<div className={classes.modalUpload}>
-
-<div className={classes.cropContainer}>
-            <Cropper
-              image={imageSrc}
-              crop={crop}
-              rotation={rotation}
-              zoom={zoom}
-              aspect={1/1}
-              cropShape="round"
-              onCropChange={this.setCrop}
-              onRotationChange={this.setRotation}
-              onCropComplete={this.onCropComplete}
-              onZoomChange={this.setZoom}
-            />
-          </div>
-          <div className={classes.controls}>
-            <div className={classes.sliderContainer}>
-              <Typography
-                variant="overline"
-                classes={{ root: classes.sliderLabel }}
-              >
-                Zoom
-              </Typography>
-              <Slider
-                value={zoom}
-                min={1}
-                max={3}
-                step={0.1}
-                aria-labelledby="Zoom"
-                classes={{ root: classes.slider }}
-                onChange={this.setZoom}
-              />
-            </div>
-            <div className={classes.sliderContainer}>
-              <Typography
-                variant="overline"
-                classes={{ root: classes.sliderLabel }}
-              >
-                Rotation
-              </Typography>
-              <Slider
-                value={rotation}
-                min={0}
-                max={360}
-                step={1}
-                aria-labelledby="Rotation"
-                classes={{ root: classes.slider }}
-                onChange={this.setRotation}
-              />
-            </div>
-            <Button
-              onClick={()=> {this.showCroppedImage(); this.handleCloseImageModal()}}
-              variant="contained"
-              color="primary"
-              classes={{ root: classes.cropButton }}
-            >
-              Save
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              classes={{ root: classes.cancelButton }}
-              onClick={this.handleCloseImageModal}
-            >
-              Cancel
-            </Button>
-          </div>
-                   
-                                       </div>
-                                    </Modal>
-                                    <ImgDialog img={this.croppedImage} onClose={this.onClose} /> 
+                        </div>
+                    </Modal>
+                    <ImgDialog img={this.croppedImage} onClose={this.onClose} />
                 </div>
 
 
@@ -1022,7 +1058,7 @@ function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
     const { profile, loadingProfile } = state.getProfile;
-    return { user, users, profile, loadingProfile};
+    return { user, users, profile, loadingProfile };
 }
 
 const actionCreators = {
