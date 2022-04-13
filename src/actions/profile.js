@@ -7,7 +7,8 @@ import { history } from '../_helpers';
 export const profileActions = {
   update,
   getInfo,
-  uploadAvatar
+  uploadAvatar,
+  removeAvatar,
 };
 
 
@@ -80,4 +81,27 @@ function uploadAvatar(id, username, token, avatar){
   function request(profile) { return { type: profileConstants.AVATAR_REQUEST, profile } }
   function success(profile) { return { type: profileConstants.AVATAR_SUCCESS, profile } }
   function failure(error) { return { type: profileConstants.AVATAR_FAILURE, error } }
+}
+
+function removeAvatar(id, username, token){
+  return dispatch =>{
+    dispatch(request(username));
+    console.log(token)
+    ProfileService.removeAvatar(id, token)
+    .then(
+    
+      profile => {
+        dispatch(success(profile));
+        console.log(profile)
+       },
+      error => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request(profile) { return { type: profileConstants.REMOVE_AVATAR_REQUEST, profile } }
+  function success(profile) { return { type: profileConstants.REMOVE_AVATAR_SUCCESS, profile } }
+  function failure(error) { return { type: profileConstants.REMOVE_AVATAR_FAILURE, error } }
 }

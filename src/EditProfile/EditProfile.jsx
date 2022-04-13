@@ -280,7 +280,8 @@ const styles = darkTheme => ({
     margin: "auto",
     width: "100px",
     height: "100px",
-    borderRadius: 100
+    borderRadius: 100,
+
 },
 avatarEditProf: {
  
@@ -290,10 +291,10 @@ avatarEditProf: {
       background: 'transparent',
   },
   margin: "auto",
-  width: "150px",
-  height: "150px",
+  width: "100px",
+  height: "100px",
   borderRadius: 100,
-  color: grey[600],
+
 },
   iconButtonAvatar: {
       background: 'transparent',
@@ -585,13 +586,17 @@ class EditProfile extends React.Component {
       console.log(this.state.croppedImage)
 
       if (croppedImage) {
-        //const page = '/edit';
         const dispatch = await this.props.uploadAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken, croppedImage);
       }
     } catch (e) {
       console.error(e)
     }
 
+  }
+
+  handleRemove = async () => {
+    const dispatch = await this.props.removeAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken)
+    this.setState({ show: false })
   }
 
   handleCloseModal = () => {
@@ -795,7 +800,7 @@ class EditProfile extends React.Component {
               {/*<AccountCircle className={classes.avatar}/>*/}
               {loadingProfile && <Skeleton variant="circle" className={classes.avatarMd}/>}
               {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarMd} />}
-              {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarEditProf}/>}
+              {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarEditProf} color="secondary"/>}
               
       
               </IconButton>
@@ -984,6 +989,7 @@ class EditProfile extends React.Component {
                 variant="contained"
                 color="primary"
                 classes={{ root: classes.modalButtonRemove }}
+                onClick={this.handleRemove}
               >
                 Remove Photo
               </Button>
@@ -1095,7 +1101,8 @@ const actionCreators = {
   logout: userActions.logout,
   update: profileActions.update,
   getInfo: profileActions.getInfo,
-  uploadAvatar: profileActions.uploadAvatar
+  uploadAvatar: profileActions.uploadAvatar,
+  removeAvatar: profileActions.removeAvatar,
 
 };
 

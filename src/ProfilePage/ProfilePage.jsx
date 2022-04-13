@@ -553,6 +553,11 @@ class ProfilePage extends React.Component {
 
     }
 
+    handleRemove = async () => {
+        const dispatch = await this.props.removeAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken)
+        this.setState({ show: false })
+    }
+
     handleCloseModal = () => {
         this.setState({ show: false })
     }
@@ -953,6 +958,7 @@ class ProfilePage extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 classes={{ root: classes.modalButtonRemove }}
+                                onClick={this.handleRemove}
                             >
                                 Remove Photo
                             </Button>
@@ -1064,7 +1070,8 @@ function mapStateToProps(state) {
 const actionCreators = {
     logout: userActions.logout,
     getInfo: profileActions.getInfo,
-    uploadAvatar: profileActions.uploadAvatar
+    uploadAvatar: profileActions.uploadAvatar,
+    removeAvatar: profileActions.removeAvatar,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));

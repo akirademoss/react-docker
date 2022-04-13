@@ -41,6 +41,7 @@ class ProfileService {
     //append file to form
     form.append('name', 'avatar')
     form.append('image', blob)
+
     //print out form data entries
     for (var key of form.entries()) {
       console.log(key[0] + ', ' + key[1]);
@@ -57,7 +58,6 @@ class ProfileService {
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
     }
-    window.location.reload();
     return response.data;   
   }
 
@@ -68,6 +68,19 @@ class ProfileService {
       console.log("test")
       const response = await axios
       .get(API_URL + "/profile/" + id +"/info", config);
+    if (response.data) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+    }
+    return response.data;
+  }
+
+  async removeAvatar(id, token){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token }
+    };
+      console.log("test")
+      const response = await axios
+      .delete(API_URL + "/profile/" + id +"/remove", config);
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
     }
