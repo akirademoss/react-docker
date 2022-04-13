@@ -115,7 +115,7 @@ const styles = darkTheme => ({
         minHeight: 5,
         height: 'auto',
         backgroundColor: fade(grey[500], 0.4),
-
+        position: 'fixed',
     },
     menuItem: {
         boxShadow: 'none',
@@ -402,7 +402,7 @@ class ProfilePage extends React.Component {
 
         this.state = {
             anchorEl: null,
-            msgOpen: false,
+            messagesOpen: false,
             notificationsOpen: false,
             profileOpen: false,
             profile: { name: '', bio: '', link: '' },
@@ -597,7 +597,7 @@ class ProfilePage extends React.Component {
     }
 
     render() {
-        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
+        const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const { loadingProfile } = this.props;
@@ -640,8 +640,8 @@ class ProfilePage extends React.Component {
                             </section>
 
                             <IconButton
-                                name="notifications"
-                                aria-owns={msgOpen ? 'message-alerts' : null}
+                                name="messages"
+                                aria-owns={messagesOpen ? 'message-alerts' : null}
                                 aria-haspopup="true"
                                 onClick={this.handleMenu}
                                 color="inherit"
@@ -662,7 +662,7 @@ class ProfilePage extends React.Component {
                                     vertical: 'top',
                                     horizontal: 'right',
                                 }}
-                                open={msgOpen}
+                                open={messagesOpen}
                                 onClose={this.handleClose}
                             >
                                 <MenuItem onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
@@ -812,7 +812,7 @@ class ProfilePage extends React.Component {
                                                 <Button className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                     Edit Profile
                                             </Button>
-                                                <IconButton onClick={this.handleShowImageCrop}>
+                                                <IconButton>
                                                     {<Settings />}
                                                 </IconButton>
                                             </Grid>

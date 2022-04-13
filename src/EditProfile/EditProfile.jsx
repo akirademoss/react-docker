@@ -110,6 +110,7 @@ const styles = darkTheme => ({
     height: 'auto',
     backgroundColor: fade(grey[500], 0.4),
 
+
   },
   menuItem: {
     boxShadow: 'none',
@@ -427,7 +428,7 @@ class EditProfile extends React.Component {
 
     this.state = {
       anchorEl: null,
-      msgOpen: false,
+      messagesOpen: false,
       notificationsOpen: false,
       profileOpen: false,
       isLoggedIn: false,
@@ -636,7 +637,7 @@ class EditProfile extends React.Component {
   }
 
   render() {
-    const { anchorEl, msgOpen, notificationsOpen, profileOpen, name, bio, link, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
+    const { anchorEl, messagesOpen, notificationsOpen, profileOpen, name, bio, link, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const { loadingProfile } = this.props;
@@ -673,8 +674,8 @@ class EditProfile extends React.Component {
                 </div>
               </section>
               <IconButton
-                name="notifications"
-                aria-owns={msgOpen ? 'message-alerts' : null}
+                name="messages"
+                aria-owns={messagesOpen ? 'message-alerts' : null}
                 aria-haspopup="true"
                 onClick={this.handleMenu}
                 color="inherit"
@@ -694,10 +695,10 @@ class EditProfile extends React.Component {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                open={msgOpen}
+                open={messagesOpen}
                 onClose={this.handleClose}
               >
-                <MenuItem onClick={this.handleClose} className={classes.menuItem}>notifications</MenuItem>
+                <MenuItem onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
               </Menu>
 
               <IconButton
@@ -725,7 +726,7 @@ class EditProfile extends React.Component {
                 open={notificationsOpen}
                 onClose={this.handleClose}
               >
-                <MenuItem onClick={this.handleClose} className={classes.menuItem}>notifications</MenuItem>
+                <MenuItem onClick={this.handleClose} className={classes.menuItem}>Notifications</MenuItem>
               </Menu>
 
               <IconButton

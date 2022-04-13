@@ -60,7 +60,7 @@ const darkTheme = createMuiTheme({
       minHeight: 5,
       height: 'auto',
       backgroundColor: fade(grey[500], 0.4),
-      
+      position: 'fixed',
     },
     rightToolbar: {
       marginLeft: "auto",

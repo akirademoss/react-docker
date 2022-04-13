@@ -87,6 +87,7 @@ const darkTheme = createMuiTheme({
       minHeight: 5,
       height: 'auto',
       backgroundColor: fade(grey[500], 0.4),
+      position: 'fixed',
       
     },
     menuItem: {
@@ -209,7 +210,7 @@ class HomePrivate extends React.Component {
       
     this.state = {
     anchorEl: null,
-    msgOpen: false,
+    messagesOpen: false,
     notificationsOpen: false,
     profileOpen: false,
     isLoggedIn: false
@@ -295,7 +296,7 @@ class HomePrivate extends React.Component {
     this.getProfile();
   }
     render() {
-        const { auth, anchorEl, msgOpen, notificationsOpen, profileOpen } = this.state;
+        const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const { loadingProfile } = this.props;
@@ -307,7 +308,7 @@ class HomePrivate extends React.Component {
               <Toolbar>
                 <div>
                   <Button className={classes.homeButton}
-                  onClick={() => history.push('/home')}
+                  onClick={() => history.push('/' + this.props.user.username + '/home')}
                   >
                     <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'}/>
                   </Button>
@@ -332,8 +333,8 @@ class HomePrivate extends React.Component {
                   </div>
                 </section>
                   <IconButton
-                    name="notifications"
-                    aria-owns={msgOpen ? 'message-alerts' : null}
+                    name="messages"
+                    aria-owns={messagesOpen ? 'message-alerts' : null}
                     aria-haspopup="true"
                     onClick={this.handleMenu}
                     color="inherit"
@@ -353,10 +354,10 @@ class HomePrivate extends React.Component {
                         vertical: 'top',
                         horizontal: 'right',
                       }}
-                      open={msgOpen}
+                      open={messagesOpen}
                       onClose={this.handleClose}
                     >
-                      <MenuItem onClick={this.handleClose} className={classes.menuItem}>notifications</MenuItem>
+                      <MenuItem onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
                     </Menu>
                   
                   <IconButton
@@ -384,7 +385,7 @@ class HomePrivate extends React.Component {
                       open={notificationsOpen}
                       onClose={this.handleClose}
                     >
-                      <MenuItem onClick={this.handleClose} className={classes.menuItem}>notifications</MenuItem>
+                      <MenuItem onClick={this.handleClose} className={classes.menuItem}>Notifications</MenuItem>
                     </Menu>
 
                   <IconButton
