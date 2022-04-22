@@ -436,7 +436,7 @@ class EditProfile extends React.Component {
       name: this.props.profile.name,
       bio: this.props.profile.bio,
       link: this.props.profile.link,
-      profile: { name: '', bio: '', link: '' },
+      profile: { name: '', bio: '', link: '', previewImg: '' },
       //states for profile image edit 
       imageSrc: null,
       crop: { x: 0, y: 0 },
@@ -627,8 +627,7 @@ class EditProfile extends React.Component {
     const username = this.props.user.username;
     const id = this.props.user.id;
     const token = this.props.user.accessToken;
-    const page = '/edit';
-    this.profile = await this.props.getInfo(username, id, token, page);
+    this.profile = await this.props.getInfo(username, id, token);
     this.setState({ profile: this.props.profile })
   }
 

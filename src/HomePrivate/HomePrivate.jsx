@@ -213,7 +213,8 @@ class HomePrivate extends React.Component {
     messagesOpen: false,
     notificationsOpen: false,
     profileOpen: false,
-    isLoggedIn: false
+    isLoggedIn: false,
+    profile: { name: '', bio: '', link: '', previewImg: '' },
 
     };
 
@@ -287,8 +288,7 @@ class HomePrivate extends React.Component {
     const username = this.props.user.username;
     const id = this.props.user.id;
     const token = this.props.user.accessToken;
-    const page = '/home';
-    this.profile = await this.props.getInfo(username, id, token, page);
+    this.profile = await this.props.getInfo(username, id, token);
     this.setState({ profile: this.props.profile })
   }
 

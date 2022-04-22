@@ -8,7 +8,9 @@ import { PrivateRoute } from '../_components';
 import  HomePage  from '../HomePage/HomePage';
 import  HomePrivate  from '../HomePrivate/HomePrivate';
 import ProfilePage from '../ProfilePage/ProfilePage';
+import ProfilePagePublic from '../ProfilePagePublic/ProfilePagePublic';
 import EditProfile from '../EditProfile/EditProfile';
+
 
 //import { HomePage } from '../HomePage';
 import  LoginPage  from '../LoginPage/LoginPage';
@@ -44,7 +46,10 @@ class App extends React.Component {
                                 <PrivateRoute exact path="/:username/edit" component={EditProfile} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/register" component={RegisterPage} />
+                                <Route path="/:username/user" component={(props) => <ProfilePagePublic username={props.match.params.username}/>} />
                                 <Route path="/" component={HomePage} />
+
+                                
 
                                 <Redirect from="*" to="/" />
                             </Switch>

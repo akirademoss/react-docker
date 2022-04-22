@@ -19,6 +19,7 @@ class ProfileService {
     }
     return response.data;
   }
+  
   async uploadAvatar(id, avatar, token){
     const config = {
       headers: { Authorization: 'Bearer ' + token }
@@ -70,6 +71,16 @@ class ProfileService {
       .get(API_URL + "/profile/" + id +"/info", config);
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
+    }
+    return response.data;
+  }
+
+  async getUserInfo(username){
+      console.log("testing getUserInfo service")
+      const response = await axios
+      .get(API_URL + "/profile/" + username +"/userinfo");
+    if (response.data) {
+      localStorage.setItem("userProfile", JSON.stringify(response.data));
     }
     return response.data;
   }

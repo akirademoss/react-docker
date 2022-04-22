@@ -63,6 +63,7 @@ module.exports = {
     upload_multer,
     makeDir,
     getProfile,
+    getUserProfile,
 };
 
 async function update(id, params) {
@@ -80,6 +81,18 @@ async function getProfile(id) {
     return profile;
 }
 
+async function getUserProfile(username) {
+    console.log("Tesing getUserProfile")
+    const user = await db.User.findAll({
+        raw: true,
+        where: {
+            username: username,
+        }
+    })
+    id = user[0].id
+    
+    return getProfile(id);
+}
 //make directory
 function makeDir(req){
     console.log(req.user.username)

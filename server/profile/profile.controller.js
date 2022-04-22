@@ -14,6 +14,7 @@ router.put('/:id/upload', authorize(), profileService.upload_multer.single('imag
 //Delete profile picture from Amazon s3 bucket
 router.delete('/:id/remove', authorize(), remove);
 router.get('/:id/info', authorize(), getInfo);
+router.get('/:username/userinfo',  getUserInfo);
 //router.get('/avatar', authorize(), getAvatar) 
 module.exports = router;
 
@@ -53,6 +54,14 @@ function remove(req, res, next){
 function getInfo(req, res, next) {
     //console.log(req.params.id)
     profileService.getProfile(req.params.id)
+    .then(profile => res.json(profile))
+    .catch(next);
+}
+
+function getUserInfo(req, res, next) {
+    console.log("test")
+    console.log(req.params.username)
+    profileService.getUserProfile(req.params.username)
     .then(profile => res.json(profile))
     .catch(next);
 }
