@@ -136,6 +136,8 @@ const styles = darkTheme => ({
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
         },
         height: '100%',
         width: '100%'
@@ -276,6 +278,15 @@ const styles = darkTheme => ({
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
+    },
+    followButton: {
+
+        backgroundColor: blue[700],
+        color: darkTheme.palette.common.white,
+        '&:hover': {
+            backgroundColor: blue[800],
+        },
+        
     },
     posts: {
         marginTop: 5,
@@ -734,8 +745,8 @@ class ProfilePagePublic extends React.Component {
                                 
                                 
                                 {loadingProfile && <Skeleton variant="circle" className={classes.avatarSm}/>}
-                                {!loadingProfile && profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarSm} />}
-                                {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
+                                {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarSm} />}
+                                {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
                                 
 
                                     
@@ -782,6 +793,7 @@ class ProfilePagePublic extends React.Component {
                                     >
                                     {<AccountCircle className={classes.iconButtonAvatar}/>}
                                 </IconButton>    */}
+                                {viewingMyProfile &&
                                     <Hidden smDown>
                                         <label htmlFor="contained-button-file">
 
@@ -807,13 +819,13 @@ class ProfilePagePublic extends React.Component {
 
 
                                             </IconButton>
-
-
                                         </label>
-                                    </Hidden>
+                                    </Hidden>}
+
+                                    {viewingMyProfile &&    
                                     <Hidden mdUp>
                                         <label htmlFor="contained-button-file">
-                                            <IconButton
+                                            <IconButton 
                                                 id="contained-button-file"
                                                 color="inherit"
                                                 className={classes.iconButtonAvatar}
@@ -828,15 +840,55 @@ class ProfilePagePublic extends React.Component {
                                             </IconButton>
 
                                         </label>
-                                    </Hidden>
+                                    </Hidden>}
+                                    
+                                    <Hidden smDown>
+                                        <label htmlFor="contained-button-file">
 
+                                            <IconButton
+                                                disableFocusRipple = "true"
+                                                disableRipple="true"
+                                                id="contained-button-file"
+                                                color="inherit"
+                                                className={classes.iconButtonAvatar}
+                                                component="span"
+                                            >
+                                             {/* {loadingProfile && this.props.profile.previewImg ? (
+                                                    <Skeleton variant="circular" className={classes.avatar}/>
+                                                    ) : (
+                                                        <img src={this.props.profile.previewImg} className={classes.avatar} />
+                                                    )}*/}                                              
+                                              {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
+                                              {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
+                                             {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>}                                                                                                                          
+                                            </IconButton>
+
+                                        </label>
+                                    </Hidden>
+                                    <Hidden mdUp>
+                                        <label htmlFor="contained-button-file">
+                                            <IconButton
+                                                disableFocusRipple = "true"
+                                                disableRipple="true"
+                                                id="contained-button-file"
+                                                color="inherit"
+                                                className={classes.iconButtonAvatar}
+                                                component="span"
+                                            >                           
+                                                {loadingUserProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
+                                                {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />}
+                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}                                                
+                                            </IconButton>
+
+                                        </label>
+                                    </Hidden>
 
 
 
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Box clone mb="20px">
-                                        <Grid container alignItems="center" spacing={4}>
+                                        <Grid container alignItems="center" spacing={2}>
                                             <Grid item>
                                                 <Typography component="h1" variant="h4">
                                                     {this.props.username}
@@ -867,7 +919,7 @@ class ProfilePagePublic extends React.Component {
                                                 </Grid>}
                                                 {!viewingMyProfile && 
                                             <Grid item>
-                                                <Button className={classes.editButton} variant="contained" fullWidth={false}>
+                                                <Button className={classes.followButton} variant="contained" fullWidth={false}>
                                                     Follow
                                                 </Button>
                                             </Grid>}
@@ -909,9 +961,11 @@ class ProfilePagePublic extends React.Component {
                             indicatorColor="primary"
                         >
                             <Tab label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
-                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />
+                            {viewingMyProfile && 
+                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
                             <Tab label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
-                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />
+                            {viewingMyProfile && 
+                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
                         </Tabs>
                         <Divider style={{ background: 'grey' }} />
                         <Grid container spacing={5} className={classes.posts}>
