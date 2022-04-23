@@ -66,6 +66,8 @@ import { getCroppedImg, getRotatedImage } from './canvasUtils'
 import { styles2 } from './styles'
 import Modal from "@material-ui/core/Modal";
 import { styled } from '@material-ui/core/styles';
+import isEqual from 'lodash.isequal';
+
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -134,6 +136,8 @@ const styles = darkTheme => ({
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
         },
         height: '100%',
         width: '100%'
@@ -275,6 +279,15 @@ const styles = darkTheme => ({
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
     },
+    followButton: {
+
+        backgroundColor: blue[700],
+        color: darkTheme.palette.common.white,
+        '&:hover': {
+            backgroundColor: blue[800],
+        },
+        
+    },
     posts: {
         marginTop: 5,
     },
@@ -405,6 +418,7 @@ class ProfilePage extends React.Component {
             messagesOpen: false,
             notificationsOpen: false,
             profileOpen: false,
+            userProfile: { name: '', bio: '', link: '', previewImg: '' },
             profile: { name: '', bio: '', link: '', previewImg: '' },
             tab: 0,
             //states for profile image edit 
@@ -416,6 +430,7 @@ class ProfilePage extends React.Component {
             croppedImage: null,
             show: false,
             showImageCrop: false,
+            viewingMyProfile: true,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -582,24 +597,45 @@ class ProfilePage extends React.Component {
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
         //e.preventDefault();
-        const username = this.props.user.username;
-        const id = this.props.user.id;
-        const token = this.props.user.accessToken;
-        this.profile = await this.props.getInfo(username, id, token);
-        this.setState({ profile: this.props.profile })
-        if (this.profile){
-            history.push('/' + username + '/profile');
-        }
+        console.log("testing")
+        console.log("displaying props")
+        console.log(this.props.username)
+        
+        
 
+        if (this.props.loggedIn){
+            const username = this.props.user.username;
+            const id = this.props.user.id;
+            const token = this.props.user.accessToken;
+            this.profile = await this.props.getInfo(username, id, token);
+            this.setState({ profile: this.props.profile })
+            console.log("profile test")
+            console.log(this.props.profile)
+        }
+        const username = this.props.username;
+
+        this.userProfile = await this.props.getUserInfo(username);
+        this.setState({ userProfile: this.props.userProfile })
+        console.log(this.props.userProfile)
+        if (this.userProfile){
+            history.push('/' + username + '/user');
+        }
+       
+        if (!isEqual(this.props.userProfile, this.props.profile)){
+            this.setState({viewingMyProfile: false})
+            console.log("viewingMyProfile set to false")
+        }
+        console.log("blah")
     }
 
     //Each time page refreshes we call this function 
     componentDidMount() {
+        
         this.getProfile();
     }
 
     render() {
-        const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
+        const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, userProfile, showImageCrop, viewingMyProfile } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const { loadingProfile } = this.props;
@@ -758,6 +794,7 @@ class ProfilePage extends React.Component {
                                     >
                                     {<AccountCircle className={classes.iconButtonAvatar}/>}
                                 </IconButton>    */}
+                                {viewingMyProfile &&
                                     <Hidden smDown>
                                         <label htmlFor="contained-button-file">
 
@@ -774,22 +811,22 @@ class ProfilePage extends React.Component {
                                                         <img src={this.props.profile.previewImg} className={classes.avatar} />
                                                     )}*/}
                                                
-                                              {loadingProfile && <Skeleton variant="circle" className={classes.avatar}/>}
-                                              {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatar} />}
-                                              {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatar}/>}
+                                              {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
+                                              {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
+                                             {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>} 
                                                
                                                     
                                               
 
 
                                             </IconButton>
-
-
                                         </label>
-                                    </Hidden>
+                                    </Hidden>}
+
+                                    {viewingMyProfile &&    
                                     <Hidden mdUp>
                                         <label htmlFor="contained-button-file">
-                                            <IconButton
+                                            <IconButton 
                                                 id="contained-button-file"
                                                 color="inherit"
                                                 className={classes.iconButtonAvatar}
@@ -797,35 +834,98 @@ class ProfilePage extends React.Component {
                                                 component="span"
                                             >
                                                 
-                                                {loadingProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
-                                                {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarMd} />}
-                                                {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarMd}/>}
+                                                {loadingUserProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
+                                                {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />}
+                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}
                                                 
                                             </IconButton>
 
                                         </label>
-                                    </Hidden>
+                                    </Hidden>}
+                                    {!viewingMyProfile && 
+                                    <Hidden smDown>
+                                        <label htmlFor="contained-button-file">
 
+                                            <IconButton
+                                                disableFocusRipple = "true"
+                                                disableRipple="true"
+                                                id="contained-button-file"
+                                                color="inherit"
+                                                className={classes.iconButtonAvatar}
+                                                component="span"
+                                            >
+                                             {/* {loadingProfile && this.props.profile.previewImg ? (
+                                                    <Skeleton variant="circular" className={classes.avatar}/>
+                                                    ) : (
+                                                        <img src={this.props.profile.previewImg} className={classes.avatar} />
+                                                    )}*/}                                              
+                                              {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
+                                              {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
+                                             {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>}                                                                                                                          
+                                            </IconButton>
+
+                                        </label>
+                                    </Hidden>}
+                                    {!viewingMyProfile &&
+                                    <Hidden mdUp>
+                                        <label htmlFor="contained-button-file">
+                                            <IconButton
+                                                disableFocusRipple = "true"
+                                                disableRipple="true"
+                                                id="contained-button-file"
+                                                color="inherit"
+                                                className={classes.iconButtonAvatar}
+                                                component="span"
+                                            >                           
+                                                {loadingUserProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
+                                                {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />}
+                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}                                                
+                                            </IconButton>
+
+                                        </label>
+                                    </Hidden>}
 
 
 
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Box clone mb="20px">
-                                        <Grid container alignItems="center" spacing={4}>
+                                        <Grid container alignItems="center" spacing={2}>
                                             <Grid item>
                                                 <Typography component="h1" variant="h4">
-                                                    {this.props.user.username}
+                                                    {this.props.username}
                                                 </Typography>
                                             </Grid>
+                                            {viewingMyProfile &&
                                             <Grid item>
                                                 <Button className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                     Edit Profile
-                                            </Button>
-                                                <IconButton>
-                                                    {<Settings />}
-                                                </IconButton>
-                                            </Grid>
+                                                </Button>
+                   {/*}   {!viewingMyProfile &&  <Button className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                    Message
+                                            </Button>}     
+                      {!viewingMyProfile &&  <Button className={classes.editButton} variant="contained" fullWidth={false}>
+                                                    Follow
+                                                </Button>}   */}              
+                                                     <IconButton>
+                                                         {<Settings />}
+                                                     </IconButton>
+                                            </Grid>}
+
+                                            {!viewingMyProfile &&     
+                                            
+                                            <Grid item>
+                                                <Button className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                    Message
+                                                </Button>
+                                                </Grid>}
+                                                {!viewingMyProfile && 
+                                            <Grid item>
+                                                <Button className={classes.followButton} variant="contained" fullWidth={false}>
+                                                    Follow
+                                                </Button>
+                                            </Grid>}
+                                            
                                         </Grid>
                                     </Box>
                                     <Box mb="20px">
@@ -848,10 +948,10 @@ class ProfilePage extends React.Component {
                                         </Grid>
                                     </Box>
                                     <Typography variant="subtitle1" bold>
-                                        <b>{this.props.profile.name}</b>
+                                        <b>{this.props.userProfile.name}</b>
                                     </Typography>
-                                    <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
-                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
+                                    <Typography variant="subtitle1">{this.props.userProfile.bio}</Typography>
+                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.userProfile.link} target="_blank" rel="noreferrer noopener">{this.props.userProfile.link}</a></b>
                                 </Grid>
                             </Grid>
                         </Box>
@@ -863,9 +963,11 @@ class ProfilePage extends React.Component {
                             indicatorColor="primary"
                         >
                             <Tab label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
-                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />
+                            {viewingMyProfile && 
+                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
                             <Tab label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
-                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />
+                            {viewingMyProfile && 
+                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
                         </Tabs>
                         <Divider style={{ background: 'grey' }} />
                         <Grid container spacing={5} className={classes.posts}>
@@ -1073,13 +1175,16 @@ class ProfilePage extends React.Component {
 function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
+    const { loggedIn } = state.authentication;
     const { profile, loadingProfile } = state.getProfile;
-    return { user, users, profile, loadingProfile };
+    const { userProfile, loadingUserProfile } = state.getUserProfile;
+    return { loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile };
 }
 
 const actionCreators = {
     logout: userActions.logout,
     getInfo: profileActions.getInfo,
+    getUserInfo: profileActions.getUserInfo,
     uploadAvatar: profileActions.uploadAvatar,
     removeAvatar: profileActions.removeAvatar,
 };
