@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-
+const Profile = require('../profile/profile.model')
 module.exports = model;
 
 function model(sequelize) {
@@ -20,5 +20,12 @@ function model(sequelize) {
         }
     };
 
-    return sequelize.define('User', attributes, options);
+    const User = sequelize.define('User', attributes, options);
+
+
+ 
+
+    console.log('wtf wtf WTF................. TESTING')
+
+    return User;
 }

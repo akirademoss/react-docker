@@ -18,6 +18,17 @@ async function initialize() {
     // init models and add them to the exported db object
     db.User = require('../users/user.model')(sequelize);
     db.Profile = require('../profile/profile.model')(sequelize);
+    db.Follow = require('../follow/follow.model')(sequelize);
+
+    // enter database associations here
+    db.User.hasOne(db.Profile, {foreignKey: 'userId', targetKey: 'userId'});
+    db.Profile.belongsTo(db.User, {foreignKey: 'id'});
+
+    db.User.hasMany(db.Follow, {foreignKey: 'follower', as: 'follower', targetKey: 'follower'});
+    db.User.hasMany(db.Follow, {foreignKey: 'followed', as: 'followed', targetKey: 'followed'});
+    
+    db.Follow.belongsTo(db.User, {foreignKey: 'followed', targetKey: 'id'});
+    db.Follow.belongsTo(db.User, {foreignKey: 'follower', targetKey: 'id'});
 
     // sync all models with database
     await sequelize.sync();

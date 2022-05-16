@@ -20,6 +20,7 @@ app.use(cors());
 // api routes
 app.use('/users', require('./users/users.controller'));
 app.use('/profile', require('./profile/profile.controller'))
+app.use('/follow', require('./follow/follow.controller'))
 /*
 app.post('/register', async (req,res, next) => {
     try{
