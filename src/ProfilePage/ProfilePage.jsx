@@ -49,6 +49,7 @@ import { history } from '../_helpers';
 
 import { userActions } from '../actions/auth';
 import { profileActions } from '../actions/profile';
+import { followActions } from '../actions/follow';
 
 //custom component import
 import MenuButton from '../components/menuButton';
@@ -602,7 +603,7 @@ class ProfilePage extends React.Component {
         console.log(this.props.username)
         
         
-
+        //can view profiles weather logged in or not. If logged in, we got profile information
         if (this.props.loggedIn){
             const username = this.props.user.username;
             const id = this.props.user.id;
@@ -613,19 +614,23 @@ class ProfilePage extends React.Component {
             console.log(this.props.profile)
         }
         const username = this.props.username;
+        console.log(username)
 
+        //if we are viewing another user's profile, this will get the user's profile information
         this.userProfile = await this.props.getUserInfo(username);
         this.setState({ userProfile: this.props.userProfile })
         console.log(this.props.userProfile)
         if (this.userProfile){
             history.push('/' + username + '/user');
         }
-       
+        
+        //if we aren viewing a user's profile, view will be of their profile
+        //add code to query if we are following user here
         if (!isEqual(this.props.userProfile, this.props.profile)){
             this.setState({viewingMyProfile: false})
             console.log("viewingMyProfile set to false")
         }
-        console.log("blah")
+
     }
 
     //Each time page refreshes we call this function 
@@ -640,6 +645,7 @@ class ProfilePage extends React.Component {
         const { classes } = this.props;
         const { loadingProfile } = this.props;
         const { loadingUserProfile } = this.props;
+        const { loadingFollowStatus } = this.props;
 
 
 
@@ -1178,7 +1184,8 @@ function mapStateToProps(state) {
     const { loggedIn } = state.authentication;
     const { profile, loadingProfile } = state.getProfile;
     const { userProfile, loadingUserProfile } = state.getUserProfile;
-    return { loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile };
+    const {follow, loadingFollowStatus } = state.getFollowStatus;
+    return { loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile, follow, loadingFollowStatus };
 }
 
 const actionCreators = {
@@ -1187,6 +1194,17 @@ const actionCreators = {
     getUserInfo: profileActions.getUserInfo,
     uploadAvatar: profileActions.uploadAvatar,
     removeAvatar: profileActions.removeAvatar,
+    follow: followActions.follow,
+    unfollow: followActions.unfollow,
+    getFollowerCount: followActions.getFollowerCount,
+    getUserFollowerCount: followActions.getUserFollowerCount,
+    getFollowingCount: followActions.getFollowingCount,
+    getUserFollowingCount: followActions.getUserFollowingCount,
+    getFollowerInfo: followActions.getFollowerInfo,
+    getUserFollowerInfo: followActions.getUserFollowerInfo,
+    getFollowingInfo: followActions.getFollowingInfo,
+    getUserFollowingInfo: followActions.getUserFollowingInfo,
+    getFollowingStatus: followActions.getFollowingStatus,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));

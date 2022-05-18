@@ -10,6 +10,7 @@ module.exports = {
     getFollowing,
     getFollowersCount,
     getFollowingCount,
+    getFollowingStatus
 };
 
 async function follow(followerId, followedId) {
@@ -44,7 +45,7 @@ async function getFollowed(followerId, followedId) {
     return follow;
 }
 
-async function getFollowers(id, myFollowers) {
+async function getFollowers(id) {
     const followerInfo = await db.Profile.findAll({
         raw: true,
         attributes: ['name', 'previewImg', 'previewImgKey'],
@@ -115,5 +116,25 @@ async function getFollowingCount(id) {
     return count;
 }
 
+async function getFollowingStatus(followerId, followedId) {
+    
+    console.log("testing getFollowed")
+    const follow = await db.Follow.findOne({
+        where: {
+            follower: followerId,
+            followed: followedId,
+        }
+    });
 
+    const followingStatus = {};
+
+    if (!follow) {
+        followingStatus["isFollowing"] = "F";
+    }
+    else{
+        followingStatus["isFollowing"] = "T";
+    }
+
+    return followingStatus;
+}
 

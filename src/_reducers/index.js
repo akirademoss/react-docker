@@ -6,6 +6,7 @@ import { users } from './users.reducer';
 import { alert } from './alert.reducer';
 import { getProfile } from './profile.reducer';
 import { getUserProfile } from './profile.reducer';
+import {getFollowStatus} from './follow.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   alert,
   getProfile,
   getUserProfile,
+  getFollowStatus,
 });
 
 export default rootReducer;
