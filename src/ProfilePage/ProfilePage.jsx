@@ -959,7 +959,7 @@ class ProfilePage extends React.Component {
                                                     Message
                                                 </Button>
                                                 </Grid>}
-                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == "") && (this.state.followStatusLoaded == true) &&
+                                            {!viewingMyProfile && !loadingFollowStatus && !this.props.follow.isFollowing  && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
                                                 <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
                                                     Follow
