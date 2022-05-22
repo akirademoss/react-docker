@@ -69,6 +69,9 @@ import Modal from "@material-ui/core/Modal";
 import { styled } from '@material-ui/core/styles';
 import isEqual from 'lodash.isequal';
 
+//icon import
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -275,6 +278,7 @@ const styles = darkTheme => ({
         borderRadius: 100
     },
     editButton: {
+        borderRadius: 5,
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
@@ -419,8 +423,6 @@ class ProfilePage extends React.Component {
             messagesOpen: false,
             notificationsOpen: false,
             profileOpen: false,
-            userProfile: { name: '', bio: '', link: '', previewImg: '' },
-            profile: { name: '', bio: '', link: '', previewImg: '' },
             tab: 0,
             //states for profile image edit 
             imageSrc: null,
@@ -432,6 +434,7 @@ class ProfilePage extends React.Component {
             show: false,
             showImageCrop: false,
             viewingMyProfile: true,
+            userId: this.props.userProfile.userId,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -569,6 +572,17 @@ class ProfilePage extends React.Component {
 
     }
 
+    follow = async () => {
+        console.log("testing to see if follwership start is working");
+        console.log("userId:", this.props.userProfile.id)
+        const dispatch = await this.props.followUser(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id, this.props.user.username);
+
+        //const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id)
+        //console.log(dispatch2)
+        //console.log("isFollowing from props results", this.props.follow)
+        //console.log("AYYYYYY WE LOGGING SHIT YO 123")
+    }
+
     handleRemove = async () => {
         const dispatch = await this.props.removeAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken)
         this.setState({ show: false })
@@ -597,47 +611,66 @@ class ProfilePage extends React.Component {
 
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
-        //e.preventDefault();
-        console.log("testing")
-        console.log("displaying props")
-        console.log(this.props.username)
-        
-        
-        //can view profiles weather logged in or not. If logged in, we got profile information
-        if (this.props.loggedIn){
-            const username = this.props.user.username;
-            const id = this.props.user.id;
-            const token = this.props.user.accessToken;
-            this.profile = await this.props.getInfo(username, id, token);
-            this.setState({ profile: this.props.profile })
-            console.log("profile test")
-            console.log(this.props.profile)
-        }
-        const username = this.props.username;
-        console.log(username)
+     //e.preventDefault();
+     //can view profiles weather logged in or not. If logged in, we got profile information
+     if (this.props.loggedIn){
+         const username = this.props.user.username;
+         const id = this.props.user.id;
+         const token = this.props.user.accessToken;
+         const profile = await this.props.getInfo(username, id, token);
+     }
 
-        //if we are viewing another user's profile, this will get the user's profile information
-        this.userProfile = await this.props.getUserInfo(username);
-        this.setState({ userProfile: this.props.userProfile })
-        console.log(this.props.userProfile)
-        if (this.userProfile){
-            history.push('/' + username + '/user');
-        }
-        
-        //if we aren viewing a user's profile, view will be of their profile
-        //add code to query if we are following user here
-        if (!isEqual(this.props.userProfile, this.props.profile)){
-            this.setState({viewingMyProfile: false})
-            console.log("viewingMyProfile set to false")
-        }
+
+
+     //if we are viewing another user's profile, this will get the user's profile information
+     const username = this.props.username;
+     console.log(username);
+     const userProfile = await this.props.getUserInfo(username);
+     if (userProfile){
+         history.push('/' + username + '/user');
+     }
+     
+     //if we aren viewing a user's profile, view will be of their profile
+     //add code to query if we are following user here
+     if (!isEqual(this.props.userProfile, this.props.profile)){
+         this.setState({viewingMyProfile: false})
+         const id = this.props.user.id;
+         const userId = this.props.userProfile.userId;
+         console.log("Following Status for ids listed below")
+         console.log("id: ", id, "userId: ", userId)
+         console.log("viewingMyProfile set to false")
+     }
+
+    }
+
+    followingStatus = async (e) => {
+        const id = this.props.user.id;
+        const userId = this.props.userProfile.userId;
+        console.log("Following Status for ids listed below")
+        console.log("id: ", id, "userId: ", userId)
+        const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id)
 
     }
 
     //Each time page refreshes we call this function 
-    componentDidMount() {
-        
+    async componentDidMount() {
         this.getProfile();
+        await new Promise(resolve => { setTimeout(resolve, 300); });
+        this.followingStatus()
+
+        return Promise.resolve();
     }
+
+    componentDidUpdate() {
+        console.log("component did update")
+        if((this.props.userProfile.userId != this.state.userId) && (this.props.userProfile.userId != undefined)){
+            console.log("props: ", this.props.userProfile.userId, " state: ", this.state.userId)
+            console.log(this.props.userProfile.userId)
+            console.log("Component did update HOOOOOORRRAAAYYYY");
+        }
+    }
+
+
 
     render() {
         const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, userProfile, showImageCrop, viewingMyProfile } = this.state;
@@ -902,7 +935,7 @@ class ProfilePage extends React.Component {
                                                     {this.props.username}
                                                 </Typography>
                                             </Grid>
-                                            {viewingMyProfile &&
+                                            {viewingMyProfile && 
                                             <Grid item>
                                                 <Button className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                     Edit Profile
@@ -925,11 +958,18 @@ class ProfilePage extends React.Component {
                                                     Message
                                                 </Button>
                                                 </Grid>}
-                                                {!viewingMyProfile && 
+                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == "") &&
                                             <Grid item>
-                                                <Button className={classes.followButton} variant="contained" fullWidth={false}>
+                                                <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
                                                     Follow
                                                 </Button>
+                                            </Grid>}
+
+                                            {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing &&
+                                            <Grid item>
+                                                <IconButton  variant="contained" fullWidth={false} onClick={this.follow}>
+                                                    {<PeopleAltIcon />}
+                                                </IconButton>
                                             </Grid>}
                                             
                                         </Grid>

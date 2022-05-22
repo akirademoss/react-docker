@@ -71,6 +71,8 @@ class ProfileService {
       .get(API_URL + "/profile/" + id +"/info", config);
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
+      const data = localStorage.getItem("profile");
+      console.log("!!!!!!!!!!!!!!!!!!!!: ", data)
     }
     return response.data;
   }
@@ -81,6 +83,8 @@ class ProfileService {
       .get(API_URL + "/profile/" + username +"/userinfo");
     if (response.data) {
       localStorage.setItem("userProfile", JSON.stringify(response.data));
+      let data = JSON.parse(localStorage.getItem("userProfile"));
+      console.log("!!!!!!!!!!!!!!!!!!!!: ", data)
     }
     return response.data;
   }
@@ -94,6 +98,7 @@ class ProfileService {
       .delete(API_URL + "/profile/" + id +"/remove", config);
     if (response.data) {
       localStorage.setItem("profile", JSON.stringify(response.data));
+
     }
     return response.data;
   }

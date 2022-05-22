@@ -18,14 +18,16 @@ router.get('/:id/myFollowersCount',  getMyFollowersCount);
 router.get('/:id/userFollowersCount',  getUserFollowersCount);
 router.get('/:id/myFollowingCount',  getMyFollowingCount);
 router.get('/:id/userFollowingCount',  getUserFollowingCount);
-router.get('/:id/followingStatus',  getFollowingStatus);
+router.post('/:id/followingStatus',  getFollowingStatus);
 
 module.exports = router;
 
 function follow(req, res, next) {
-
     const followerId = req.params.id;
     const followedId = req.body.followedId;
+    console.log("followedId: ", followedId)
+    console.log("followerId: ", followerId)
+    console.log("TESTING FOLLOW")
     
 
     followService.follow(followerId, followedId)
@@ -101,8 +103,14 @@ function getUserFollowingCount(req, res, next){
 }
 
 function getFollowingStatus(req, res, next){
+    console.log("entering getFollowingStatus server side")
+    console.log(req)
+    console.log(req.body)
     const followerId = req.params.id;
     const followedId = req.body.followedId;
+    console.log("followedId: ", followedId)
+    console.log("followerId: ", followerId)
+
     followService.getFollowingStatus(followerId, followedId)
     .then(status => res.json(status))
     .catch(next);

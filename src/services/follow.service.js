@@ -12,7 +12,7 @@ class FollowService {
       const response = await axios
       .post(API_URL + "/follow/" + id + "/follow", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("followInstance", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -126,13 +126,18 @@ class FollowService {
   }
 
   async getFollowingStatus(id, token, followedId){
+    console.log("testing id on client side this is folowerId", id)
+    console.log("testing id on client side this is folowedId", followedId)
     const config = {
       headers: { Authorization: 'Bearer ' + token}
     };
+      console.log("testing getFollowingStatus")
       const response = await axios
       .post(API_URL + "/follow/" + id + "/followingStatus", {followedId}, config);
     if (response.data) {
       localStorage.setItem("follow", JSON.stringify(response.data));
+      let data = JSON.parse(localStorage.getItem("follow"));
+      console.log("!!!!!!!!!!!!!!!!!!!!: ", data)
     }
     return response.data;
   }

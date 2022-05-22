@@ -20,6 +20,15 @@ async function follow(followerId, followedId) {
     params["follower"] = followerId;
     params["followed"] = followedId;
     console.log(params)
+
+    if (await db.Follow.findOne({ 
+        where: { 
+            follower: followerId,
+            followed: followedId, 
+        } })) 
+        {
+        throw 'Already Following';
+        }
     
     const follow = await db.Follow.create(params);
 }
@@ -125,16 +134,18 @@ async function getFollowingStatus(followerId, followedId) {
             followed: followedId,
         }
     });
-
+    console.log(follow)
     const followingStatus = {};
 
     if (!follow) {
-        followingStatus["isFollowing"] = "F";
+        followingStatus["isFollowing"] = "";
     }
     else{
-        followingStatus["isFollowing"] = "T";
+        followingStatus["isFollowing"] = "true";
     }
-
+    
+    let result = JSON.stringify(followingStatus);
+    console.log(result)
     return followingStatus;
 }
 

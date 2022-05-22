@@ -15,8 +15,10 @@ function authorize() {
 
             // get user with id from token 'sub' (subject) property
             const id = req.user.sub
-            const user = await db.User.findByPk(id);         
-            console.log(req.user)
+            const user = await db.User.findByPk(5);         
+           // console.log(req.user)
+            console.log("authorization code")
+            
             // check user still exists
             if (!user)
                 return res.status(401).json({ message: 'Unauthorized' });
@@ -24,6 +26,8 @@ function authorize() {
 
             //authorization successful
             req.user = user.get();
+
+
             next();
         }
     ];

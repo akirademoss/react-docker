@@ -47,7 +47,7 @@ class App extends React.Component {
                                 <PrivateRoute exact path="/:username/edit" component={EditProfile} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/register" component={RegisterPage} />
-                                <Route path="/:username/user" component={(props) => <ProfilePagePublic username={props.match.params.username}/>} />
+                                <Route path="/:username/user" component={(props) => <ProfilePage username={props.match.params.username}/>} />
                                 <Route path="/" component={HomePage} />
 
                                 

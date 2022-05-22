@@ -1,7 +1,7 @@
 import { followConstants } from '../_constants';
 
 let follow = JSON.parse(localStorage.getItem('follow'));
-const initialState = follow ? { loadingFollowStatus: true, follow } : {};
+const initialState = follow ? { followStatusLoaded: true, follow } : {};
 
 
 export function getFollowStatus(state = initialState, action) {

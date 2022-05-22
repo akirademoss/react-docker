@@ -5,7 +5,7 @@ import FollowService from "../services/follow.service";
 import { history } from '../_helpers';
 
 export const followActions = {
-  follow,
+  followUser,
   unfollow,
   getFollowerCount,
   getUserFollowerCount,
@@ -15,20 +15,21 @@ export const followActions = {
   getUserFollowerInfo,
   getFollowingInfo,
   getUserFollowingInfo,
+  getFollowingStatus,
 };
 
 
 
-function follow(id, token, followedId, username){
+function followUser(id, token, followedId, username){
   return dispatch =>{
     dispatch(request(username));
-
+    console.log("dispatching follow request")
     FollowService.follow(id, token, followedId)
     .then(
     
       follow => {
         dispatch(success(follow));
-        history.push('/' + username + '/profile');
+        history.push('/' + username + '/user');
       },
       error => {
         dispatch(failure(error.toString()));
@@ -51,7 +52,7 @@ function unfollow(id, token, followedId, username){
       
         unfollow => {
           dispatch(success(unfollow));
-          history.push('/' + username + '/profile');
+          history.push('/' + username + '/user');
         },
         error => {
           dispatch(failure(error.toString()));
@@ -241,3 +242,24 @@ function unfollow(id, token, followedId, username){
     function failure(error) { return { type: followConstants.USER_FOLLOWING_INFO_FAILURE, error } }
   }
 
+  function getFollowingStatus(id, token, followedId, username){
+    return dispatch =>{
+      dispatch(request(username));
+  
+      FollowService.getFollowingStatus(id, token, followedId)
+      .then(
+      
+        follow => {
+          dispatch(success(follow));
+        },
+        error => {
+          dispatch(failure(error.toString()));
+          dispatch(alertActions.error(error.toString()));
+        }
+      );
+    };
+  
+    function request(follow) { return { type: followConstants.FOLLOW_STATUS_REQUEST, follow } }
+    function success(follow) { return { type: followConstants.FOLLOW_STATUS_SUCCESS, follow } }
+    function failure(error) { return { type: followConstants.FOLLOW_STATUS_FAILURE, error } }
+  }
