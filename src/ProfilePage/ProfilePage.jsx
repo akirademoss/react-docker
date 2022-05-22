@@ -435,6 +435,7 @@ class ProfilePage extends React.Component {
             showImageCrop: false,
             viewingMyProfile: true,
             userId: this.props.userProfile.userId,
+            followStatusLoaded: false,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -575,7 +576,7 @@ class ProfilePage extends React.Component {
     follow = async () => {
         console.log("testing to see if follwership start is working");
         console.log("userId:", this.props.userProfile.id)
-        const dispatch = await this.props.followUser(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id, this.props.user.username);
+        const dispatch = await this.props.followUser(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
 
         //const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id)
         //console.log(dispatch2)
@@ -656,8 +657,8 @@ class ProfilePage extends React.Component {
     async componentDidMount() {
         this.getProfile();
         await new Promise(resolve => { setTimeout(resolve, 300); });
-        this.followingStatus()
-
+        this.followingStatus();
+        this.setState({followStatusLoaded: true});
         return Promise.resolve();
     }
 
@@ -958,14 +959,14 @@ class ProfilePage extends React.Component {
                                                     Message
                                                 </Button>
                                                 </Grid>}
-                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == "") &&
+                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == "") && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
                                                 <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
                                                     Follow
                                                 </Button>
                                             </Grid>}
 
-                                            {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing &&
+                                            {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
                                                 <IconButton  variant="contained" fullWidth={false} onClick={this.follow}>
                                                     {<PeopleAltIcon />}
@@ -1234,7 +1235,7 @@ const actionCreators = {
     getUserInfo: profileActions.getUserInfo,
     uploadAvatar: profileActions.uploadAvatar,
     removeAvatar: profileActions.removeAvatar,
-    follow: followActions.follow,
+    followUser: followActions.followUser,
     unfollow: followActions.unfollow,
     getFollowerCount: followActions.getFollowerCount,
     getUserFollowerCount: followActions.getUserFollowerCount,

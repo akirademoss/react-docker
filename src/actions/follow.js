@@ -29,7 +29,8 @@ function followUser(id, token, followedId, username){
     
       follow => {
         dispatch(success(follow));
-        history.push('/' + username + '/user');
+        window.location.reload()
+        //history.push('/' + username + '/user');
       },
       error => {
         dispatch(failure(error.toString()));
