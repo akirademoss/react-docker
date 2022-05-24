@@ -107,7 +107,7 @@ function makeDir(req){
 async function resizeImage(id, username, dt, fileExt){
     //first remove image 
     console.log("ID IS AS FOLLOWS: ", id)
-    removeFile(id)
+    //removeFile(id)
     console.log("entering resizeImage function")
     let imgBuffer = await sharp('./uploads/' + username + '/avatar').toBuffer()
     let avatar_preview = await sharp(imgBuffer).resize(150,150).toFormat(fileExt.substring(1)).toBuffer();
@@ -175,15 +175,19 @@ async function upload(req, res, next){
       error.httpStatusCode = 400
       return next(error)
     }
-    const id = req.user.id
+    const id = req.params.id
+    console.log("USERID USED FOR GET PROFILE: ", id)
+    console.log("OTHER USERID IN REQ.PARAMS.ID", req.params.id)
+    console.log("USERNAME IN REQ.PARAMS.USERNAME", req.params.username)
     const username = req.user.username
     const dt = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
     const fileExt = ".png"
     console.log(dt)
     console.log("waiting for resize")
 
-    
+    //resize and upload
     await resizeImage(req.params.id, username, dt, fileExt);
+    //remove local images
     await rmAsync('./uploads/' + username, { recursive: true, force: true })
     const profile = await getProfile(id);
     
