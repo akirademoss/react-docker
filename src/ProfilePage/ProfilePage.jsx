@@ -433,6 +433,7 @@ class ProfilePage extends React.Component {
             croppedImage: null,
             show: false,
             showImageCrop: false,
+            showUnfollow: false,
             viewingMyProfile: true,
             userId: this.props.userProfile.userId,
             followStatusLoaded: false,
@@ -601,12 +602,22 @@ class ProfilePage extends React.Component {
         this.setState({ show: true })
     }
 
+    handleShowUnfollow = () => {
+        this.setState({ showUnfollow: true })
+        console.log("showUnfollow status: ", this.state.showUnfollow)
+    }
+
     handleShowImageCrop = () => {
         this.setState({ showImageCrop: true })
     }
 
     handleCloseImageModal = () => {
         this.setState({ showImageCrop: false })
+
+    }
+
+    handleCloseUnfollowModal = () => {
+        this.setState({ showUnfollow: false })
 
     }
 
@@ -674,7 +685,7 @@ class ProfilePage extends React.Component {
 
 
     render() {
-        const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, profile, userProfile, showImageCrop, viewingMyProfile } = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, viewingMyProfile } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const { loadingProfile } = this.props;
@@ -968,7 +979,7 @@ class ProfilePage extends React.Component {
 
                                             {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
-                                                <IconButton  variant="contained" fullWidth={false} onClick={this.follow}>
+                                                <IconButton  variant="contained" fullWidth={false} onClick={this.handleShowUnfollow}>
                                                     {<PeopleAltIcon />}
                                                 </IconButton>
                                             </Grid>}
@@ -1210,6 +1221,51 @@ class ProfilePage extends React.Component {
                         </div>
                     </Modal>
                     <ImgDialog img={this.croppedImage} onClose={this.onClose} />
+
+                    <Modal
+                        open={showUnfollow}
+                        onClose={this.handleCloseUnfollowModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <div className={classes.modalUpload}>
+
+                        <label htmlFor="icon-button-file">
+                            <input
+                                accept="image/*"
+                                id="icon-button-file"
+                                id="icon-button-file"
+                                id="icon-button-file"
+                                multiple
+                                id="icon-button-file"
+                                type="file"
+                                id="icon-button-file"
+                                className={classes.input}
+                                id="icon-button-file"
+                                onChange={this.onFileChange}
+                                id="icon-button-file"
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                component="span"
+                                classes={{ root: classes.modalButton }}
+                            >
+                                Unfollow
+                            </Button>
+                        </label>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            classes={{ root: classes.modalButtonCancel }}
+                            onClick={this.handleCloseUnfollowModal}
+                        >
+                            Cancel
+                        </Button>
+                        </div>
+                    </Modal>
+                    
                 </div>
 
 

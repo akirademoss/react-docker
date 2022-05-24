@@ -26,6 +26,7 @@ class ProfileService {
     }; 
 
     //convert url object back to blob 
+    console.log("USER ID IN UPLOADAVATAR SERVICE IS: ", id)
     let blob = await fetch(avatar).then(r => r.blob());
 
     console.log('size=' + blob.size);
