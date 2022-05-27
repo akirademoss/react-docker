@@ -29,7 +29,7 @@ function followUser(id, token, followedId, username){
     
       follow => {
         dispatch(success(follow));
-        window.location.reload()
+        window.location.reload();
         //history.push('/' + username + '/user');
       },
       error => {
@@ -53,7 +53,7 @@ function unfollow(id, token, followedId, username){
       
         unfollow => {
           dispatch(success(unfollow));
-          history.push('/' + username + '/user');
+          window.location.reload();
         },
         error => {
           dispatch(failure(error.toString()));
@@ -74,8 +74,8 @@ function unfollow(id, token, followedId, username){
       FollowService.getFollowerCount(id, token)
       .then(
       
-        followerCount => {
-          dispatch(success(followerCount));
+        myFollowerCount => {
+          dispatch(success(myFollowerCount));
         },
         error => {
           dispatch(failure(error.toString()));
@@ -84,8 +84,8 @@ function unfollow(id, token, followedId, username){
       );
     };
   
-    function request(followerCount) { return { type: followConstants.FOLLOWER_COUNT_REQUEST, followerCount } }
-    function success(followerCount) { return { type: followConstants.FOLLOWER_COUNT_SUCCESS, followerCount } }
+    function request(myFollowerCount) { return { type: followConstants.FOLLOWER_COUNT_REQUEST, myFollowerCount } }
+    function success(myFollowerCount) { return { type: followConstants.FOLLOWER_COUNT_SUCCESS, myFollowerCount } }
     function failure(error) { return { type: followConstants.FOLLOWER_COUNT_FAILURE, error } }
   }
 
@@ -118,8 +118,8 @@ function unfollow(id, token, followedId, username){
       FollowService.getFollowingCount(id, token)
       .then(
       
-        followingCount => {
-          dispatch(success(followingCount));
+        myFollowingCount => {
+          dispatch(success(myFollowingCount));
         },
         error => {
           dispatch(failure(error.toString()));
@@ -128,8 +128,8 @@ function unfollow(id, token, followedId, username){
       );
     };
   
-    function request(followingCount) { return { type: followConstants.FOLLOWING_COUNT_REQUEST, followingCount } }
-    function success(followingCount) { return { type: followConstants.FOLLOWING_COUNT_SUCCESS, followingCount } }
+    function request(myFollowingCount) { return { type: followConstants.FOLLOWING_COUNT_REQUEST, myFollowingCount } }
+    function success(myFollowingCount) { return { type: followConstants.FOLLOWING_COUNT_SUCCESS, myFollowingCount } }
     function failure(error) { return { type: followConstants.FOLLOWING_COUNT_FAILURE, error } }
   }
 

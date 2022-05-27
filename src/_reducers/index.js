@@ -4,9 +4,8 @@ import { authentication } from './authentication.reducer';
 import { registration } from './registration.reducer';
 import { users } from './users.reducer';
 import { alert } from './alert.reducer';
-import { getProfile } from './profile.reducer';
-import { getUserProfile } from './profile.reducer';
-import {getFollowStatus} from './follow.reducer';
+import { getProfile, getUserProfile} from './profile.reducer';
+import {getFollowStatus, getMyFollowerCount, getMyFollowingCount, getUserFollowerCount, getUserFollowingCount} from './follow.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -16,6 +15,10 @@ const rootReducer = combineReducers({
   getProfile,
   getUserProfile,
   getFollowStatus,
+  getMyFollowerCount,
+  getMyFollowingCount, 
+  getUserFollowerCount, 
+  getUserFollowingCount,
 });
 
 export default rootReducer;

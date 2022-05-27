@@ -8,8 +8,10 @@ module.exports = {
     unfollow,
     getFollowers,
     getFollowing,
-    getFollowersCount,
-    getFollowingCount,
+    getMyFollowersCount,
+    getUserFollowersCount,
+    getMyFollowingCount,
+    getUserFollowingCount,
     getFollowingStatus
 };
 
@@ -31,14 +33,24 @@ async function follow(followerId, followedId) {
         }
     
     const follow = await db.Follow.create(params);
+    const dict = {}
+    if(follow){
+        dict["followingUser"] = "true";
+    }
+
+    return dict;
 }
 
 async function unfollow(followerId, followedId) {
     const params = {};
+    const dict = {}
     params["follower"] = followerId;
     params["followed"] = followedId;
     const follow = await getFollowed(followerId, followedId)
-    await follow.destroy();
+    if(follow){
+        await follow.destroy();
+        dict["followingUser"] = "";
+    }
 }
 
 //helper function
@@ -101,7 +113,7 @@ async function getFollowing(id) {
 return followerInfo;
 }
 
-async function getFollowersCount(id) {
+async function getMyFollowersCount(id) {
 
     const count = await db.Follow.count({
         where: {
@@ -109,11 +121,25 @@ async function getFollowersCount(id) {
         },
     })
 
-    console.log(count);
-    return count;
+    const dict = {};
+    dict["count"] = count;
+    return dict;
 }
 
-async function getFollowingCount(id) {
+async function getUserFollowersCount(id) {
+
+    const count = await db.Follow.count({
+        where: {
+            followed: id
+        },
+    })
+
+    const dict = {};
+    dict["count"] = count;
+    return dict;
+}
+
+async function getMyFollowingCount(id) {
 
     const count = await db.Follow.count({
         where: {
@@ -121,8 +147,22 @@ async function getFollowingCount(id) {
         },
     })
 
-    console.log(count);
-    return count;
+    const dict = {};
+    dict["count"] = count;
+    return dict;
+}
+
+async function getUserFollowingCount(id) {
+
+    const count = await db.Follow.count({
+        where: {
+            follower: id
+        },
+    })
+
+    const dict = {};
+    dict["count"] = count;
+    return dict;
 }
 
 async function getFollowingStatus(followerId, followedId) {
@@ -148,4 +188,3 @@ async function getFollowingStatus(followerId, followedId) {
     console.log(result)
     return followingStatus;
 }
-

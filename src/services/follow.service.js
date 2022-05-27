@@ -12,7 +12,7 @@ class FollowService {
       const response = await axios
       .post(API_URL + "/follow/" + id + "/follow", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("followInstance", JSON.stringify(response.data));
+      localStorage.setItem("follow", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -21,10 +21,13 @@ class FollowService {
     const config = {
       headers: { Authorization: 'Bearer ' + token}
     };
+    const data = {
+      data: {followedId: followedId}
+    }
       const response = await axios
-      .delete(API_URL + "/follow/" + id + "/unfollow", {followedId}, config);
+      .delete(API_URL + "/follow/" + id + "/unfollow", data, config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("follow", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -36,7 +39,7 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/myFollowersCount", config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("myFollowerCount", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -46,9 +49,9 @@ class FollowService {
       headers: { Authorization: 'Bearer ' + token}
     };
       const response = await axios
-      .get(API_URL + "/follow/" + id + "/userFollowersCount", {followedId}, config);
+      .post(API_URL + "/follow/" + id + "/userFollowersCount", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("userFollowerCount", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -60,7 +63,7 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/myFollowingCount", config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("myFollowingCount", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -70,9 +73,9 @@ class FollowService {
       headers: { Authorization: 'Bearer ' + token}
     };
       const response = await axios
-      .get(API_URL + "/follow/" + id + "/userFollowingCount", {followedId}, config);
+      .post(API_URL + "/follow/" + id + "/userFollowingCount", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("userFollowingCount", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -84,7 +87,7 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/myFollowers", config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("follow", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -96,7 +99,7 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/userFollowers", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("follow", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -108,7 +111,7 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/myFollowing", config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("follow", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -120,7 +123,7 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/userFollowing", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      localStorage.setItem("follow", JSON.stringify(response.data));
     }
     return response.data;
   }

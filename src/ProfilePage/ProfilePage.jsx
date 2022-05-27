@@ -391,7 +391,7 @@ const styles = darkTheme => ({
             backgroundColor: grey[600],
         },
         minWidth: 380,
-    }
+    },
 });
 
 const Input = styled('input')({
@@ -585,6 +585,10 @@ class ProfilePage extends React.Component {
         //console.log("AYYYYYY WE LOGGING SHIT YO 123")
     }
 
+    handleUnfollow = async() => {
+        const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
+    }
+
     handleRemove = async () => {
         const dispatch = await this.props.removeAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken)
         this.setState({ show: false })
@@ -633,7 +637,7 @@ class ProfilePage extends React.Component {
      }
 
 
-
+     
      //if we are viewing another user's profile, this will get the user's profile information
      const username = this.props.username;
      console.log(username);
@@ -660,8 +664,18 @@ class ProfilePage extends React.Component {
         const userId = this.props.userProfile.userId;
         console.log("Following Status for ids listed below")
         console.log("id: ", id, "userId: ", userId)
-        const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id)
+        const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId)
 
+    }
+
+    myFollowCount = async (e) => {
+        const dispatch1 = await this.props.getFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
+        const dispatch2 = await this.props.getFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
+    }
+
+    userFollowCount = async (e) => {
+        const dispatch1 = await this.props.getUserFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
+        const dispatch2 = await this.props.getUserFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
     //Each time page refreshes we call this function 
@@ -669,12 +683,15 @@ class ProfilePage extends React.Component {
         this.getProfile();
         await new Promise(resolve => { setTimeout(resolve, 300); });
         this.followingStatus();
+        this.myFollowCount();
+        this.userFollowCount();
         this.setState({followStatusLoaded: true});
         return Promise.resolve();
     }
 
     componentDidUpdate() {
         console.log("component did update")
+        console.log(this.props.myFollowingCount);
         if((this.props.userProfile.userId != this.state.userId) && (this.props.userProfile.userId != undefined)){
             console.log("props: ", this.props.userProfile.userId, " state: ", this.state.userId)
             console.log(this.props.userProfile.userId)
@@ -691,6 +708,7 @@ class ProfilePage extends React.Component {
         const { loadingProfile } = this.props;
         const { loadingUserProfile } = this.props;
         const { loadingFollowStatus } = this.props;
+        const { loadingMyFollowerCount, loadingMyFollowingCount, loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
 
 
 
@@ -970,7 +988,7 @@ class ProfilePage extends React.Component {
                                                     Message
                                                 </Button>
                                                 </Grid>}
-                                            {!viewingMyProfile && !loadingFollowStatus && !this.props.follow.isFollowing  && (this.state.followStatusLoaded == true) &&
+                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == '')  && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
                                                 <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
                                                     Follow
@@ -988,19 +1006,25 @@ class ProfilePage extends React.Component {
                                     </Box>
                                     <Box mb="20px">
                                         <Grid container spacing={2}>
+                                            
                                             <Grid item>
+                                                
                                                 <Typography variant="subtitle1">
                                                     <b>0</b> posts
                                                 </Typography>
-                                            </Grid>
+                                            </Grid>                                        
                                             <Grid item>
                                                 <Typography variant="subtitle1">
-                                                    <b>0</b> followers
+                                                    {viewingMyProfile && !loadingMyFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowerCount.count} </b>} 
+                                                    {!viewingMyProfile && !loadingUserFollowerCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>}
+                                                    followers
                                                 </Typography>
-                                            </Grid>
+                                            </Grid>       
                                             <Grid item>
                                                 <Typography variant="subtitle1">
-                                                    <b>0</b> following
+                                                    {viewingMyProfile && !loadingMyFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowingCount.count} </b>} 
+                                                    {!viewingMyProfile && !loadingUserFollowingCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
+                                                    following
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -1229,31 +1253,24 @@ class ProfilePage extends React.Component {
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.modalUpload}>
+                        <Box m={1}/>
+                        <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />
 
-                        <label htmlFor="icon-button-file">
-                            <input
-                                accept="image/*"
-                                id="icon-button-file"
-                                id="icon-button-file"
-                                id="icon-button-file"
-                                multiple
-                                id="icon-button-file"
-                                type="file"
-                                id="icon-button-file"
-                                className={classes.input}
-                                id="icon-button-file"
-                                onChange={this.onFileChange}
-                                id="icon-button-file"
-                            />
+                        <Box m={1}/>
+                        <Typography variant="subtitle2"> Unfollow @{this.props.username}?</Typography>
+                        <Box m={1}/>
+                        
                             <Button
                                 variant="contained"
                                 color="primary"
                                 component="span"
                                 classes={{ root: classes.modalButton }}
+                                onClick={this.handleUnfollow}
                             >
                                 Unfollow
                             </Button>
-                        </label>
+                            
+                        
 
                         <Button
                             variant="contained"
@@ -1282,7 +1299,11 @@ function mapStateToProps(state) {
     const { profile, loadingProfile } = state.getProfile;
     const { userProfile, loadingUserProfile } = state.getUserProfile;
     const {follow, loadingFollowStatus } = state.getFollowStatus;
-    return { loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile, follow, loadingFollowStatus };
+    const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
+    const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded } = state.getMyFollowingCount;
+    const { userFollowerCount, loadingUserFollowerCount } = state.getUserFollowerCount;
+    const { userFollowingCount, loadingUserFollowingCount } = state.getUserFollowingCount;
+    return { loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile, follow, loadingFollowStatus, myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded, myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded, userFollowerCount, loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount };
 }
 
 const actionCreators = {

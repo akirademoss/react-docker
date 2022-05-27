@@ -14,7 +14,7 @@ router.put('/:id/upload', authorize(), profileService.upload_multer.single('imag
 //Delete profile picture from Amazon s3 bucket
 router.delete('/:id/remove', authorize(), remove);
 router.get('/:id/info', authorize(), getInfo);
-router.get('/:username/userinfo',  getUserInfo);
+router.get('/:username/userinfo', getUserInfo);
 //router.get('/avatar', authorize(), getAvatar) 
 module.exports = router;
 

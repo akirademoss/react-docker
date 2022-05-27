@@ -107,7 +107,7 @@ function makeDir(req){
 async function resizeImage(id, username, dt, fileExt){
     //first remove image 
     console.log("ID IS AS FOLLOWS: ", id)
-    //removeFile(id)
+    removeFile(id)
     console.log("entering resizeImage function")
     let imgBuffer = await sharp('./uploads/' + username + '/avatar').toBuffer()
     let avatar_preview = await sharp(imgBuffer).resize(150,150).toFormat(fileExt.substring(1)).toBuffer();

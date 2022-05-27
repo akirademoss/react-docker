@@ -9,16 +9,17 @@ const { secret } = require('../config.json');
 const path = require('path');
 
 router.post('/:id/follow', authorize(), follow)
-router.delete('/:id/unfollow', authorize(), unfollow);
+router.delete('/:id/unfollow', unfollow);
 router.get('/:id/myFollowers', authorize(), getMyFollowers);
 router.get('/:id/userFollowers', authorize(), getUserFollowers);
 router.get('/:id/myFollowing',  getMyFollowing);
 router.get('/:id/userFollowing',  getUserFollowing);
 router.get('/:id/myFollowersCount',  getMyFollowersCount);
-router.get('/:id/userFollowersCount',  getUserFollowersCount);
+router.post('/:id/userFollowersCount',  getUserFollowersCount);
 router.get('/:id/myFollowingCount',  getMyFollowingCount);
-router.get('/:id/userFollowingCount',  getUserFollowingCount);
-router.post('/:id/followingStatus',  getFollowingStatus);
+router.post('/:id/userFollowingCount',  getUserFollowingCount);
+//note: this should be get request but axios cannot add body with get method so we are using post
+router.post('/:id/followingStatus',  authorize(),getFollowingStatus);
 
 module.exports = router;
 
@@ -31,16 +32,18 @@ function follow(req, res, next) {
     
 
     followService.follow(followerId, followedId)
-        .then(() => res.json({ message: 'Follow successful' }))
+        .then(follow => res.json(follow))
         .catch(next);
 }
 
 function unfollow(req, res, next) {
+    console.log("entering unfollow code")
     const followerId = req.params.id;
-    const followedId = req.body.id;
-
+    const followedId = req.body.followedId;
+    console.log(followerId);
+    console.log(followedId);
     followService.unfollow(followerId, followedId)
-        .then(() => res.json({ message: 'Unfollow successful' }))
+        .then(unfollow => res.json(unfollow))
         .catch(next);
 }
 
@@ -76,38 +79,43 @@ function getUserFollowing(req, res, next){
 
 function getMyFollowersCount(req, res, next){
     const id = req.params.id;
-    followService.getFollowersCount(id)
+    followService.getMyFollowersCount(id)
     .then(count => res.json(count))
     .catch(next);
 }
 
 function getUserFollowersCount(req, res, next){
-    const id = req.body.id;
-    followService.getFollowersCount(id)
+    console.log(".....................................")
+    console.log("GETUSERFOLLOWERSCOUNT ENTERING FUNCTION")
+    console.log(".....................................")
+    const id = req.body.followedId;
+    console.log("id: ", id);
+    followService.getUserFollowersCount(id)
     .then(count => res.json(count))
     .catch(next);
 }
 
 function getMyFollowingCount(req, res, next){
     const id = req.params.id;
-    followService.getFollowingCount(id)
+    followService.getMyFollowingCount(id)
     .then(count => res.json(count))
     .catch(next);
 }
 
 function getUserFollowingCount(req, res, next){
-    const id = req.body.id;
-    followService.getFollowingCount(id)
+    const id = req.body.followedId;
+    followService.getUserFollowingCount(id)
     .then(count => res.json(count))
     .catch(next);
 }
 
 function getFollowingStatus(req, res, next){
     console.log("entering getFollowingStatus server side")
-    console.log(req)
-    console.log(req.body)
+    //console.log(req)
+    //console.log(req.body)
     const followerId = req.params.id;
     const followedId = req.body.followedId;
+    console.log(req.body)
     console.log("followedId: ", followedId)
     console.log("followerId: ", followerId)
 
