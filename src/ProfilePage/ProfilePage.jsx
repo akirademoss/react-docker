@@ -85,7 +85,7 @@ const darkTheme = createMuiTheme({
                 borderRight: '1px solid grey',
                 borderColor: fade('#ffffff', 0.5),
             }
-        },
+        },       
     },
     palette: {
         type: 'dark',
@@ -167,6 +167,15 @@ const styles = darkTheme => ({
     createAccountButton: {
         margin: darkTheme.spacing(0, 0, 0),
         width: 110,
+    },
+    textButton: {
+        textTransform: 'none',
+        fontSize: '17px',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
     },
     searchAlign: {
         display: 'flex',
@@ -1009,23 +1018,24 @@ class ProfilePage extends React.Component {
                                             
                                             <Grid item>
                                                 
-                                                <Typography variant="subtitle1">
-                                                    <b>0</b> posts
-                                                </Typography>
+                                                <Button disableRipple variant="text" className={classes.textButton} >
+                                                    <b>0</b> 
+                                                    &nbsp;posts
+                                                </Button>
                                             </Grid>                                        
                                             <Grid item>
-                                                <Typography variant="subtitle1">
+                                                <Button disableRipple variant="text" className={classes.textButton} >
                                                     {viewingMyProfile && !loadingMyFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowerCount.count} </b>} 
-                                                    {!viewingMyProfile && !loadingUserFollowerCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>}
-                                                    followers
-                                                </Typography>
+                                                    {!viewingMyProfile && !loadingUserFollowerCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>} 
+                                                    &nbsp;followers
+                                                </Button>
                                             </Grid>       
                                             <Grid item>
-                                                <Typography variant="subtitle1">
+                                                <Button disableRipple variant="text" className={classes.textButton} > 
                                                     {viewingMyProfile && !loadingMyFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowingCount.count} </b>} 
                                                     {!viewingMyProfile && !loadingUserFollowingCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
-                                                    following
-                                                </Typography>
+                                                    &nbsp;following
+                                                </Button>
                                             </Grid>
                                         </Grid>
                                     </Box>
