@@ -11,9 +11,9 @@ const path = require('path');
 router.post('/:id/follow', authorize(), follow)
 router.delete('/:id/unfollow', unfollow);
 router.get('/:id/myFollowers', authorize(), getMyFollowers);
-router.get('/:id/userFollowers', authorize(), getUserFollowers);
+router.post('/:id/userFollowers', getUserFollowers);
 router.get('/:id/myFollowing',  getMyFollowing);
-router.get('/:id/userFollowing',  getUserFollowing);
+router.post('/:id/userFollowing',  getUserFollowing);
 router.get('/:id/myFollowersCount',  getMyFollowersCount);
 router.post('/:id/userFollowersCount',  getUserFollowersCount);
 router.get('/:id/myFollowingCount',  getMyFollowingCount);
@@ -55,7 +55,9 @@ function getMyFollowers(req, res, next) {
 }
 
 function getUserFollowers(req, res, next) {
-    const id = req.body.id;
+    const id = req.body.followedId;
+    console.log(id)
+    console.log("ENTERING USERFOLLOWER")
     followService.getFollowers(id)
     .then(followers => res.json(followers))
     .catch(next);
@@ -69,7 +71,9 @@ function getMyFollowing(req, res, next){
 }
 
 function getUserFollowing(req, res, next){
-    const id = req.body.id;
+    const id = req.body.followedId;
+    console.log(id)
+    console.log("ENTERING USERFOLLOWING")
     followService.getFollowing(id)
     .then(following => res.json(following))
     .catch(next);

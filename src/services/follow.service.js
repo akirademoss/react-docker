@@ -44,6 +44,7 @@ class FollowService {
     return response.data;
   }
 
+  //NOTE: should be GET request but axios won't post data with GET 
   async getUserFollowerCount(id, token, followedId){
     const config = {
       headers: { Authorization: 'Bearer ' + token}
@@ -68,6 +69,7 @@ class FollowService {
     return response.data;
   }
 
+  //NOTE: should be GET request but axios won't post data with GET 
   async getUserFollowingCount(id, token, followedId){
     const config = {
       headers: { Authorization: 'Bearer ' + token}
@@ -87,19 +89,20 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/myFollowers", config);
     if (response.data) {
-      localStorage.setItem("follow", JSON.stringify(response.data));
+      localStorage.setItem("followerInfo", JSON.stringify(response.data));
     }
     return response.data;
   }
 
+    //NOTE: should be GET request but axios won't post data with GET 
   async getUserFollowerInfo(id, token, followedId){
     const config = {
       headers: { Authorization: 'Bearer ' + token}
     };
       const response = await axios
-      .get(API_URL + "/follow/" + id + "/userFollowers", {followedId}, config);
+      .post(API_URL + "/follow/" + id + "/userFollowers", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("follow", JSON.stringify(response.data));
+      localStorage.setItem("userFollowerInfo", JSON.stringify(response.data));
     }
     return response.data;
   }
@@ -111,19 +114,20 @@ class FollowService {
       const response = await axios
       .get(API_URL + "/follow/" + id + "/myFollowing", config);
     if (response.data) {
-      localStorage.setItem("follow", JSON.stringify(response.data));
+      localStorage.setItem("followingInfo", JSON.stringify(response.data));
     }
     return response.data;
   }
 
-  async getUserfollowingInfo(id, token, followedId){
+  //NOTE: should be GET request but axios won't post data with GET 
+  async getUserFollowingInfo(id, token, followedId){
     const config = {
       headers: { Authorization: 'Bearer ' + token}
     };
       const response = await axios
-      .get(API_URL + "/follow/" + id + "/userFollowing", {followedId}, config);
+      .post(API_URL + "/follow/" + id + "/userFollowing", {followedId}, config);
     if (response.data) {
-      localStorage.setItem("follow", JSON.stringify(response.data));
+      localStorage.setItem("userFollowingInfo", JSON.stringify(response.data));
     }
     return response.data;
   }
