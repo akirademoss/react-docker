@@ -1,102 +1,109 @@
-// eslint-disable-next-line
-import { authHeader } from '../_helpers';
+import axios from "axios";
+const FormData = require('form-data');
+
 
 const API_URL = "http://localhost:4000";
 
-export const userService = {
-    login,
-    logout,
-    register,
-    getAll,
-    getById,
-    update,
-    delete: _delete
-};
-
-function update(username, password) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+class ProfileService {
+  async updateProfile(name, bio, link, id, token){
+    console.log(link)
+    console.log("just testing link")
+    const cite = bio
+    const config = {
+      headers: { Authorization: 'Bearer ' + token}
     };
+      const response = await axios
+      .put(API_URL + "/profile/" + id, {name, bio, link, cite}, config);
+    if (response.data) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+    }
+    return response.data;
+  }
+  
+  async uploadAvatar(id, avatar, token){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token }
+    }; 
 
-    return fetch(API_URL + "/profile/" + username, requestOptions)
-        .then(handleResponse)
-        .then(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
+    //convert url object back to blob 
+    console.log("USER ID IN UPLOADAVATAR SERVICE IS: ", id)
+    let blob = await fetch(avatar).then(r => r.blob());
 
-            return user;
-        });
-}
+    console.log('size=' + blob.size);
+    console.log('type=' + blob.type);
 
-function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('user');
-}
+    const form = new FormData();
 
-function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
 
-    return fetch(API_URL + "/users", requestOptions).then(handleResponse);
-}
-
-function getById(id) {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(API_URL + "/users/${id}", requestOptions).then(handleResponse);
-}
-
-function register(user) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(API_URL + "/users/register", requestOptions).then(handleResponse);
-}
-
-function update(user) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(API_URL + "/users/${user.id}", requestOptions).then(handleResponse);;
-}
-
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-    const requestOptions = {
-        method: 'DELETE',
-        headers: authHeader()
-    };
-
-    return fetch(API_URL + "/users/${id}", requestOptions).then(handleResponse);
-}
-
-function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
-                logout();
-                window.location.reload(true);
-            }
-
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
-
-        return data;
+    //convert blob to a file
+    const file = new File([blob], 'image.png', {
+    type: blob.type,
     });
+     
+    //append file to form
+    form.append('name', 'avatar')
+    form.append('image', blob)
+
+    //print out form data entries
+    for (var key of form.entries()) {
+      console.log(key[0] + ', ' + key[1]);
+    }
+
+    console.log("avatar (object URL): " + avatar);
+    console.log("blob: " + blob);
+    console.log("file: " + file);
+
+
+    const response = await axios
+    .put(API_URL + "/profile/" + id + "/upload", form, config)
+
+    if (response.data) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+    }
+    return response.data;   
+  }
+
+  async getInfo(id, token){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token }
+    };
+      console.log("test")
+      const response = await axios
+      .get(API_URL + "/profile/" + id +"/info", config);
+    if (response.data) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+      const data = localStorage.getItem("profile");
+      console.log("!!!!!!!!!!!!!!!!!!!!: ", data)
+    }
+    return response.data;
+  }
+
+  async getUserInfo(username){
+      console.log("testing getUserInfo service")
+      const response = await axios
+      .get(API_URL + "/profile/" + username +"/userinfo");
+    if (response.data) {
+      localStorage.setItem("userProfile", JSON.stringify(response.data));
+      let data = JSON.parse(localStorage.getItem("userProfile"));
+      console.log("!!!!!!!!!!!!!!!!!!!!: ", data)
+    }
+    return response.data;
+  }
+
+  async removeAvatar(id, token){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token }
+    };
+      console.log("test")
+      const response = await axios
+      .delete(API_URL + "/profile/" + id +"/remove", config);
+    if (response.data) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+
+    }
+    return response.data;
+  }
+  
 }
+
+export default new ProfileService();

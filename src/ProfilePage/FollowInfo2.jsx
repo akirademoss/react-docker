@@ -86,7 +86,7 @@ followingButton: {
 },
 });
 
-class FollowInfo extends React.Component {
+class FollowInfo2 extends React.Component {
     render() {
       const { classes, userProfile, handleShowUnfollow } = this.props;
         return (
@@ -121,4 +121,4 @@ class FollowInfo extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(FollowInfo));;
+export default (withStyles(styles, { withTheme: true })(FollowInfo2));;

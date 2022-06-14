@@ -1,6 +1,6 @@
 import { followConstants } from '../_constants/follow.constants';
 import { alertActions } from './alert.actions';
-import FollowService from "../services/follow.service";
+import FollowService from "../_services/follow.service";
 
 import { history } from '../_helpers';
 

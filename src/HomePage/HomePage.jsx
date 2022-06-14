@@ -21,7 +21,7 @@ import grey from '@material-ui/core/colors/grey';
 //import history from '../history';
 import { history } from '../_helpers';
 
-import { userActions } from '../actions/auth';
+import { userActions } from '../_actions/auth';
 
 
 // CSS styling

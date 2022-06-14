@@ -32,12 +32,8 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 //import history from '../history';
 import { history } from '../_helpers';
 
-import { userActions } from '../actions/auth';
-import { profileActions } from '../actions/profile';
-
-//custom component import
-import MenuButton from '../components/menuButton';
-
+import { userActions } from '../_actions/auth';
+import { profileActions } from '../_actions/profile';
 
 // CSS styling
 const darkTheme = createMuiTheme({

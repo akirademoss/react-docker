@@ -11,7 +11,7 @@ import {
 
 import { userConstants } from '../_constants/user.constants';
 import { alertActions } from './alert.actions';
-import AuthService from "../services/auth.service";
+import AuthService from "../_services/auth.service";
 
 import { history } from '../_helpers';
 

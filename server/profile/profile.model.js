@@ -13,10 +13,6 @@ function model(sequelize) {
     };
 
     const Profile = sequelize.define('Profile', attributes);
-
-    Profile.associate = function(model){
-        Profile.belongsTo(model.User, {foreignKey: 'userId', as: 'id'})
-    };
-
+    
     return Profile;
 }

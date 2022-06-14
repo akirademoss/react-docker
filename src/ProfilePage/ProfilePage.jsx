@@ -43,18 +43,17 @@ import GridOn from "@material-ui/icons/GridOn";
 import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import FeaturedPlayList from "@material-ui/icons/FeaturedPlayList";
 import VideoLibrary from "@material-ui/icons/VideoLibrary";
-import MoreIcon from "@material-ui/icons/MoreVert";
+
 
 //router and page imports
 //import history from '../history';
 import { history } from '../_helpers';
 
-import { userActions } from '../actions/auth';
-import { profileActions } from '../actions/profile';
-import { followActions } from '../actions/follow';
+import { userActions } from '../_actions/auth';
+import { profileActions } from '../_actions/profile';
+import { followActions } from '../_actions/follow';
 
 //custom component import
-import MenuButton from '../components/menuButton';
 import Typography from '@material-ui/core/Typography';
 
 //responsive UI
@@ -66,7 +65,6 @@ import Slider from '@material-ui/core/Slider'
 import { getOrientation } from 'get-orientation/browser'
 import ImgDialog from './ImgDialog'
 import { getCroppedImg, getRotatedImage } from './canvasUtils'
-import { styles2 } from './styles'
 import Modal from "@material-ui/core/Modal";
 import { styled } from '@material-ui/core/styles';
 import isEqual from 'lodash.isequal';
@@ -77,8 +75,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 //import custom component
 import FollowInfo from "./FollowInfo";
-import FollowInfo2 from "./FollowInfo2";
-import Components from "./components.js";
+
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -559,11 +556,29 @@ class ProfilePage extends React.Component {
         };
 
         this.handleLogout = this.handleLogout.bind(this);
-
-
-
     }
 
+        //Each time page refreshes we call this function 
+        async componentDidMount() {
+            this.getProfile();
+            await new Promise(resolve => { setTimeout(resolve, 300); });
+            this.followingStatus();
+            this.myFollowCount();
+            this.userFollowCount();
+            this.setState({followStatusLoaded: true});
+            return Promise.resolve();
+        }
+
+        componentDidUpdate() {
+            console.log("component did update")
+            console.log(this.props.myFollowingCount);
+            if((this.props.userProfile.userId != this.state.userId) && (this.props.userProfile.userId != undefined)){
+                console.log("props: ", this.props.userProfile.userId, " state: ", this.state.userId)
+                console.log(this.props.userProfile.userId)
+                console.log("Component did update HOOOOOORRRAAAYYYY");
+            }
+        }
+    
     handleChange = (event, checked) => {
         this.setState({ auth: checked });
     };
@@ -879,26 +894,7 @@ class ProfilePage extends React.Component {
         const dispatch2 = await this.props.getUserFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
-    //Each time page refreshes we call this function 
-    async componentDidMount() {
-        this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 300); });
-        this.followingStatus();
-        this.myFollowCount();
-        this.userFollowCount();
-        this.setState({followStatusLoaded: true});
-        return Promise.resolve();
-    }
 
-    componentDidUpdate() {
-        console.log("component did update")
-        console.log(this.props.myFollowingCount);
-        if((this.props.userProfile.userId != this.state.userId) && (this.props.userProfile.userId != undefined)){
-            console.log("props: ", this.props.userProfile.userId, " state: ", this.state.userId)
-            console.log(this.props.userProfile.userId)
-            console.log("Component did update HOOOOOORRRAAAYYYY");
-        }
-    }
 
 
 

@@ -28,7 +28,7 @@ import orange from '@material-ui/core/colors/orange';
 
 //pages imports
 import { history } from '../_helpers';
-import { userActions } from '../actions/auth';
+import { userActions } from '../_actions/auth';
 
 // CSS styling 
 const darkTheme = createMuiTheme({

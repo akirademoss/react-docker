@@ -1,6 +1,6 @@
 import { profileConstants } from '../_constants/profile.constants';
 import { alertActions } from './alert.actions';
-import ProfileService from "../services/profile.service";
+import ProfileService from "../_services/profile.service";
 
 import { history } from '../_helpers';
 

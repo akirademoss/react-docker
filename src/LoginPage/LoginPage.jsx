@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { userActions } from '../actions/auth';
+import { userActions } from '../_actions/auth';
 
 //toolbarstuff
 import AppBar from "@material-ui/core/AppBar";

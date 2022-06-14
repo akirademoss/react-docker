@@ -8,15 +8,10 @@ import { PrivateRoute } from '../_components';
 import  HomePage  from '../HomePage/HomePage';
 import  HomePrivate  from '../HomePrivate/HomePrivate';
 import ProfilePage from '../ProfilePage/ProfilePage';
-import ProfilePagePublic from '../ProfilePagePublic/ProfilePagePublic';
 import EditProfile from '../EditProfile/EditProfile';
-
-
-//import { HomePage } from '../HomePage';
 import  LoginPage  from '../LoginPage/LoginPage';
 import  RegisterPage  from '../RegisterPage/RegisterPage';
-//import { RegisterPage } from '../RegisterPage';
-import CreateAccount from '../pages/CreateAccount'
+
 
 class App extends React.Component {
     constructor(props) {
@@ -39,19 +34,13 @@ class App extends React.Component {
                         }
                         <Router history={history}>
                             <Switch>
-                               {/* <PrivateRoute exact path="/:username/home" component={HomePrivate} /> */}
-
                                 <PrivateRoute exact path="/:username/home" component={HomePrivate} />
-                                {/*<Route path="/:username/profile" component={(props) => <ProfilePage username={props.match.params.username}/>} /> */}
                                 <Route path="/:username/profile" component={(props) => <ProfilePage username={props.match.params.username}/>} /> 
                                 <PrivateRoute exact path="/:username/edit" component={EditProfile} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/register" component={RegisterPage} />
                                 <Route path="/:username/user" component={(props) => <ProfilePage username={props.match.params.username}/>} />
                                 <Route path="/" component={HomePage} />
-
-                                
-
                                 <Redirect from="*" to="/" />
                             </Switch>
                         </Router>
