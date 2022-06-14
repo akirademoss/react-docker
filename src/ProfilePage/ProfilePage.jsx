@@ -142,6 +142,15 @@ const styles = darkTheme => ({
         height: '100%',
         width: '100%'
     },
+    iconButtonTransparent: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
+    },
     rightToolbar: {
         marginLeft: "auto",
         marginRight: -12,
@@ -284,6 +293,11 @@ const styles = darkTheme => ({
         borderRadius: 100
     },
     editButton: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
         borderRadius: 5,
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
@@ -482,17 +496,31 @@ const styles = darkTheme => ({
         borderRadius: 100
     },
     followingButton: {
-        backgroundColor: grey[700],
-        color: darkTheme.palette.common.white,
-        '&:hover': {
-            backgroundColor: grey[800],
+        textTransform: 'none',
+        borderRadius: 5,
+        fontSize: '11px',
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
         },
+    },
+    followingBoarder: {
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
         textTransform: 'none',
+        borderRadius: 5,
         fontSize: '11px',
+        maxHeight: 38,
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'row',
+     
+
+
+
     },
 });
 
@@ -902,7 +930,7 @@ class ProfilePage extends React.Component {
                     <AppBar position="static" className={classes.navBar}>
                         <Toolbar>
                             <div>
-                                <Button className={classes.homeButton}
+                                <Button disableRipple className={classes.homeButton}
                                     onClick={() => history.push('/' + this.props.user.username + '/home')}
                                 >
                                     <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
@@ -930,6 +958,8 @@ class ProfilePage extends React.Component {
                             </section>
 
                             <IconButton
+                                disableRipple
+                                className={classes.iconButtonTransparent}
                                 name="messages"
                                 aria-owns={messagesOpen ? 'message-alerts' : null}
                                 aria-haspopup="true"
@@ -959,6 +989,8 @@ class ProfilePage extends React.Component {
                             </Menu>
 
                             <IconButton
+                                disableRipple
+                                className={classes.iconButtonTransparent}
                                 name="notifications"
                                 aria-owns={notificationsOpen ? 'notifications-alerts' : null}
                                 aria-haspopup="true"
@@ -988,6 +1020,8 @@ class ProfilePage extends React.Component {
                             </Menu>
 
                             <IconButton
+                                disableRipple
+                                className={classes.iconButtonTransparent}
                                 name="profile"
                                 aria-owns={profileOpen ? 'profile-menu' : null}
                                 aria-haspopup="true"
@@ -1040,6 +1074,7 @@ class ProfilePage extends React.Component {
                                         <label htmlFor="contained-button-file">
 
                                             <IconButton
+                                                disableRipple
                                                 id="contained-button-file"
                                                 color="inherit"
                                                 className={classes.iconButtonAvatar}
@@ -1059,6 +1094,7 @@ class ProfilePage extends React.Component {
                                     <Hidden mdUp>
                                         <label htmlFor="contained-button-file">
                                             <IconButton 
+                                                disableRipple
                                                 id="contained-button-file"
                                                 color="inherit"
                                                 className={classes.iconButtonAvatar}
@@ -1121,17 +1157,17 @@ class ProfilePage extends React.Component {
 
                                             {viewingMyProfile && 
                                             <Grid item>
-                                                <Button className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
+                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                     Edit Profile
                                                 </Button>         
-                                                     <IconButton>
-                                                         {<Settings />}
+                                                     <IconButton disableRipple className={classes.iconButtonTransparent}>
+                                                         {<Settings/>}
                                                      </IconButton>
                                             </Grid>}
 
                                             {!viewingMyProfile &&     
                                             <Grid item>
-                                                <Button className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
                                                     Message
                                                 </Button>
                                                 </Grid>}
@@ -1143,9 +1179,11 @@ class ProfilePage extends React.Component {
                                             </Grid>}
                                             {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
-                                                <IconButton  variant="contained" fullWidth={false} onClick={this.handleShowUnfollow}>
+                                                <div className={classes.followingBoarder}>
+                                                <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
                                                     {<PeopleAltIcon />}
                                                 </IconButton>
+                                                </div>
                                             </Grid>}
                                             
                                         </Grid>
