@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
@@ -10,17 +9,12 @@ import SearchIcon from '@material-ui/icons/Search';
 import { ThemeProvider } from "@material-ui/styles";
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from "@material-ui/core/IconButton";
-import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import Icon from '@material-ui/core/Icon';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Divider from '@material-ui/core/Divider';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Skeleton from "@material-ui/lab/Skeleton";
-import LinearProgress from '@material-ui/core/LinearProgress';
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -28,13 +22,11 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 import blue from '@material-ui/core/colors/blue';
-import StyledDemo from './index.js';
 import List from "@material-ui/core/List";
 
 //menu stuff
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import Badge from "@material-ui/core/Badge";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Settings from "@material-ui/icons/Settings";
 import MailIcon from "@material-ui/icons/Mail";
@@ -571,12 +563,6 @@ class ProfilePage extends React.Component {
 
         componentDidUpdate() {
             console.log("component did update")
-            console.log(this.props.myFollowingCount);
-            if((this.props.userProfile.userId != this.state.userId) && (this.props.userProfile.userId != undefined)){
-                console.log("props: ", this.props.userProfile.userId, " state: ", this.state.userId)
-                console.log(this.props.userProfile.userId)
-                console.log("Component did update HOOOOOORRRAAAYYYY");
-            }
         }
     
     handleChange = (event, checked) => {
@@ -619,7 +605,6 @@ class ProfilePage extends React.Component {
         this.setState({ profileOpen: false });
         this.setState({ messagesOpen: false });
         this.setState({ notificationsOpen: false });
-        //history.push('/' + this.username + '/edit')
         history.push('/' + this.props.user.username + '/edit')
     };
 
@@ -709,14 +694,9 @@ class ProfilePage extends React.Component {
     }
 
     follow = async () => {
-        console.log("testing to see if follwership start is working");
+        console.log("testing followership");
         console.log("userId:", this.props.userProfile.id)
         const dispatch = await this.props.followUser(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-
-        //const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.id)
-        //console.log(dispatch2)
-        //console.log("isFollowing from props results", this.props.follow)
-        //console.log("AYYYYYY WE LOGGING SHIT YO 123")
     }
 
     handleUnfollow = async() => {
@@ -826,7 +806,7 @@ class ProfilePage extends React.Component {
     }
 
     handleShowRemove = (e, i) => {
-        console.log("testing handleShowUnfollowing")
+        console.log("testing handleShowRemove")
         const username = this.props.followerInfo[i].User.username;
         const previewImg = this.props.followerInfo[i].previewImg;
         e.persist();
@@ -843,8 +823,6 @@ class ProfilePage extends React.Component {
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
     console.log("GETTING PROFILE INFO")
-     //e.preventDefault();
-     //can view profiles weather logged in or not. If logged in, we got profile information
      if (this.props.loggedIn){
          const username = this.props.user.username;
          const id = this.props.user.id;
@@ -870,7 +848,6 @@ class ProfilePage extends React.Component {
          const userId = this.props.userProfile.userId;
          console.log("Following Status for ids listed below")
          console.log("id: ", id, "userId: ", userId)
-         console.log("viewingMyProfile set to false")
      }
 
     }
@@ -1058,16 +1035,6 @@ class ProfilePage extends React.Component {
                             <Grid container>
                                 <Grid item xs={4}>
 
-
-                                    {/*  <IconButton
-                                        id="contained-button-file"
-                                        color="inherit"
-                                        className={classes.iconButtonAvatar}
-                                        onClick={this.handleShow}
-                                        component="span"
-                                    >
-                                    {<AccountCircle className={classes.iconButtonAvatar}/>}
-                                </IconButton>    */}
                                 {viewingMyProfile &&
                                     <Hidden smDown>
                                         <label htmlFor="contained-button-file">
@@ -1079,20 +1046,11 @@ class ProfilePage extends React.Component {
                                                 onClick={this.handleShow}
                                                 component="span"
                                             >
-                                             {/* {loadingProfile && this.props.profile.previewImg ? (
-                                                    <Skeleton variant="circular" className={classes.avatar}/>
-                                                    ) : (
-                                                        <img src={this.props.profile.previewImg} className={classes.avatar} />
-                                                    )}*/}
                                                
                                               {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
                                               {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
-                                             {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>} 
-                                               
-                                                    
-                                              
-
-
+                                              {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>} 
+                                                                                                                                   
                                             </IconButton>
                                         </label>
                                     </Hidden>}
@@ -1107,19 +1065,16 @@ class ProfilePage extends React.Component {
                                                 onClick={this.handleShow}
                                                 component="span"
                                             >
-                                                
                                                 {loadingUserProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
                                                 {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />}
-                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}
-                                                
+                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}             
                                             </IconButton>
-
                                         </label>
                                     </Hidden>}
+
                                     {!viewingMyProfile && 
                                     <Hidden smDown>
                                         <label htmlFor="contained-button-file">
-
                                             <IconButton
                                                 disableFocusRipple = "true"
                                                 disableRipple="true"
@@ -1127,12 +1082,7 @@ class ProfilePage extends React.Component {
                                                 color="inherit"
                                                 className={classes.iconButtonAvatar}
                                                 component="span"
-                                            >
-                                             {/* {loadingProfile && this.props.profile.previewImg ? (
-                                                    <Skeleton variant="circular" className={classes.avatar}/>
-                                                    ) : (
-                                                        <img src={this.props.profile.previewImg} className={classes.avatar} />
-                                                    )}*/}                                              
+                                            >                                            
                                               {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
                                               {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
                                              {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>}                                                                                                                          
@@ -1159,8 +1109,6 @@ class ProfilePage extends React.Component {
                                         </label>
                                     </Hidden>}
 
-
-
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Box clone mb="20px">
@@ -1170,24 +1118,18 @@ class ProfilePage extends React.Component {
                                                     {this.props.username}
                                                 </Typography>
                                             </Grid>
+
                                             {viewingMyProfile && 
                                             <Grid item>
                                                 <Button className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                     Edit Profile
-                                                </Button>
-                   {/*}   {!viewingMyProfile &&  <Button className={classes.editButton} variant="outlined" fullWidth={false}>
-                                                    Message
-                                            </Button>}     
-                      {!viewingMyProfile &&  <Button className={classes.editButton} variant="contained" fullWidth={false}>
-                                                    Follow
-                                                </Button>}   */}              
+                                                </Button>         
                                                      <IconButton>
                                                          {<Settings />}
                                                      </IconButton>
                                             </Grid>}
 
                                             {!viewingMyProfile &&     
-                                            
                                             <Grid item>
                                                 <Button className={classes.editButton} variant="outlined" fullWidth={false}>
                                                     Message
@@ -1199,7 +1141,6 @@ class ProfilePage extends React.Component {
                                                     Follow
                                                 </Button>
                                             </Grid>}
-
                                             {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
                                             <Grid item>
                                                 <IconButton  variant="contained" fullWidth={false} onClick={this.handleShowUnfollow}>
@@ -1211,9 +1152,7 @@ class ProfilePage extends React.Component {
                                     </Box>
                                     <Box mb="20px">
                                         <Grid container spacing={1}>
-                                            
-                                            <Grid item>
-                                                
+                                            <Grid item>                                               
                                                 <Button disableRipple variant="text" className={classes.textButton} >
                                                     <b>0</b> 
                                                     &nbsp;posts
@@ -1243,7 +1182,6 @@ class ProfilePage extends React.Component {
                                 </Grid>
                             </Grid>
                         </Box>
-
                         <Tabs
                             value={tab}
                             centered
@@ -1323,10 +1261,7 @@ class ProfilePage extends React.Component {
                                 />
                             </Grid>
                         </Grid>
-
-
                     </Box>
-
                     <Modal
                         open={show}
                         onClose={this.handleCloseModal}
@@ -1380,7 +1315,6 @@ class ProfilePage extends React.Component {
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.modalUpload}>
-
                             <div className={classes.cropContainer}>
                                 <Cropper
                                     image={imageSrc}
