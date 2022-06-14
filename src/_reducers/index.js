@@ -10,7 +10,6 @@ import {getFollowStatus, getMyFollowerCount, getMyFollowingCount, getUserFollowe
 const rootReducer = combineReducers({
   authentication,
   registration,
-
   alert,
   getProfile,
   getUserProfile,

@@ -48,7 +48,6 @@ import Slider from '@material-ui/core/Slider'
 import { getOrientation } from 'get-orientation/browser'
 import ImgDialog from '../ProfilePage/ImgDialog'
 import { getCroppedImg, getRotatedImage } from '../ProfilePage/canvasUtils'
-import { styles2 } from '../ProfilePage/styles'
 import Modal from "@material-ui/core/Modal";
 import { styled } from '@material-ui/core/styles';
 
