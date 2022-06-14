@@ -69,6 +69,7 @@ async function getFollowed(followerId, followedId) {
 async function getFollowers(id) {
     const followerInfo = await db.Profile.findAll({
         raw: true,
+        nest: true,
         attributes: ['name', 'previewImg', 'previewImgKey'],
         include: [{
             model: db.User,

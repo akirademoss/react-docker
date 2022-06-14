@@ -6,8 +6,12 @@ import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import IconButton from "@material-ui/core/IconButton";
+import Hidden from '@material-ui/core/Hidden';
 
 const darkTheme = createMuiTheme({
   overrides: {
@@ -55,11 +59,24 @@ followGrid: {
     alignItems: 'center',
     display: 'inline-flex',
     flexDirection: 'row',
+    width: '100%',
+},
+iconButtonAvatar: {
+  background: 'transparent',
+  background: 'transparent',
+  "&:hover": {
+      background: 'transparent',
+      backgroundColor: 'transparent',
+      cursor: 'default',
+  },
+  width: "50px",
+  height: "50px",
 },
 followGridList: {
     alignItems: 'left',
     display: 'flex',
     flexDirection: 'column',
+    width: '100%',
 },
   avatarFollow: {
     background: 'transparent',
@@ -68,8 +85,8 @@ followGridList: {
         background: 'transparent',
     },
     margin: "auto",
-    width: "30px",
-    height: "30px",
+    width: "32px",
+    height: "32px",
     borderRadius: 100
 },
 followingButton: {
@@ -84,48 +101,64 @@ followingButton: {
     borderRight: '1px solid white',
     textTransform: 'none',
     fontSize: '11px',
+    height: "32px",
+    width: "70px"
 },
 item2: {
-  flexGrow: 2,
-  align: 'right',
-  justify: 'right',
+ 
 },
 item3: {
-  flexGrow: 1,
-  //align: 'right',
-  //justify: 'right',
-  position: 'fixed',
-  marginLeft: 260,
+ 
+  position: 'absolute',
+  marginLeft: 240,
 },
+link: {
+  color: darkTheme.palette.common.white,
+  fontSize: '13px',
+},
+
 });
 
 class FollowInfo extends React.Component {
     render() {
-      const { classes, followingInfo, handleShowUnfollow } = this.props;
+      const { classes, followingInfo, handleButton, handlePageChange, buttonText} = this.props;
         return (
             <div>
-              <Grid container spacing={2} className={classes.followGrid}>
-                <Grid item >
-                  <img src={followingInfo.previewImg} className={classes.avatarFollow} />
+              <Grid container spacing={0} className={classes.followGrid}>
+                <Grid item>
+                  
+                    
+                      <IconButton
+                        color="inherit"
+                        className={classes.iconButtonAvatar}
+                        onClick={handlePageChange}
+                      >
+                        {followingInfo.previewImg && <img src={followingInfo.previewImg} className={classes.avatarFollow} />}
+                        {!followingInfo.previewImg && <AccountCircle className={classes.avatarFollow}/>}
+                      </IconButton>
+                 
+                  
                 </Grid>
                 <Grid item className={classes.item2}>
                   <Grid container className={classes.followGridList}>
-                    <Grid item>
-                      <Typography variant="subtitle2"><b>{followingInfo.User.username}</b> </Typography>
+                    <Grid item> 
+                      <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.User.username}</b> </Link>
                     </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle2">{followingInfo.name}</Typography>
-                    </Grid>
+                    {followingInfo.name && <Grid item>
+                      <Typography variant="subtitle2" className={classes.link}>{followingInfo.name}</Typography>
+                    </Grid>}
                   </Grid>
                 </Grid>
 
                 <Grid item className={classes.item3}>
-                  <Button className={classes.followingButton} variant="contained" fullWidth={false} onClick={handleShowUnfollow}>
-                    <b>Following</b>
+                  <Button className={classes.followingButton} variant="contained" fullWidth={false} onClick={handleButton}>
+                    <b>{buttonText}</b>
                   </Button>
-                </Grid>
+                </Grid>             
               </Grid>
+             
             </div>
+            
         );
     }
 }

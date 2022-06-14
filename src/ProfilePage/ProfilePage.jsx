@@ -29,6 +29,7 @@ import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 import blue from '@material-ui/core/colors/blue';
 import StyledDemo from './index.js';
+import List from "@material-ui/core/List";
 
 //menu stuff
 import MenuItem from "@material-ui/core/MenuItem";
@@ -258,6 +259,7 @@ const styles = darkTheme => ({
     },
     profile: {
         marginTop: 20,
+        minWidth: 430,
     },
     avatar: {
         background: 'transparent',
@@ -408,9 +410,28 @@ const styles = darkTheme => ({
         minWidth: 380,
     },
     followGrid: {
+        marginBottom: 0,
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
+        height: 70,
+    },
+    followGridItem: {
+       
+    },
+    modalCancel: {
+        marginTop: 20,
+        position: 'absolute',
+        marginLeft: 305,
+      },
+    followingModalCancelBtn: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
     },
     followGrid2: {
         alignItems: 'center',
@@ -428,13 +449,13 @@ const styles = darkTheme => ({
         },
         minheight: 200,
         //minWidth: 400,
-        width: 370,
+        width: 360,
         position: 'absolute',
         backgroundColor: grey[700],
         alignItems: 'left',
         display: 'flex',
         flexDirection: 'column',
-        top: '35%',
+        top: '40%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
         boxShadow: darkTheme.shadows[5],
@@ -444,6 +465,10 @@ const styles = darkTheme => ({
         },
         borderRadius: darkTheme.shape.borderRadius,
         justifyContent: 'center',
+        borderBottom: '1px solid white',
+        borderTop: '1px solid white',
+        borderLeft: '1px solid white',
+        borderRight: '1px solid white',
     },
     hl: {
         height: 1,
@@ -451,6 +476,10 @@ const styles = darkTheme => ({
         marginRight: 0,
         transform: 'translate(-2%, 0%)',
         color: grey[700],
+    },
+    list: {
+        maxHeight: 300, 
+        overflow: 'auto'
     },
     avatarFollow: {
         background: 'transparent',
@@ -518,10 +547,15 @@ class ProfilePage extends React.Component {
             show: false,
             showImageCrop: false,
             showUnfollow: false,
+            showRemove: false,
             showFollowers: false,
             showFollowing: false,
             viewingMyProfile: true,
             followStatusLoaded: false,
+            unfollowPreviewImg: null,
+            unfollowUsername: null,
+            removePreviewImg: null,
+            removeUsername: null,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
@@ -692,9 +726,13 @@ class ProfilePage extends React.Component {
     }
 
     handleShowUnfollow = () => {
+        this.setState({ unfollowPreviewImg: this.props.userProfile.previewImg })
+        this.setState({ unfollowUsername: this.props.username })
         this.setState({ showUnfollow: true })
         console.log("showUnfollow status: ", this.state.showUnfollow)
     }
+
+
 
     handleShowFollowers = () => {
         this.setState({ showFollowers: true })
@@ -733,6 +771,11 @@ class ProfilePage extends React.Component {
 
     }
 
+    handleCloseRemoveModal = () => {
+        this.setState({ showRemove: false })
+
+    }
+
     handleCloseFollowersModal = () => {
         this.setState({ showFollowers: false })
 
@@ -741,6 +784,45 @@ class ProfilePage extends React.Component {
     handleCloseFollowingModal = () => {
         this.setState({ showFollowing: false })
 
+    }
+
+    handlePageChange = (e, i) => {
+        const username = this.props.followingInfo[i].User.username;
+        e.persist();
+        console.log(e);
+        console.log(i);
+        console.log(this.props.followingInfo[i].User.username);
+        history.push('/' + username + '/user');
+    };
+
+    handleShowUnfollowing = (e, i) => {
+        console.log("testing handleShowUnfollowing")
+        const username = this.props.followingInfo[i].User.username;
+        const previewImg = this.props.followingInfo[i].previewImg;
+        e.persist();
+        console.log(e);
+        console.log(i);
+        console.log(username);
+        console.log(previewImg);
+        console.log("showUnfollow status: ", this.state.showUnfollow)
+        this.setState({ unfollowPreviewImg: previewImg })
+        this.setState({ unfollowUsername: username })
+        this.setState({ showUnfollow: true })
+    }
+
+    handleShowRemove = (e, i) => {
+        console.log("testing handleShowUnfollowing")
+        const username = this.props.followerInfo[i].User.username;
+        const previewImg = this.props.followerInfo[i].previewImg;
+        e.persist();
+        console.log(e);
+        console.log(i);
+        console.log(username);
+        console.log(previewImg);
+        console.log("showRemove status: ", this.state.showRemove)
+        this.setState({ removePreviewImg: previewImg })
+        this.setState({ removeUsername: username })
+        this.setState({ showRemove: true })
     }
 
     //Get all of our profile props to display the user information
@@ -821,7 +903,7 @@ class ProfilePage extends React.Component {
 
 
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, viewingMyProfile, showFollowers, showFollowing } = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername } = this.state;
         const open = Boolean(anchorEl);
         const { classes } = this.props;
         const { loadingProfile, profileLoaded } = this.props;
@@ -1132,7 +1214,7 @@ class ProfilePage extends React.Component {
                                         </Grid>
                                     </Box>
                                     <Box mb="20px">
-                                        <Grid container spacing={2}>
+                                        <Grid container spacing={1}>
                                             
                                             <Grid item>
                                                 
@@ -1383,10 +1465,11 @@ class ProfilePage extends React.Component {
                     >
                         <div className={classes.modalUpload}>
                         <Box m={1}/>
-                        <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />
+                        {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
+                        {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd}/>}
 
                         <Box m={1}/>
-                        <Typography variant="subtitle2"> Unfollow @{this.props.username}?</Typography>
+                        <Typography variant="subtitle2"> Unfollow @{unfollowUsername}?</Typography>
                         <Box m={1}/>
                         
                             <Button
@@ -1412,19 +1495,20 @@ class ProfilePage extends React.Component {
                         </div>
                     </Modal>
 
-                    {/* MODAL FOR FOLLOWERS*/}
+                    {/* Remove Modal */}
                     <Modal
-                        open={showFollowers}
-                        onClose={this.handleCloseFollowersModal}
+                        open={showRemove}
+                        onClose={this.handleCloseRemoveModal}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.modalUpload}>
                         <Box m={1}/>
-                        <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />
+                        {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
+                        {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd}/>}
 
                         <Box m={1}/>
-                        <Typography variant="subtitle2"> Unfollow @{this.props.username}?</Typography>
+                        <Typography variant="subtitle2"> Remove @{unfollowUsername}?</Typography>
                         <Box m={1}/>
                         
                             <Button
@@ -1434,7 +1518,7 @@ class ProfilePage extends React.Component {
                                 classes={{ root: classes.modalButton }}
                                 onClick={this.handleUnfollow}
                             >
-                                Unfollow
+                                Remove
                             </Button>
                             
                         
@@ -1443,11 +1527,45 @@ class ProfilePage extends React.Component {
                             variant="contained"
                             color="primary"
                             classes={{ root: classes.modalButtonCancel }}
-                            onClick={this.handleCloseFollowersModal}
+                            onClick={this.handleCloseRemoveModal}
                         >
                             Cancel
                         </Button>
                         </div>
+                    </Modal>
+                    {/* MODAL FOR FOLLOWERS*/}
+                    <Modal
+                        open={showFollowers}
+                        onClose={this.handleCloseFollowersModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <div className={classes.followModals}>
+                        <Grid container spacing={10} className={classes.followGrid}>
+                            <Grid item className={classes.followGridItem}>
+                                <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Followers </b> </Typography>
+                            </Grid>
+                            <Grid item className={classes.modalCancel}>
+                                <IconButton  variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowersModal}>
+                                    {<CloseIcon/>}
+                                </IconButton>
+                            </Grid>
+                       </Grid>
+                       <hr className={classes.hl}></hr>
+                       
+            
+                        {/* 
+                        <FollowInfo followingInfo={this.props.followingInfo[0]} handleShowUnfollow={this.handleShowUnfollow} />*/}
+                        <List className={classes.list}>
+                       {followerInfoLoaded && !loadingFollowerInfo &&
+                       this.props.followerInfo.map( (followingInfo, i) =>(
+                        <div key={i}>
+                            <FollowInfo followingInfo={this.props.followerInfo[i]} handleButton={(e) => this.handleShowRemove(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Remove"/>
+                        </div>
+                        ))}
+                        </List>  
+                        </div>
+                       
                     </Modal>
 
                     {/* MODAL FOR FOLLOWING*/}
@@ -1462,21 +1580,17 @@ class ProfilePage extends React.Component {
                         
                        
                         
-                        <Grid container spacing={6} className={classes.followGrid}>
-                            <Grid item>
-                                <div>
-                                    <Box m={5}/>
-                                </div>
+                        <Grid container spacing={10} className={classes.followGrid}>
+
+
+                            <Grid item className={classes.followGridItem}>
+                                <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Following </b> </Typography>
                             </Grid>
 
-                            <Grid item>
-                                <Typography variant="h6"> <b> Following </b> </Typography>
-                            </Grid>
 
-                            <Box m={2}/>
 
-                            <Grid item >
-                                <IconButton  variant="contained" fullWidth={false} onClick={this.handleCloseFollowingModal}>
+                            <Grid item className={classes.modalCancel}>
+                                <IconButton  variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowingModal}>
                                     {<CloseIcon/>}
                                 </IconButton>
                             </Grid>
@@ -1486,13 +1600,14 @@ class ProfilePage extends React.Component {
                         
                         {/* 
                         <FollowInfo followingInfo={this.props.followingInfo[0]} handleShowUnfollow={this.handleShowUnfollow} />*/}
-
+                        <List className={classes.list}>
                        {followingInfoLoaded && !loadingFollowingInfo &&
                        this.props.followingInfo.map( (followingInfo, i) =>(
                         <div key={i}>
-                            <FollowInfo followingInfo={this.props.followingInfo[i]} handleShowUnfollow={this.handleShowUnfollow} />
+                            <FollowInfo followingInfo={this.props.followingInfo[i]} handleButton={(e) => this.handleShowUnfollowing(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Following"/>
                         </div>
                         ))}
+                        </List>
         
                         
                        {/* 
