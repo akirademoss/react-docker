@@ -1,5 +1,5 @@
 import { profileConstants } from '../_constants/profile.constants';
-import { alertActions } from './alert.actions';
+import { alertActions } from './alert';
 import ProfileService from "../_services/profile.service";
 
 import { history } from '../_helpers';

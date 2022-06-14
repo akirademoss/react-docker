@@ -1,16 +1,5 @@
-import {
-  REGISTER_REQUEST,
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  LOGIN_REQUEST,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT,
-  SET_MESSAGE,
-} from "./types";
-
 import { userConstants } from '../_constants/user.constants';
-import { alertActions } from './alert.actions';
+import { alertActions } from './alert';
 import AuthService from "../_services/auth.service";
 
 import { history } from '../_helpers';
@@ -26,16 +15,16 @@ export const userActions = {
 function register(email, username, password){
   return dispatch =>{
   dispatch({
-    type: REGISTER_REQUEST,
+    type: userConstants.REGISTER_REQUEST,
   });
   AuthService.register(email, username, password).then(
     (response) => {
       dispatch({
-        type: REGISTER_SUCCESS,
+        type: userConstants.REGISTER_SUCCESS,
       });
 
       dispatch({
-        type: SET_MESSAGE,
+        type: userConstants.SET_MESSAGE,
         payload: response.data.message,
       });
 
@@ -50,11 +39,11 @@ function register(email, username, password){
         error.toString();
 
       dispatch({
-        type: REGISTER_FAIL,
+        type: userConstants.REGISTER_FAILURE,
       });
 
       dispatch({
-        type: SET_MESSAGE,
+        type: userConstants.SET_MESSAGE,
         payload: message,
       });
 
@@ -94,7 +83,7 @@ function logout() {
   AuthService.logout();
 
   dispatch({
-    type: LOGOUT,
+    type: userConstants.LOGOUT,
   });
   history.push('/');
   }; 

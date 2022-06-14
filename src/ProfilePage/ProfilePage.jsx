@@ -1411,9 +1411,6 @@ class ProfilePage extends React.Component {
                             >
                                 Unfollow
                             </Button>
-                            
-                        
-
                         <Button
                             variant="contained"
                             color="primary"
