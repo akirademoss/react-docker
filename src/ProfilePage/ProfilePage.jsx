@@ -66,7 +66,7 @@ import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import CloseIcon from '@material-ui/icons/Close';
 
 //import custom component
-import FollowInfo from "./FollowInfo";
+import FollowInfo from "../_components/FollowInfo";
 
 
 // CSS styling
@@ -120,9 +120,13 @@ const styles = darkTheme => ({
         position: 'fixed',
     },
     menuItem: {
-        boxShadow: 'none',
-        height: 'auto',
         background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
     },
     menu: {
         boxShadow: 'none',
@@ -287,9 +291,8 @@ const styles = darkTheme => ({
         "&:hover": {
             background: 'transparent',
         },
-        margin: "auto",
-        width: "30px",
-        height: "30px",
+        width: "26px",
+        height: "26px",
         borderRadius: 100
     },
     editButton: {
@@ -966,7 +969,7 @@ class ProfilePage extends React.Component {
                                 onClick={this.handleMenu}
                                 color="inherit"
                             >
-                                {<MailIcon />}
+                                {<MailIcon className={classes.avatarSm} />}
                             </IconButton>
                             <Menu
                                 disableScrollLock={true}
@@ -985,7 +988,7 @@ class ProfilePage extends React.Component {
                                 open={messagesOpen}
                                 onClose={this.handleClose}
                             >
-                                <MenuItem onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
+                                <MenuItem disableRipple onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
                             </Menu>
 
                             <IconButton
@@ -997,7 +1000,7 @@ class ProfilePage extends React.Component {
                                 onClick={this.handleMenu}
                                 color="inherit"
                             >
-                                {<NotificationsIcon />}
+                                {<NotificationsIcon className={classes.avatarSm}/>}
                             </IconButton>
                             <Menu
                                 disableScrollLock={true}
@@ -1016,7 +1019,7 @@ class ProfilePage extends React.Component {
                                 open={notificationsOpen}
                                 onClose={this.handleClose}
                             >
-                                <MenuItem onClick={this.handleClose} className={classes.menuItem}>Notifications</MenuItem>
+                                <MenuItem disableRipple onClick={this.handleClose} className={classes.menuItem}>Notifications</MenuItem>
                             </Menu>
 
                             <IconButton
@@ -1057,9 +1060,9 @@ class ProfilePage extends React.Component {
                                     padding: 8
                                 }}
                             >
-                                <MenuItem onClick={this.handleViewProfile} className={classes.menuItem}>Your Profile</MenuItem>
-                                <MenuItem onClick={this.handleEditProfile} className={classes.menuItem}>Edit Profile</MenuItem>
-                                <MenuItem onClick={this.handleLogout} className={classes.menuItem}>Logout</MenuItem>
+                                <MenuItem disableRipple onClick={this.handleViewProfile} className={classes.menuItem}>Your Profile</MenuItem>
+                                <MenuItem disableRipple onClick={this.handleEditProfile} className={classes.menuItem}>Edit Profile</MenuItem>
+                                <MenuItem disableRipple onClick={this.handleLogout} className={classes.menuItem}>Logout</MenuItem>
                             </Menu>
 
                         </Toolbar>
@@ -1226,12 +1229,12 @@ class ProfilePage extends React.Component {
                             onChange={this.handleTabChange}
                             indicatorColor="primary"
                         >
-                            <Tab label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
+                            <Tab disableRipple label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
                             {viewingMyProfile && 
-                            <Tab label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
-                            <Tab label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
+                            <Tab disableRipple label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
+                            <Tab disableRipple label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
                             {viewingMyProfile && 
-                            <Tab label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
+                            <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
                         </Tabs>
                         <Divider style={{ background: 'grey' }} />
                         <Grid container spacing={5} className={classes.posts}>
@@ -1317,7 +1320,8 @@ class ProfilePage extends React.Component {
                                     className={classes.input}
                                     onChange={this.onFileChange}
                                 />
-                                <Button
+                                <Button 
+                                    disableRipple 
                                     variant="contained"
                                     color="primary"
                                     component="span"
@@ -1328,6 +1332,7 @@ class ProfilePage extends React.Component {
                             </label>
 
                             <Button
+                                disableRipple 
                                 variant="contained"
                                 color="primary"
                                 classes={{ root: classes.modalButtonRemove }}
@@ -1336,6 +1341,7 @@ class ProfilePage extends React.Component {
                                 Remove Photo
                             </Button>
                             <Button
+                                disableRipple 
                                 variant="contained"
                                 color="primary"
                                 classes={{ root: classes.modalButtonCancel }}
@@ -1403,6 +1409,7 @@ class ProfilePage extends React.Component {
                                     />
                                 </div>
                                 <Button
+                                    disableRipple 
                                     onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
                                     variant="contained"
                                     color="primary"
@@ -1411,6 +1418,7 @@ class ProfilePage extends React.Component {
                                     Save
                                 </Button>
                                 <Button
+                                    disableRipple 
                                     variant="contained"
                                     color="primary"
                                     classes={{ root: classes.cancelButton }}
