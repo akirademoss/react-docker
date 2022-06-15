@@ -104,11 +104,7 @@ followingButton: {
     height: "32px",
     width: "70px"
 },
-item2: {
- 
-},
 item3: {
- 
   position: 'absolute',
   marginLeft: 240,
 },
@@ -139,7 +135,7 @@ class FollowInfo extends React.Component {
                  
                   
                 </Grid>
-                <Grid item className={classes.item2}>
+                <Grid item>
                   <Grid container className={classes.followGridList}>
                     <Grid item> 
                       <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.User.username}</b> </Link>

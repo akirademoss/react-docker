@@ -1,16 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import SearchIcon from '@material-ui/icons/Search';
 import { ThemeProvider } from "@material-ui/styles";
-import InputBase from '@material-ui/core/InputBase';
-import IconButton from "@material-ui/core/IconButton";
-import Skeleton from "@material-ui/lab/Skeleton";
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -19,21 +11,12 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 
-//menu stuff
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
-import Badge from "@material-ui/core/Badge";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import MoreIcon from "@material-ui/icons/MoreVert";
 
 //router and page imports
-//import history from '../history';
 import { history } from '../_helpers';
-
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
+import CustomToolbar from "../_components/CustomToolbar";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -77,127 +60,9 @@ const darkTheme = createMuiTheme({
   });
   
   const styles = darkTheme => ({
-    //Part of Top Nav Bar  
-    navBar: {
-      boxShadow: 'none',
-      minHeight: 5,
-      height: 'auto',
-      backgroundColor: fade(grey[500], 0.4),
-      position: 'fixed',
-      
-    },
-    menuItem: {
-      boxShadow: 'none',
-      height: 'auto',
-      background: 'transparent',
-    },
-    menu: {
-      boxShadow: 'none',
-      //backgroundColor: fade(darkTheme.palette.common.black, 0.5),
-    },
-    iconButton: {
-      
-    },
-    rightToolbar: {
-      marginLeft: "auto",
-      marginRight: -12,
-      display: 'flex',
-      flexDirection: 'row',
-    },
-    homeButton: {
-      marginRight: 0,
-      marginLeft: -12,
-      marginTop: 0,
-      width: '100%', 
-      background: 'transparent',
-          background: 'transparent',
-      "&:hover": {
-          background: 'transparent',
-        },
-    },
-    createAccountButton: {
-      margin: darkTheme.spacing(0, 0, 0),
-      width: 110,
-    }, 
-    searchAlign: {
-      display: 'flex', 
-      flexDirection: 'row', 
-      alighnItems: 'center',
-      width: '25%',
-    },
-    search: {
-      position: 'relative',
-      borderRadius: darkTheme.shape.borderRadius ,
-      backgroundColor: fade(darkTheme.palette.common.black, 0.5),
-      '&:hover': {
-        backgroundColor: fade(darkTheme.palette.common.black, 0.05),
-      },
-      borderBottom: '1px solid white',
-      borderTop: '1px solid white',
-      borderLeft: '1px solid white',
-      borderRight: '1px solid white',
-      marginRight: darkTheme.spacing(2),
-      marginLeft: 0,
-      width: '100%',
-    },
-    searchIcon: {
-      padding: darkTheme.spacing(0, 2),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    inputRoot: {
-      color: 'inherit',
-    },
-    inputInput: {
-      fullWidth: 'true',
-      padding: darkTheme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
-      transition: darkTheme.transitions.create('width'),
-      width: '100%',
-      [darkTheme.breakpoints.up('md')]: {
-        width: '20ch',
-      },
-    },
     grow: {
       flexGrow: 1,
     },
-    sectionDesktop: {
-      display: 'none',
-      [darkTheme.breakpoints.up('md')]: {
-        display: 'flex',
-      },
-    },
-    sectionMobile: {
-      display: "flex",
-      [darkTheme.breakpoints.up("md")]: {
-        display: "none"
-      }
-    },
-    text: {
-      width: 290,
-      color: 'primary',
-      backgroundColor: 'primary',
-    },
-    signInButton: {
-      margin: darkTheme.spacing(3, 0, 0),
-      width: 290,
-    },
-    avatarSm: {
-      background: 'transparent',
-      background: 'transparent',
-      "&:hover": {
-          background: 'transparent',
-      },
-      margin: "auto",
-      width: "30px",
-      height: "30px",
-      borderRadius: 100
-  },  
   });
 
 class HomePrivate extends React.Component {
@@ -273,11 +138,6 @@ class HomePrivate extends React.Component {
     this.setState({notificationsOpen: false});
   };
 
-  setPopupBoolean = () => {
-    if(!Boolean(this.state.anchorEl.name)){
-
-    }
-  }
   //get the user information
   getProfile = async (e) => {
     //e.preventDefault();
@@ -300,131 +160,21 @@ class HomePrivate extends React.Component {
             <ThemeProvider theme={darkTheme}>
             <CssBaseline />
             <div className={classes.grow}>
-            <AppBar position="static" className={classes.navBar}>
-              <Toolbar>
-                <div>
-                  <Button className={classes.homeButton}
-                  onClick={() => history.push('/' + this.props.user.username + '/home')}
-                  >
-                    <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'}/>
-                  </Button>
-                </div>
-
-
-                <div className={classes.grow} />
-                <section className={classes.searchAlign}>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
-                    </div>
-                    <InputBase
-                      fullWidth={true}
-                      placeholder="Search…"
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                      inputProps={{ 'aria-label': 'search' }}
+            <CustomToolbar 
+                        user={this.props.user}
+                        profile={this.props.profile}
+                        loadingProfile={loadingProfile}
+                        handleMenu={this.handleMenu}
+                        handleClose={this.handleClose}
+                        handleViewProfile={this.handleViewProfile}
+                        handleEditProfile={this.handleEditProfile}
+                        handleLogout={this.handleLogout}
+                        messagesOpen={messagesOpen}
+                        anchorEl={anchorEl}
+                        notificationsOpen={notificationsOpen}
+                        profileOpen={profileOpen} 
                     />
-                  </div>
-                </section>
-                  <IconButton
-                    name="messages"
-                    aria-owns={messagesOpen ? 'message-alerts' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleMenu}
-                    color="inherit"
-                    >
-                    {<MailIcon />}
-                    </IconButton>
-                    <Menu
-                      color="secondary"
-                      id="message-alerts"
-                      anchorEl={anchorEl}
-                      getContentAnchorEl={null}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      open={messagesOpen}
-                      onClose={this.handleClose}
-                    >
-                      <MenuItem onClick={this.handleClose} className={classes.menuItem}>Messages</MenuItem>
-                    </Menu>
-                  
-                  <IconButton
-                    name="notifications"
-                    aria-owns={notificationsOpen ? 'notifications-alerts' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleMenu}
-                    color="inherit"
-                    >
-                    {<NotificationsIcon />}
-                    </IconButton>
-                    <Menu
-                      color="secondary"
-                      id="notifications-alerts"
-                      anchorEl={anchorEl}
-                      getContentAnchorEl={null}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      open={notificationsOpen}
-                      onClose={this.handleClose}
-                    >
-                      <MenuItem onClick={this.handleClose} className={classes.menuItem}>Notifications</MenuItem>
-                    </Menu>
-
-                  <IconButton
-                    name="profile"
-                    aria-owns={profileOpen ? 'profile-menu' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleMenu}
-                    color="inherit"
-                    >
-                    {loadingProfile && <Skeleton variant="circle" className={classes.avatarSm}/>}
-                    {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarSm} />}
-                    {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
-                    </IconButton>
-                    <Menu
-                      color="secondary"
-                      id="profile-menu"
-                      anchorEl={anchorEl}
-                      getContentAnchorEl={null}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      open={profileOpen}
-                      onClose={this.handleClose}
-                      style={{
-                        padding: 8
-                      }}
-                    >
-                      <MenuItem onClick={this.handleViewProfile} className={classes.menuItem}>Your Profile</MenuItem>
-                      <MenuItem onClick={this.handleEditProfile} className={classes.menuItem}>Edit Profile</MenuItem>
-                      <MenuItem onClick={this.handleLogout} className={classes.menuItem}>Logout</MenuItem>
-                    </Menu>
-              
-              </Toolbar>
-            </AppBar> 
             </div> 
-            
-
-
             </ThemeProvider>
         );
     }
