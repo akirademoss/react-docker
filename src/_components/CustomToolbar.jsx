@@ -155,6 +155,14 @@ const darkTheme = createMuiTheme({
     icon: {
         color: darkTheme.palette.common.white,
     },
+    skeleton: {
+        //backgroundColor: '#a5a5a5',
+       // animation: skeleton-animation 1s infinite linear,
+        color: darkTheme.palette.common.white,
+        backgroundColor: grey[700],
+        width: "26px",
+        height: "26px",
+    },
 
 
 
@@ -267,9 +275,9 @@ const darkTheme = createMuiTheme({
                         color="inherit"
                     >
     
-                        {loadingProfile && <Skeleton variant="circle" className={classes.avatarSm}/>}
-                        {!loadingProfile && (profile.previewImg != undefined) && <img src={profile.previewImg} className={classes.avatarSm} />}  
-                        {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>}
+                        {loadingProfile && !profile.previewImg && <Skeleton variant="circle" animation="wave" className={classes.skeleton}/>}
+                        {!loadingProfile && profile.previewImg && <img src={profile.previewImg} className={classes.avatarSm} />}  
+                        {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>} 
                                
                     </IconButton>
                     <Menu

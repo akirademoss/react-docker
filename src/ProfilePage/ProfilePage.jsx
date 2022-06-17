@@ -68,6 +68,10 @@ import CloseIcon from '@material-ui/icons/Close';
 //import custom component
 import FollowInfo from "../_components/FollowInfo";
 import CustomToolbar from "../_components/CustomToolbar";
+import ProfilePic from "../_components/ProfilePic";
+import ChangePicModal from "../_components/ChangePicModal";
+import UploadPicModal from "../_components/UploadPicModal";
+import FollowModal from "../_components/FollowModal";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -81,7 +85,7 @@ const darkTheme = createMuiTheme({
                 borderRight: '1px solid grey',
                 borderColor: fade('#ffffff', 0.5),
             }
-        },       
+        },
     },
     palette: {
         type: 'dark',
@@ -124,68 +128,6 @@ const styles = darkTheme => ({
             cursor: 'default',
         },
     },
-    iconButtonAvatar: {
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-            backgroundColor: 'transparent',
-            cursor: 'default',
-        },
-        height: '100%',
-        width: '100%'
-    },
-    rightToolbar: {
-        marginLeft: "auto",
-        marginRight: -12,
-        display: 'flex',
-        flexDirection: 'row',
-        position: 'fixed',
-    },
-    createAccountButton: {
-        margin: darkTheme.spacing(0, 0, 0),
-        width: 110,
-    },
-    textButton: {
-        textTransform: 'none',
-        fontSize: '17px',
-        "&:hover": {
-            background: 'transparent',
-            backgroundColor: 'transparent',
-            cursor: 'default',
-        },
-    },
-    sectionDesktop: {
-        display: 'none',
-        [darkTheme.breakpoints.up('md')]: {
-            display: 'flex',
-        },
-    },
-    sectionMobile: {
-        display: "flex",
-        [darkTheme.breakpoints.up("md")]: {
-            display: "none"
-        }
-    },
-    text: {
-        width: 290,
-        color: 'primary',
-        backgroundColor: 'primary',
-    },
-    signInButton: {
-        margin: darkTheme.spacing(3, 0, 0),
-        width: 290,
-    },
-    input: {
-        opacity: 0,
-        height: 0,
-        width: 0,
-        margin: 0
-    },
-    profile: {
-        marginTop: 20,
-        minWidth: 430,
-    },
     avatar: {
         background: 'transparent',
         background: 'transparent',
@@ -208,6 +150,40 @@ const styles = darkTheme => ({
         height: "100px",
         borderRadius: 100
     },
+    modalButton: {
+        width: '95%',
+        minWidth: 380,
+        textTransform: 'none',
+        fontSize: '16px',
+    },
+    modalButtonCancel: {
+        width: '95%',
+        backgroundColor: grey[500],
+        '&:hover': {
+            backgroundColor: grey[600],
+        },
+        minWidth: 380,
+        textTransform: 'none',
+        fontSize: '16px',
+    },
+    textButton: {
+        textTransform: 'none',
+        fontSize: '17px',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
+    },
+    text: {
+        width: 290,
+        color: 'primary',
+        backgroundColor: 'primary',
+    },
+    profile: {
+        marginTop: 20,
+        minWidth: 430,
+    },
     editButton: {
         background: 'transparent',
         background: 'transparent',
@@ -219,6 +195,7 @@ const styles = darkTheme => ({
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
+        textTransform: 'none',
     },
     followButton: {
 
@@ -227,7 +204,7 @@ const styles = darkTheme => ({
         '&:hover': {
             backgroundColor: blue[800],
         },
-        
+
     },
     posts: {
         marginTop: 5,
@@ -308,26 +285,6 @@ const styles = darkTheme => ({
         },
         borderRadius: darkTheme.shape.borderRadius,
     },
-    modalButton: {
-        width: '95%',
-        minWidth: 380,
-    },
-    modalButtonRemove: {
-        width: '95%',
-        backgroundColor: blue[700],
-        '&:hover': {
-            backgroundColor: blue[800],
-        },
-        minWidth: 380,
-    },
-    modalButtonCancel: {
-        width: '95%',
-        backgroundColor: grey[500],
-        '&:hover': {
-            backgroundColor: grey[600],
-        },
-        minWidth: 380,
-    },
     followGrid: {
         marginBottom: 0,
         alignItems: 'center',
@@ -336,13 +293,13 @@ const styles = darkTheme => ({
         height: 70,
     },
     followGridItem: {
-       
+
     },
     modalCancel: {
         marginTop: 20,
         position: 'absolute',
         marginLeft: 305,
-      },
+    },
     followingModalCancelBtn: {
         background: 'transparent',
         background: 'transparent',
@@ -397,7 +354,7 @@ const styles = darkTheme => ({
         color: grey[700],
     },
     list: {
-        maxHeight: 300, 
+        maxHeight: 300,
         overflow: 'auto'
     },
     avatarFollow: {
@@ -433,7 +390,7 @@ const styles = darkTheme => ({
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
-     
+
 
 
 
@@ -494,21 +451,21 @@ class ProfilePage extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
     }
 
-        //Each time page refreshes we call this function 
-        async componentDidMount() {
-            this.getProfile();
-            await new Promise(resolve => { setTimeout(resolve, 300); });
-            this.followingStatus();
-            this.myFollowCount();
-            this.userFollowCount();
-            this.setState({followStatusLoaded: true});
-            return Promise.resolve();
-        }
+    //Each time page refreshes we call this function 
+    async componentDidMount() {
+        this.getProfile();
+        await new Promise(resolve => { setTimeout(resolve, 300); });
+        this.followingStatus();
+        this.myFollowCount();
+        this.userFollowCount();
+        this.setState({ followStatusLoaded: true });
+        return Promise.resolve();
+    }
 
-        componentDidUpdate() {
-            console.log("component did update")
-        }
-    
+    componentDidUpdate() {
+        console.log("component did update")
+    }
+
     handleChange = (event, checked) => {
         this.setState({ auth: checked });
     };
@@ -637,7 +594,7 @@ class ProfilePage extends React.Component {
         const dispatch = await this.props.followUser(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
-    handleUnfollow = async() => {
+    handleUnfollow = async () => {
         const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
@@ -670,10 +627,10 @@ class ProfilePage extends React.Component {
     handleShowFollowers = () => {
         this.setState({ showFollowers: true })
         console.log("showFollowers status: ", this.state.showFollowers)
-        if(this.state.viewingMyProfile){
+        if (this.state.viewingMyProfile) {
             const dispatch = this.props.getFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.username);
         }
-        else{
+        else {
             const dispatch = this.props.getUserFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
         }
     }
@@ -681,13 +638,13 @@ class ProfilePage extends React.Component {
     handleShowFollowing = () => {
         this.setState({ showFollowing: true })
         console.log("showFollowing status: ", this.state.showFollowing)
-        if(this.state.viewingMyProfile){
+        if (this.state.viewingMyProfile) {
             const dispatch = this.props.getFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.username);
         }
-        else{
+        else {
             const dispatch = this.props.getUserFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
         }
-        
+
     }
 
     handleShowImageCrop = () => {
@@ -760,33 +717,33 @@ class ProfilePage extends React.Component {
 
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
-    console.log("GETTING PROFILE INFO")
-     if (this.props.loggedIn){
-         const username = this.props.user.username;
-         const id = this.props.user.id;
-         const token = this.props.user.accessToken;
-         const profile = await this.props.getInfo(username, id, token);
-     }
+        console.log("GETTING PROFILE INFO")
+        if (this.props.loggedIn) {
+            const username = this.props.user.username;
+            const id = this.props.user.id;
+            const token = this.props.user.accessToken;
+            const profile = await this.props.getInfo(username, id, token);
+        }
 
 
-     
-     //if we are viewing another user's profile, this will get the user's profile information
-     const username = this.props.username;
-     console.log(username);
-     const userProfile = await this.props.getUserInfo(username);
-     if (userProfile){
-         history.push('/' + username + '/user');
-     }
-     
-     //if we aren viewing a user's profile, view will be of their profile
-     //add code to query if we are following user here
-     if (!isEqual(this.props.userProfile, this.props.profile)){
-         this.setState({viewingMyProfile: false})
-         const id = this.props.user.id;
-         const userId = this.props.userProfile.userId;
-         console.log("Following Status for ids listed below")
-         console.log("id: ", id, "userId: ", userId)
-     }
+
+        //if we are viewing another user's profile, this will get the user's profile information
+        const username = this.props.username;
+        console.log(username);
+        const userProfile = await this.props.getUserInfo(username);
+        if (userProfile) {
+            history.push('/' + username + '/user');
+        }
+
+        //if we aren viewing a user's profile, view will be of their profile
+        //add code to query if we are following user here
+        if (!isEqual(this.props.userProfile, this.props.profile)) {
+            this.setState({ viewingMyProfile: false })
+            const id = this.props.user.id;
+            const userId = this.props.userProfile.userId;
+            console.log("Following Status for ids listed below")
+            console.log("id: ", id, "userId: ", userId)
+        }
 
     }
 
@@ -821,9 +778,9 @@ class ProfilePage extends React.Component {
         const { loadingFollowStatus } = this.props;
         const { loadingMyFollowerCount, loadingMyFollowingCount, loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo, loadingUserFollowingInfo, loadingUserFollowerInfo } = this.props;
-        const { followingInfoLoaded, followerInfoLoaded, userFollowingInfoLoaded, userFollowerInfoLoaded} = this.props;
+        const { followingInfoLoaded, followerInfoLoaded, userFollowingInfoLoaded, userFollowerInfoLoaded } = this.props;
 
-       {/*  if (loadingFollowingInfo) {
+        {/*  if (loadingFollowingInfo) {
             return(
             <div>
             <LinearProgress color="inherit" />
@@ -837,7 +794,7 @@ class ProfilePage extends React.Component {
                 <CssBaseline />
                 <div className={classes.grow}>
 
-                    <CustomToolbar 
+                    <CustomToolbar
                         user={this.props.user}
                         profile={this.props.profile}
                         loadingProfile={loadingProfile}
@@ -849,90 +806,19 @@ class ProfilePage extends React.Component {
                         messagesOpen={messagesOpen}
                         anchorEl={anchorEl}
                         notificationsOpen={notificationsOpen}
-                        profileOpen={profileOpen} 
+                        profileOpen={profileOpen}
                     />
 
                     <Box component="main" maxWidth={935} margin="auto" padding="60px 10px 0">
                         <Box mb="44px" className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
-
-                                {viewingMyProfile &&
-                                    <Hidden smDown>
-                                        <label htmlFor="contained-button-file">
-
-                                            <IconButton
-                                                disableRipple
-                                                id="contained-button-file"
-                                                color="inherit"
-                                                className={classes.iconButtonAvatar}
-                                                onClick={this.handleShow}
-                                                component="span"
-                                            >
-                                               
-                                              {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
-                                              {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
-                                              {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>} 
-                                                                                                                                   
-                                            </IconButton>
-                                        </label>
-                                    </Hidden>}
-
-                                    {viewingMyProfile &&    
-                                    <Hidden mdUp>
-                                        <label htmlFor="contained-button-file">
-                                            <IconButton 
-                                                disableRipple
-                                                id="contained-button-file"
-                                                color="inherit"
-                                                className={classes.iconButtonAvatar}
-                                                onClick={this.handleShow}
-                                                component="span"
-                                            >
-                                                {loadingUserProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
-                                                {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />}
-                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}             
-                                            </IconButton>
-                                        </label>
-                                    </Hidden>}
-
-                                    {!viewingMyProfile && 
-                                    <Hidden smDown>
-                                        <label htmlFor="contained-button-file">
-                                            <IconButton
-                                                disableFocusRipple = "true"
-                                                disableRipple="true"
-                                                id="contained-button-file"
-                                                color="inherit"
-                                                className={classes.iconButtonAvatar}
-                                                component="span"
-                                            >                                            
-                                              {loadingUserProfile && <Skeleton variant="circle" className={classes.avatar}/>}
-                                              {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatar} />}
-                                             {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatar}/>}                                                                                                                          
-                                            </IconButton>
-
-                                        </label>
-                                    </Hidden>}
-                                    {!viewingMyProfile &&
-                                    <Hidden mdUp>
-                                        <label htmlFor="contained-button-file">
-                                            <IconButton
-                                                disableFocusRipple = "true"
-                                                disableRipple="true"
-                                                id="contained-button-file"
-                                                color="inherit"
-                                                className={classes.iconButtonAvatar}
-                                                component="span"
-                                            >                           
-                                                {loadingUserProfile && <Skeleton variant="circular" className={classes.avatarMd}/>}
-                                                {!loadingUserProfile && this.props.userProfile.previewImg && <img src={this.props.userProfile.previewImg} className={classes.avatarMd} />}
-                                                {!this.props.userProfile.previewImg && !loadingUserProfile && <AccountCircle className={classes.avatarMd}/>}                                                
-                                            </IconButton>
-
-                                        </label>
-                                    </Hidden>}
-
+                                    <ProfilePic
+                                        profile={this.props.userProfile}
+                                        loadingProfile={loadingUserProfile}
+                                        viewingMyProfile={viewingMyProfile}
+                                        handleShow={this.handleShow}
+                                    />
                                 </Grid>
                                 <Grid item xs={8}>
                                     <Box clone mb="20px">
@@ -942,59 +828,57 @@ class ProfilePage extends React.Component {
                                                     {this.props.username}
                                                 </Typography>
                                             </Grid>
-
-                                            {viewingMyProfile && 
-                                            <Grid item>
-                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
-                                                    Edit Profile
-                                                </Button>         
-                                                     <IconButton disableRipple className={classes.iconButtonTransparent}>
-                                                         {<Settings/>}
-                                                     </IconButton>
-                                            </Grid>}
-
-                                            {!viewingMyProfile &&     
-                                            <Grid item>
-                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
-                                                    Message
+                                            {viewingMyProfile &&
+                                                <Grid item>
+                                                    <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
+                                                        <b>Edit Profile</b>
+                                                    </Button>
+                                                    <IconButton disableRipple className={classes.iconButtonTransparent}>
+                                                        {<Settings />}
+                                                    </IconButton>
+                                                </Grid>}
+                                            {!viewingMyProfile &&
+                                                <Grid item>
+                                                    <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                        <b>Message</b>
+                                                    </Button>
+                                                </Grid>}
+                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == '') && (this.state.followStatusLoaded == true) &&
+                                                <Grid item>
+                                                    <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
+                                                        Follow
                                                 </Button>
                                                 </Grid>}
-                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == '')  && (this.state.followStatusLoaded == true) &&
-                                            <Grid item>
-                                                <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
-                                                    Follow
-                                                </Button>
-                                            </Grid>}
                                             {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
-                                            <Grid item>
-                                                <div className={classes.followingBoarder}>
-                                                <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
-                                                    {<PeopleAltIcon />}
-                                                </IconButton>
-                                                </div>
-                                            </Grid>}
-                                            
+                                                <Grid item>
+                                                    <div className={classes.followingBoarder}>
+                                                        <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
+                                                            {<PeopleAltIcon />}
+                                                        </IconButton>
+                                                    </div>
+                                                </Grid>}
+
                                         </Grid>
                                     </Box>
                                     <Box mb="20px">
                                         <Grid container spacing={1}>
-                                            <Grid item>                                               
+                                            <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} >
-                                                    <b>0</b> 
+                                                    <b>0</b>
                                                     &nbsp;posts
                                                 </Button>
-                                            </Grid>                                        
+                                            </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowers}>
-                                                    {viewingMyProfile && !loadingMyFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowerCount.count} </b>} 
-                                                    {!viewingMyProfile && !loadingUserFollowerCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>} 
+                                                    {viewingMyProfile && !loadingMyFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowerCount.count} </b>}
+                                                    {!viewingMyProfile && !loadingUserFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>}
                                                     &nbsp;followers
                                                 </Button>
-                                            </Grid>       
+                                            </Grid>
                                             <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowing}> 
-                                                    {viewingMyProfile && !loadingMyFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowingCount.count} </b>} 
-                                                    {!viewingMyProfile && !loadingUserFollowingCount  && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
+                                                <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowing}>
+                                                    {viewingMyProfile && !loadingMyFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowingCount.count} </b>}
+                                                    {!viewingMyProfile && !loadingUserFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
                                                     &nbsp;following
                                                 </Button>
                                             </Grid>
@@ -1015,11 +899,11 @@ class ProfilePage extends React.Component {
                             indicatorColor="primary"
                         >
                             <Tab disableRipple label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
-                            {viewingMyProfile && 
-                            <Tab disableRipple label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
+                            {viewingMyProfile &&
+                                <Tab disableRipple label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
                             <Tab disableRipple label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
-                            {viewingMyProfile && 
-                            <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
+                            {viewingMyProfile &&
+                                <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
                         </Tabs>
                         <Divider style={{ background: 'grey' }} />
                         <Grid container spacing={5} className={classes.posts}>
@@ -1088,54 +972,26 @@ class ProfilePage extends React.Component {
                             </Grid>
                         </Grid>
                     </Box>
-                    <Modal
-                        open={show}
-                        onClose={this.handleCloseModal}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <div className={classes.modalUpload}>
+                    <ChangePicModal 
+                        show={show}
+                        handleCloseModal={this.handleCloseModal}
+                        onFileChange={this.onFileChange}
+                        handleRemove={this.handleRemove}
+                    />
+{/** 
+                    <UploadPicModal 
+                        showImageCrop={showImageCrop}
+                        handleCloseImageModal={this.handleCloseImageModal}
+                        imageSrc={imageSrc}
+                        crop={crop}
+                        rotation={rotation}
+                        zoom={zoom}
+                        setCrop={this.setCrop}
+                        setRotation={this.setRotation}
+                        onCropComplete={this.onCropComplete}
+                        setZoom={this.setZoom}
+                    />*/}
 
-                            <label htmlFor="icon-button-file">
-                                <input
-                                    accept="image/*"
-                                    id="icon-button-file"
-                                    multiple
-                                    type="file"
-                                    className={classes.input}
-                                    onChange={this.onFileChange}
-                                />
-                                <Button 
-                                    disableRipple 
-                                    variant="contained"
-                                    color="primary"
-                                    component="span"
-                                    classes={{ root: classes.modalButton }}
-                                >
-                                    Upload Photo
-                                </Button>
-                            </label>
-
-                            <Button
-                                disableRipple 
-                                variant="contained"
-                                color="primary"
-                                classes={{ root: classes.modalButtonRemove }}
-                                onClick={this.handleRemove}
-                            >
-                                Remove Photo
-                            </Button>
-                            <Button
-                                disableRipple 
-                                variant="contained"
-                                color="primary"
-                                classes={{ root: classes.modalButtonCancel }}
-                                onClick={this.handleCloseModal}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                    </Modal>
 
                     <Modal
                         open={showImageCrop}
@@ -1194,7 +1050,7 @@ class ProfilePage extends React.Component {
                                     />
                                 </div>
                                 <Button
-                                    disableRipple 
+                                    disableRipple
                                     onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
                                     variant="contained"
                                     color="primary"
@@ -1203,7 +1059,7 @@ class ProfilePage extends React.Component {
                                     Save
                                 </Button>
                                 <Button
-                                    disableRipple 
+                                    disableRipple
                                     variant="contained"
                                     color="primary"
                                     classes={{ root: classes.cancelButton }}
@@ -1216,6 +1072,8 @@ class ProfilePage extends React.Component {
                         </div>
                     </Modal>
                     <ImgDialog img={this.croppedImage} onClose={this.onClose} />
+                    
+                   {/** */} <ImgDialog img={this.croppedImage} onClose={this.onClose} />
 
                     {/* UNFOLLOW MODAL */}
                     <Modal
@@ -1225,14 +1083,14 @@ class ProfilePage extends React.Component {
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.modalUpload}>
-                        <Box m={1}/>
-                        {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
-                        {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd}/>}
+                            <Box m={1} />
+                            {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
+                            {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd} />}
 
-                        <Box m={1}/>
-                        <Typography variant="subtitle2"> Unfollow @{unfollowUsername}?</Typography>
-                        <Box m={1}/>
-                        
+                            <Box m={1} />
+                            <Typography variant="subtitle2"> Unfollow @{unfollowUsername}?</Typography>
+                            <Box m={1} />
+
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -1242,13 +1100,13 @@ class ProfilePage extends React.Component {
                             >
                                 Unfollow
                             </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            classes={{ root: classes.modalButtonCancel }}
-                            onClick={this.handleCloseUnfollowModal}
-                        >
-                            Cancel
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                classes={{ root: classes.modalButtonCancel }}
+                                onClick={this.handleCloseUnfollowModal}
+                            >
+                                Cancel
                         </Button>
                         </div>
                     </Modal>
@@ -1261,14 +1119,14 @@ class ProfilePage extends React.Component {
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.modalUpload}>
-                        <Box m={1}/>
-                        {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
-                        {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd}/>}
+                            <Box m={1} />
+                            {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
+                            {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd} />}
 
-                        <Box m={1}/>
-                        <Typography variant="subtitle2"> Remove @{unfollowUsername}?</Typography>
-                        <Box m={1}/>
-                        
+                            <Box m={1} />
+                            <Typography variant="subtitle2"> Remove @{unfollowUsername}?</Typography>
+                            <Box m={1} />
+
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -1278,16 +1136,16 @@ class ProfilePage extends React.Component {
                             >
                                 Remove
                             </Button>
-                            
-                        
 
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            classes={{ root: classes.modalButtonCancel }}
-                            onClick={this.handleCloseRemoveModal}
-                        >
-                            Cancel
+
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                classes={{ root: classes.modalButtonCancel }}
+                                onClick={this.handleCloseRemoveModal}
+                            >
+                                Cancel
                         </Button>
                         </div>
                     </Modal>
@@ -1299,31 +1157,31 @@ class ProfilePage extends React.Component {
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.followModals}>
-                        <Grid container spacing={10} className={classes.followGrid}>
-                            <Grid item className={classes.followGridItem}>
-                                <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Followers </b> </Typography>
+                            <Grid container spacing={10} className={classes.followGrid}>
+                                <Grid item className={classes.followGridItem}>
+                                    <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Followers </b> </Typography>
+                                </Grid>
+                                <Grid item className={classes.modalCancel}>
+                                    <IconButton variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowersModal}>
+                                        {<CloseIcon />}
+                                    </IconButton>
+                                </Grid>
                             </Grid>
-                            <Grid item className={classes.modalCancel}>
-                                <IconButton  variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowersModal}>
-                                    {<CloseIcon/>}
-                                </IconButton>
-                            </Grid>
-                       </Grid>
-                       <hr className={classes.hl}></hr>
-                       
-            
-                        {/* 
+                            <hr className={classes.hl}></hr>
+
+
+                            {/* 
                         <FollowInfo followingInfo={this.props.followingInfo[0]} handleShowUnfollow={this.handleShowUnfollow} />*/}
-                        <List className={classes.list}>
-                       {followerInfoLoaded && !loadingFollowerInfo &&
-                       this.props.followerInfo.map( (followingInfo, i) =>(
-                        <div key={i}>
-                            <FollowInfo followingInfo={this.props.followerInfo[i]} handleButton={(e) => this.handleShowRemove(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Remove"/>
+                            <List className={classes.list}>
+                                {followerInfoLoaded && !loadingFollowerInfo &&
+                                    this.props.followerInfo.map((followingInfo, i) => (
+                                        <div key={i}>
+                                            <FollowInfo followingInfo={this.props.followerInfo[i]} handleButton={(e) => this.handleShowRemove(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Remove" />
+                                        </div>
+                                    ))}
+                            </List>
                         </div>
-                        ))}
-                        </List>  
-                        </div>
-                       
+
                     </Modal>
 
                     {/* MODAL FOR FOLLOWING*/}
@@ -1334,38 +1192,38 @@ class ProfilePage extends React.Component {
                         aria-describedby="modal-modal-description"
                     >
                         <div className={classes.followModals}>
-                        
-                        
-                       
-                        
-                        <Grid container spacing={10} className={classes.followGrid}>
 
 
-                            <Grid item className={classes.followGridItem}>
-                                <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Following </b> </Typography>
+
+
+                            <Grid container spacing={10} className={classes.followGrid}>
+
+
+                                <Grid item className={classes.followGridItem}>
+                                    <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Following </b> </Typography>
+                                </Grid>
+
+
+
+                                <Grid item className={classes.modalCancel}>
+                                    <IconButton variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowingModal}>
+                                        {<CloseIcon />}
+                                    </IconButton>
+                                </Grid>
                             </Grid>
+                            <hr className={classes.hl}></hr>
 
 
-
-                            <Grid item className={classes.modalCancel}>
-                                <IconButton  variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowingModal}>
-                                    {<CloseIcon/>}
-                                </IconButton>
-                            </Grid>
-                       </Grid>
-                       <hr className={classes.hl}></hr>
-                       
-                        
-                        {/* 
+                            {/* 
                         <FollowInfo followingInfo={this.props.followingInfo[0]} handleShowUnfollow={this.handleShowUnfollow} />*/}
-                        <List className={classes.list}>
-                       {followingInfoLoaded && !loadingFollowingInfo &&
-                       this.props.followingInfo.map( (followingInfo, i) =>(
-                        <div key={i}>
-                            <FollowInfo followingInfo={this.props.followingInfo[i]} handleButton={(e) => this.handleShowUnfollowing(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Following"/>
-                        </div>
-                        ))}
-                        </List>            
+                            <List className={classes.list}>
+                                {followingInfoLoaded && !loadingFollowingInfo &&
+                                    this.props.followingInfo.map((followingInfo, i) => (
+                                        <div key={i}>
+                                            <FollowInfo followingInfo={this.props.followingInfo[i]} handleButton={(e) => this.handleShowUnfollowing(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Following" />
+                                        </div>
+                                    ))}
+                            </List>
                         </div>
                     </Modal>
                 </div>
@@ -1381,24 +1239,26 @@ function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
     const { loggedIn } = state.authentication;
-    const { profile, loadingProfile, profileLoaded} = state.getProfile;
+    const { profile, loadingProfile, profileLoaded } = state.getProfile;
     const { userProfile, loadingUserProfile } = state.getUserProfile;
-    const {follow, loadingFollowStatus } = state.getFollowStatus;
+    const { follow, loadingFollowStatus } = state.getFollowStatus;
     const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
     const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded } = state.getMyFollowingCount;
     const { userFollowerCount, loadingUserFollowerCount } = state.getUserFollowerCount;
     const { userFollowingCount, loadingUserFollowingCount } = state.getUserFollowingCount;
-    const { followingInfo, loadingFollowingInfo, followingInfoLoaded} = state.getFollowingInfo;
+    const { followingInfo, loadingFollowingInfo, followingInfoLoaded } = state.getFollowingInfo;
     const { followerInfo, loadingFollowerInfo, followerInfoLoaded } = state.getFollowerInfo;
     const { userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded } = state.getUserFollowingInfo;
     const { userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded } = state.getUserFollowerInfo;
-    return { loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile, 
-        follow, loadingFollowStatus, myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded, 
-        myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded, userFollowerCount, 
-        loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo, 
-        loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo, 
+    return {
+        loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile,
+        follow, loadingFollowStatus, myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded,
+        myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded, userFollowerCount,
+        loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
+        loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
         followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
-        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded, profileLoaded};
+        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded, profileLoaded
+    };
 }
 
 const actionCreators = {

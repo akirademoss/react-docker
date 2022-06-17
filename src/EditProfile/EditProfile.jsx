@@ -36,6 +36,7 @@ import ImgDialog from '../ProfilePage/ImgDialog'
 import { getCroppedImg, getRotatedImage } from '../ProfilePage/canvasUtils'
 import Modal from "@material-ui/core/Modal";
 import CustomToolbar from "../_components/CustomToolbar";
+import ProfilePic from "../_components/ProfilePic";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -155,12 +156,12 @@ const styles = darkTheme => ({
     textDecoration: 'none',
     color: blue[700]
   },
-    // styling for viewing image cropper tool
+  // styling for viewing image cropper tool
   avatarMd: {
     background: 'transparent',
     background: 'transparent',
     "&:hover": {
-        background: 'transparent',
+      background: 'transparent',
     },
     margin: "auto",
     width: "100px",
@@ -171,134 +172,134 @@ const styles = darkTheme => ({
     background: 'transparent',
     background: 'transparent',
     "&:hover": {
-        background: 'transparent',
+      background: 'transparent',
     },
     margin: "auto",
     width: "100px",
     height: "100px",
     borderRadius: 100,
 
-},
-avatarEditProf: {
- 
-  background: 'transparent',
-  background: 'transparent',
-  "&:hover": {
-      background: 'transparent',
   },
-  margin: "auto",
-  width: "100px",
-  height: "100px",
-  borderRadius: 100,
+  avatarEditProf: {
 
-},
-  iconButtonAvatar: {
+    background: 'transparent',
+    background: 'transparent',
+    "&:hover": {
       background: 'transparent',
-      background: 'transparent',
-      "&:hover": {
-        background: 'transparent',
-      },
-      height: '100%',
-      width: '100%'
+    },
+    margin: "auto",
+    width: "100px",
+    height: "100px",
+    borderRadius: 100,
+
   },
-    cropContainer: {
-      position: 'relative',
-      width: '100%',
-      minWidth: 400,
-      minHeight: 400,
-      background: darkTheme.palette.common.black,
-      [darkTheme.breakpoints.up('sm')]: {
-          height: 400,
-      },
+  iconButtonAvatar: {
+    background: 'transparent',
+    background: 'transparent',
+    "&:hover": {
+      background: 'transparent',
+    },
+    height: '100%',
+    width: '100%'
+  },
+  cropContainer: {
+    position: 'relative',
+    width: '100%',
+    minWidth: 400,
+    minHeight: 400,
+    background: darkTheme.palette.common.black,
+    [darkTheme.breakpoints.up('sm')]: {
+      height: 400,
+    },
   },
   cropButton: {
-      marginLeft: 16,
-      width: 10,
-      flex: '1',
-      backgroundColor: red[700],
+    marginLeft: 16,
+    width: 10,
+    flex: '1',
+    backgroundColor: red[700],
   },
   cancelButton: {
-      marginLeft: 16,
-      backgroundColor: grey[500],
-      '&:hover': {
-          backgroundColor: grey[600],
-      },
-      width: 10,
-      flex: '1',
+    marginLeft: 16,
+    backgroundColor: grey[500],
+    '&:hover': {
+      backgroundColor: grey[600],
+    },
+    width: 10,
+    flex: '1',
   },
   controls: {
-      padding: 16,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'stretch',
-      [darkTheme.breakpoints.up('sm')]: {
-      },
+    padding: 16,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    [darkTheme.breakpoints.up('sm')]: {
+    },
   },
   sliderContainer: {
-      display: 'flex',
-      flex: '2',
-      alignItems: 'center',
-      flexDirection: 'row',
+    display: 'flex',
+    flex: '2',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   sliderLabel: {
-      marginLeft: 16,
-      [darkTheme.breakpoints.down('xs')]: {
+    marginLeft: 16,
+    [darkTheme.breakpoints.down('xs')]: {
 
-      },
-      color: 'white',
+    },
+    color: 'white',
   },
   slider: {
-      padding: '22px 0px',
-      marginLeft: 16,
-      minWidth: 100,
-      [darkTheme.breakpoints.up('sm')]: {
-          margin: '0 16px',
-      },
-      color: red[700],
+    padding: '22px 0px',
+    marginLeft: 16,
+    minWidth: 100,
+    [darkTheme.breakpoints.up('sm')]: {
+      margin: '0 16px',
+    },
+    color: red[700],
   },
   modalUpload: {
-      [darkTheme.breakpoints.up('sm')]: {
-      },
-      minheight: 200,
-      minWidth: 400,
-      position: 'absolute',
-      backgroundColor: grey[700],
-      alignItems: 'center',
-      display: 'flex',
-      flexDirection: 'column',
-      top: '35%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      boxShadow: darkTheme.shadows[5],
-      padding: darkTheme.spacing(1),
-      "&:focus": {
-          outline: "none"
-      },
-      borderRadius: darkTheme.shape.borderRadius,
+    [darkTheme.breakpoints.up('sm')]: {
+    },
+    minheight: 200,
+    minWidth: 400,
+    position: 'absolute',
+    backgroundColor: grey[700],
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    top: '35%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    boxShadow: darkTheme.shadows[5],
+    padding: darkTheme.spacing(1),
+    "&:focus": {
+      outline: "none"
+    },
+    borderRadius: darkTheme.shape.borderRadius,
   },
   modalButton: {
-      width: '95%',
-      minWidth: 380,
-      backgroundColor: red[700],
-      '&:hover': {
-          backgroundColor: red[800],
-      },
+    width: '95%',
+    minWidth: 380,
+    backgroundColor: red[700],
+    '&:hover': {
+      backgroundColor: red[800],
+    },
   },
   modalButtonRemove: {
-      width: '95%',
-      backgroundColor: blue[700],
-      '&:hover': {
-          backgroundColor: blue[800],
-      },
-      minWidth: 380,
+    width: '95%',
+    backgroundColor: blue[700],
+    '&:hover': {
+      backgroundColor: blue[800],
+    },
+    minWidth: 380,
   },
   modalButtonCancel: {
-      width: '95%',
-      backgroundColor: grey[500],
-      '&:hover': {
-          backgroundColor: grey[600],
-      },
-      minWidth: 380,
+    width: '95%',
+    backgroundColor: grey[500],
+    '&:hover': {
+      backgroundColor: grey[600],
+    },
+    minWidth: 380,
   }
 });
 
@@ -533,28 +534,36 @@ class EditProfile extends React.Component {
         <CssBaseline />
         <div className={classes.grow}>
 
-        <CustomToolbar 
-                        user={this.props.user}
-                        profile={this.props.profile}
-                        loadingProfile={loadingProfile}
-                        handleMenu={this.handleMenu}
-                        handleClose={this.handleClose}
-                        handleViewProfile={this.handleViewProfile}
-                        handleEditProfile={this.handleEditProfile}
-                        handleLogout={this.handleLogout}
-                        messagesOpen={messagesOpen}
-                        anchorEl={anchorEl}
-                        notificationsOpen={notificationsOpen}
-                        profileOpen={profileOpen} 
-                    />
+          <CustomToolbar
+            user={this.props.user}
+            profile={this.props.profile}
+            loadingProfile={loadingProfile}
+            handleMenu={this.handleMenu}
+            handleClose={this.handleClose}
+            handleViewProfile={this.handleViewProfile}
+            handleEditProfile={this.handleEditProfile}
+            handleLogout={this.handleLogout}
+            messagesOpen={messagesOpen}
+            anchorEl={anchorEl}
+            notificationsOpen={notificationsOpen}
+            profileOpen={profileOpen}
+          />
         </div>
-        
+
         <div className={classes.formholder}>
-        <Box m={4} />
+          <Box m={4} />
           <form className={classes.form} onSubmit={this.handleSubmit}>
             <Box m={3} />
             <Grid container spacing={4} direction="row" alignItems="center" justify="center">
               <Grid item >
+                <ProfilePic
+                  profile={this.props.profile}
+                  loadingProfile={loadingProfile}
+                  viewingMyProfile={true}
+                  handleShow={this.handleShow}
+                />
+
+                {/*
               <label htmlFor="contained-button-file">
 
               <IconButton
@@ -564,7 +573,7 @@ class EditProfile extends React.Component {
                 onClick={this.handleShow}
                 component="span"
               >
-              {/*<AccountCircle className={classes.avatar}/>*/}
+            
               {loadingProfile && <Skeleton variant="circle" className={classes.avatarMd}/>}
               {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarMd} />}
               {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarEditProf} color="secondary"/>}
@@ -573,7 +582,8 @@ class EditProfile extends React.Component {
               </IconButton>
 
 
-              </label>
+              </label>  *  */}
+
               </Grid>
               <Grid item>
                 <Box m={3} />
@@ -831,7 +841,7 @@ class EditProfile extends React.Component {
                 <Button
                   onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
                   variant="contained"
-                  
+
                   classes={{ root: classes.cropButton }}
                 >
                   Save
