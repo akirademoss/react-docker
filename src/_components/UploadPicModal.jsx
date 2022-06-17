@@ -135,13 +135,6 @@ class UploadPicModal extends React.Component {
         const { classes, showImageCrop, handleCloseImageModal, imageSrc, crop, rotation, zoom, setCrop, setRotation,
         onCropComplete, setZoom, showCroppedImage} = this.props;
         
-        if (classes) {
-            return(
-            <div>
-            <p>Data is loading...</p>
-            </div>
-            )
-        }
         return (
 
             <div>
@@ -201,7 +194,17 @@ class UploadPicModal extends React.Component {
                                     onChange={setRotation}
                                 />
                             </div>
-
+                           
+                            <Button
+                                disableRipple
+                                onClick={() => { showCroppedImage() ; handleCloseImageModal() }}
+                                variant="contained"
+                                color="primary"
+                                classes={{ root: classes.cropButton }}
+                            >
+                                Save
+                            </Button> 
+                            
                             <Button
                                 disableRipple
                                 variant="contained"

@@ -978,7 +978,7 @@ class ProfilePage extends React.Component {
                         onFileChange={this.onFileChange}
                         handleRemove={this.handleRemove}
                     />
-{/** 
+
                     <UploadPicModal 
                         showImageCrop={showImageCrop}
                         handleCloseImageModal={this.handleCloseImageModal}
@@ -990,9 +990,10 @@ class ProfilePage extends React.Component {
                         setRotation={this.setRotation}
                         onCropComplete={this.onCropComplete}
                         setZoom={this.setZoom}
-                    />*/}
-
-
+                        showCroppedImage={this.showCroppedImage}
+                        handleCloseImageModal={this.handleCloseImageModal}
+                    /> 
+{/** 
                     <Modal
                         open={showImageCrop}
                         onClose={this.handleCloseImageModal}
@@ -1071,9 +1072,10 @@ class ProfilePage extends React.Component {
 
                         </div>
                     </Modal>
-                    <ImgDialog img={this.croppedImage} onClose={this.onClose} />
                     
-                   {/** */} <ImgDialog img={this.croppedImage} onClose={this.onClose} />
+                    <ImgDialog img={this.croppedImage} onClose={this.onClose} /> */}
+                   
+
 
                     {/* UNFOLLOW MODAL */}
                     <Modal
