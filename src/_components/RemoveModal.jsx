@@ -136,54 +136,16 @@ const styles = darkTheme => ({
 
 })
 
-class FollowModal extends React.Component {
+class RemoveModal extends React.Component {
     render() {
-        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followInfo, handleShow, handlePageChange, followText, buttonText } = this.props;
+        const { classes } = this.props;
         return (
 
             <div>
-                <Modal
-                    open={show}
-                    onClose={handleCloseModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <div className={classes.followModals}>
 
-
-
-
-                        <Grid container spacing={10} className={classes.followGrid}>
-
-
-                            <Grid item>
-                                <div className={classes.centerDiv}>
-                                <Typography variant="h6" className={classes.header}> <b> {followText} </b> </Typography>
-                                </div>
-                            </Grid>
-
-
-
-                            <Grid item className={classes.modalCancel}>
-                                <IconButton disableRipple variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={handleCloseModal}>
-                                    {<CloseIcon />}
-                                </IconButton>
-                            </Grid>
-                        </Grid>
-                        <hr className={classes.hl}></hr>
-                        <List className={classes.list}>
-                            {infoLoaded && !loadingInfo &&
-                                followInfo.map((followingInfo, i) => (
-                                    <div key={i}>
-                                        <FollowInfo followingInfo={followInfo[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} />
-                                    </div>
-                                ))}
-                        </List>
-                    </div>
-                </Modal>
             </div>
         );
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(FollowModal));;
+export default (withStyles(styles, { withTheme: true })(RemoveModal));;

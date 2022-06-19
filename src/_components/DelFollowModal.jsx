@@ -4,9 +4,13 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import Modal from "@material-ui/core/Modal";
-import blue from '@material-ui/core/colors/blue';
+
+
 
 const darkTheme = createMuiTheme({
     overrides: {
@@ -70,28 +74,19 @@ const styles = darkTheme => ({
         },
         borderRadius: darkTheme.shape.borderRadius,
     },
+    avatarMd: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        margin: "auto",
+        width: "100px",
+        height: "100px",
+        borderRadius: 100
+    },
     modalButton: {
         width: '95%',
-        minWidth: 380,
-        textTransform: 'none',
-        fontSize: '16px',
-        backgroundColor: red[700],
-        '&:hover': {
-            backgroundColor: red[800],
-        },
-    },
-    input: {
-        opacity: 0,
-        height: 0,
-        width: 0,
-        margin: 0
-    },
-    modalButtonRemove: {
-        width: '95%',
-        backgroundColor: blue[700],
-        '&:hover': {
-            backgroundColor: blue[800],
-        },
         minWidth: 380,
         textTransform: 'none',
         fontSize: '16px',
@@ -108,9 +103,9 @@ const styles = darkTheme => ({
     },
 })
 
-class ChangePicModal extends React.Component {
+class DelFollowModal extends React.Component {
     render() {
-        const { classes, show, handleCloseModal, onFileChange, handleRemove } = this.props;
+        const { classes, show, handleCloseModal, previewImg, username, handleAction } = this.props;
         return (
 
             <div>
@@ -121,44 +116,31 @@ class ChangePicModal extends React.Component {
                     aria-describedby="modal-modal-description"
                 >
                     <div className={classes.modalUpload}>
+                        <Box m={1} />
+                        {previewImg && <img src={previewImg} className={classes.avatarMd} />}
+                        {!previewImg && <AccountCircle className={classes.avatarMd} />}
 
-                        <label htmlFor="icon-button-file">
-                            <input
-                                accept="image/*"
-                                id="icon-button-file"
-                                multiple
-                                type="file"
-                                className={classes.input}
-                                onChange={onFileChange}
-                            />
-                            <Button
-                                disableRipple
-                                variant="contained"
-                                component="span"
-                                classes={{ root: classes.modalButton }}
-                            >
-                                Upload Photo
-                            </Button>
-                        </label>
+                        <Box m={1} />
+                        <Typography variant="subtitle2"> Unfollow @{username}?</Typography>
+                        <Box m={1} />
 
                         <Button
-                            disableRipple
                             variant="contained"
                             color="primary"
-                            classes={{ root: classes.modalButtonRemove }}
-                            onClick={handleRemove}
+                            component="span"
+                            classes={{ root: classes.modalButton }}
+                            onClick={handleAction}
                         >
-                            Remove Photo
+                            Unfollow
                             </Button>
                         <Button
-                            disableRipple
                             variant="contained"
                             color="primary"
                             classes={{ root: classes.modalButtonCancel }}
                             onClick={handleCloseModal}
                         >
                             Cancel
-                            </Button>
+                        </Button>
                     </div>
                 </Modal>
             </div>
@@ -166,4 +148,4 @@ class ChangePicModal extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(ChangePicModal));;
+export default (withStyles(styles, { withTheme: true })(DelFollowModal));;

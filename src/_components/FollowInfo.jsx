@@ -4,14 +4,14 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 import { withStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+import Skeleton from "@material-ui/lab/Skeleton";
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import IconButton from "@material-ui/core/IconButton";
-import Hidden from '@material-ui/core/Hidden';
+
 
 const darkTheme = createMuiTheme({
   overrides: {
@@ -112,12 +112,18 @@ link: {
   color: darkTheme.palette.common.white,
   fontSize: '13px',
 },
+skeleton: {
+  color: darkTheme.palette.common.white,
+  backgroundColor: grey[700],
+  width: "32px",
+  height: "32px",
+},
 
 });
 
 class FollowInfo extends React.Component {
     render() {
-      const { classes, followingInfo, handleButton, handlePageChange, buttonText} = this.props;
+      const { classes, followingInfo, handleButton, handlePageChange, buttonText, loadingInfo} = this.props;
         return (
             <div>
               <Grid container spacing={0} className={classes.followGrid}>
@@ -129,6 +135,7 @@ class FollowInfo extends React.Component {
                         className={classes.iconButtonAvatar}
                         onClick={handlePageChange}
                       >
+                        {loadingInfo && !followingInfo.previewImg && <Skeleton variant="circle" animation="wave" className={classes.skeleton}/>}
                         {followingInfo.previewImg && <img src={followingInfo.previewImg} className={classes.avatarFollow} />}
                         {!followingInfo.previewImg && <AccountCircle className={classes.avatarFollow}/>}
                       </IconButton>
@@ -147,7 +154,7 @@ class FollowInfo extends React.Component {
                 </Grid>
 
                 <Grid item className={classes.item3}>
-                  <Button className={classes.followingButton} variant="contained" fullWidth={false} onClick={handleButton}>
+                  <Button disableRipple className={classes.followingButton} variant="contained" fullWidth={false} onClick={handleButton}>
                     <b>{buttonText}</b>
                   </Button>
                 </Grid>             

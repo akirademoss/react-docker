@@ -1,42 +1,36 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+//MUI component imports
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from "@material-ui/styles";
-import IconButton from "@material-ui/core/IconButton";
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import Skeleton from "@material-ui/lab/Skeleton";
+
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { createMuiTheme } from '@material-ui/core/styles';
-import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 import blue from '@material-ui/core/colors/blue';
 
-//menu stuff
-import AccountCircle from "@material-ui/icons/AccountCircle";
-
-//router and page imports
-//import history from '../history';
+//router and action imports
 import { history } from '../_helpers';
-
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
 
 //cropper tool helper inputs
-import Cropper from 'react-easy-crop'
-import Slider from '@material-ui/core/Slider'
 import { getOrientation } from 'get-orientation/browser'
-import ImgDialog from '../ProfilePage/ImgDialog'
 import { getCroppedImg, getRotatedImage } from '../ProfilePage/canvasUtils'
-import Modal from "@material-ui/core/Modal";
+
+//custom component imports
 import CustomToolbar from "../_components/CustomToolbar";
 import ProfilePic from "../_components/ProfilePic";
+import ChangePicModal from "../_components/ChangePicModal";
+import UploadPicModal from "../_components/UploadPicModal";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -86,30 +80,8 @@ const darkTheme = createMuiTheme({
 });
 
 const styles = darkTheme => ({
-  rightToolbar: {
-    marginLeft: "auto",
-    marginRight: -12,
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  createAccountButton: {
-    margin: darkTheme.spacing(0, 0, 0),
-    width: 110,
-  },
   grow: {
     flexGrow: 1,
-  },
-  sectionDesktop: {
-    display: 'none',
-    [darkTheme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  sectionMobile: {
-    display: "flex",
-    [darkTheme.breakpoints.up("md")]: {
-      display: "none"
-    }
   },
   text: {
     width: 350,
@@ -139,168 +111,11 @@ const styles = darkTheme => ({
     borderTop: '1px solid grey',
     borderLeft: '1px solid grey',
     borderRight: '1px solid grey',
-    //paddingLeft: '60px',
-    //paddingRight: '60px',
-  },
-  notchedOutline: {
-    borderWidth: "1px",
-    borderColor: darkTheme.palette.common.blue
-  },
-  input: {
-    opacity: 0,
-    height: 0,
-    width: 0,
-    margin: 0
   },
   link: {
     textDecoration: 'none',
     color: blue[700]
   },
-  // styling for viewing image cropper tool
-  avatarMd: {
-    background: 'transparent',
-    background: 'transparent',
-    "&:hover": {
-      background: 'transparent',
-    },
-    margin: "auto",
-    width: "100px",
-    height: "100px",
-    borderRadius: 100
-  },
-  avatar: {
-    background: 'transparent',
-    background: 'transparent',
-    "&:hover": {
-      background: 'transparent',
-    },
-    margin: "auto",
-    width: "100px",
-    height: "100px",
-    borderRadius: 100,
-
-  },
-  avatarEditProf: {
-
-    background: 'transparent',
-    background: 'transparent',
-    "&:hover": {
-      background: 'transparent',
-    },
-    margin: "auto",
-    width: "100px",
-    height: "100px",
-    borderRadius: 100,
-
-  },
-  iconButtonAvatar: {
-    background: 'transparent',
-    background: 'transparent',
-    "&:hover": {
-      background: 'transparent',
-    },
-    height: '100%',
-    width: '100%'
-  },
-  cropContainer: {
-    position: 'relative',
-    width: '100%',
-    minWidth: 400,
-    minHeight: 400,
-    background: darkTheme.palette.common.black,
-    [darkTheme.breakpoints.up('sm')]: {
-      height: 400,
-    },
-  },
-  cropButton: {
-    marginLeft: 16,
-    width: 10,
-    flex: '1',
-    backgroundColor: red[700],
-  },
-  cancelButton: {
-    marginLeft: 16,
-    backgroundColor: grey[500],
-    '&:hover': {
-      backgroundColor: grey[600],
-    },
-    width: 10,
-    flex: '1',
-  },
-  controls: {
-    padding: 16,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    [darkTheme.breakpoints.up('sm')]: {
-    },
-  },
-  sliderContainer: {
-    display: 'flex',
-    flex: '2',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  sliderLabel: {
-    marginLeft: 16,
-    [darkTheme.breakpoints.down('xs')]: {
-
-    },
-    color: 'white',
-  },
-  slider: {
-    padding: '22px 0px',
-    marginLeft: 16,
-    minWidth: 100,
-    [darkTheme.breakpoints.up('sm')]: {
-      margin: '0 16px',
-    },
-    color: red[700],
-  },
-  modalUpload: {
-    [darkTheme.breakpoints.up('sm')]: {
-    },
-    minheight: 200,
-    minWidth: 400,
-    position: 'absolute',
-    backgroundColor: grey[700],
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    top: '35%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    boxShadow: darkTheme.shadows[5],
-    padding: darkTheme.spacing(1),
-    "&:focus": {
-      outline: "none"
-    },
-    borderRadius: darkTheme.shape.borderRadius,
-  },
-  modalButton: {
-    width: '95%',
-    minWidth: 380,
-    backgroundColor: red[700],
-    '&:hover': {
-      backgroundColor: red[800],
-    },
-  },
-  modalButtonRemove: {
-    width: '95%',
-    backgroundColor: blue[700],
-    '&:hover': {
-      backgroundColor: blue[800],
-    },
-    minWidth: 380,
-  },
-  modalButtonCancel: {
-    width: '95%',
-    backgroundColor: grey[500],
-    '&:hover': {
-      backgroundColor: grey[600],
-    },
-    minWidth: 380,
-  }
 });
 
 //Image edit rotation helper
@@ -562,32 +377,9 @@ class EditProfile extends React.Component {
                   viewingMyProfile={true}
                   handleShow={this.handleShow}
                 />
-
-                {/*
-              <label htmlFor="contained-button-file">
-
-              <IconButton
-                id="contained-button-file"
-                color="inherit"
-                className={classes.iconButtonAvatar}
-                onClick={this.handleShow}
-                component="span"
-              >
-            
-              {loadingProfile && <Skeleton variant="circle" className={classes.avatarMd}/>}
-              {!loadingProfile && this.props.profile.previewImg && <img src={this.props.profile.previewImg} className={classes.avatarMd} />}
-              {!this.props.profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarEditProf} color="secondary"/>}
-              
-      
-              </IconButton>
-
-
-              </label>  *  */}
-
               </Grid>
               <Grid item>
                 <Box m={3} />
-
                 <Typography component="h1" variant="h4">
                   {this.props.user.username}
                 </Typography>
@@ -597,9 +389,7 @@ class EditProfile extends React.Component {
                   </Typography>
                 </a>
               </Grid>
-
             </Grid>
-
 
             <Box m={3} />
 
@@ -624,7 +414,6 @@ class EditProfile extends React.Component {
                       autoFocus
                       className={classes.text}
                       onChange={this.handleChange}
-                      //error={usernameError}
                       FormHelperTextProps={{
                         className: classes.text
                       }}
@@ -660,7 +449,6 @@ class EditProfile extends React.Component {
                       rows={4}
                       className={classes.text}
                       onChange={this.handleChange}
-                      //error={usernameError}
                       FormHelperTextProps={{
                         className: classes.text
                       }}
@@ -701,7 +489,6 @@ class EditProfile extends React.Component {
                           autoFocus
                           className={classes.text}
                           onChange={this.handleChange}
-                          //error={usernameError}
                           FormHelperTextProps={{
                             className: classes.text
                           }}
@@ -722,12 +509,6 @@ class EditProfile extends React.Component {
             </Button>
               </Grid>
             </Grid>
-            <Box m={1} />
-
-
-
-
-
             <Box m={4} />
           </form>
 
@@ -736,132 +517,28 @@ class EditProfile extends React.Component {
             Copyright © Too Legit To Submit, Inc 2022
           </Typography>
 
-          <Modal
-            open={show}
-            onClose={this.handleCloseModal}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <div className={classes.modalUpload}>
+          <ChangePicModal
+            show={show}
+            handleCloseModal={this.handleCloseModal}
+            onFileChange={this.onFileChange}
+            handleRemove={this.handleRemove}
+          />
 
-              <label htmlFor="icon-button-file">
-                <input
-                  accept="image/*"
-                  id="icon-button-file"
-                  multiple
-                  type="file"
-                  className={classes.input}
-                  onChange={this.onFileChange}
-                />
-                <Button
-                  variant="contained"
-                  component="span"
-                  classes={{ root: classes.modalButton }}
-                >
-                  Upload Photo
-                </Button>
-              </label>
-
-              <Button
-                variant="contained"
-                color="primary"
-                classes={{ root: classes.modalButtonRemove }}
-                onClick={this.handleRemove}
-              >
-                Remove Photo
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                classes={{ root: classes.modalButtonCancel }}
-                onClick={this.handleCloseModal}
-              >
-                Cancel
-              </Button>
-            </div>
-          </Modal>
-
-          <Modal
-            open={showImageCrop}
-            onClose={this.handleCloseImageModal}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <div className={classes.modalUpload}>
-
-              <div className={classes.cropContainer}>
-                <Cropper
-                  image={imageSrc}
-                  crop={crop}
-                  rotation={rotation}
-                  zoom={zoom}
-                  aspect={1 / 1}
-                  cropShape="round"
-                  onCropChange={this.setCrop}
-                  onRotationChange={this.setRotation}
-                  onCropComplete={this.onCropComplete}
-                  onZoomChange={this.setZoom}
-                />
-              </div>
-              <div className={classes.controls}>
-                <div className={classes.sliderContainer}>
-                  <Typography
-                    variant="overline"
-                    classes={{ root: classes.sliderLabel }}
-                  >
-                    Zoom
-                  </Typography>
-                  <Slider
-                    value={zoom}
-                    min={1}
-                    max={3}
-                    step={0.1}
-                    aria-labelledby="Zoom"
-                    classes={{ root: classes.slider }}
-                    onChange={this.setZoom}
-                  />
-                </div>
-                <div className={classes.sliderContainer}>
-                  <Typography
-                    variant="overline"
-                    classes={{ root: classes.sliderLabel }}
-                  >
-                    Rotation
-                  </Typography>
-                  <Slider
-                    value={rotation}
-                    min={0}
-                    max={360}
-                    step={1}
-                    aria-labelledby="Rotation"
-                    classes={{ root: classes.slider }}
-                    onChange={this.setRotation}
-                  />
-                </div>
-                <Button
-                  onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
-                  variant="contained"
-
-                  classes={{ root: classes.cropButton }}
-                >
-                  Save
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  classes={{ root: classes.cancelButton }}
-                  onClick={this.handleCloseImageModal}
-                >
-                  Cancel
-                </Button>
-              </div>
-
-            </div>
-          </Modal>
-          <ImgDialog img={this.croppedImage} onClose={this.onClose} />
+          <UploadPicModal
+            showImageCrop={showImageCrop}
+            handleCloseImageModal={this.handleCloseImageModal}
+            imageSrc={imageSrc}
+            crop={crop}
+            rotation={rotation}
+            zoom={zoom}
+            setCrop={this.setCrop}
+            setRotation={this.setRotation}
+            onCropComplete={this.onCropComplete}
+            setZoom={this.setZoom}
+            showCroppedImage={this.showCroppedImage}
+            handleCloseImageModal={this.handleCloseImageModal}
+          />
         </div>
-
-
       </ThemeProvider>
     );
   }

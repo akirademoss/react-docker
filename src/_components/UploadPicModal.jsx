@@ -7,11 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Cropper from 'react-easy-crop'
 import Slider from '@material-ui/core/Slider'
 import Modal from "@material-ui/core/Modal";
-import ImgDialog from '../ProfilePage/ImgDialog'
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { ThemeProvider } from "@material-ui/styles";
-
 
 const darkTheme = createMuiTheme({
     overrides: {
@@ -90,6 +87,10 @@ const styles = darkTheme => ({
         marginLeft: 16,
         width: 10,
         flex: '1',
+        backgroundColor: red[700],
+        '&:hover': {
+            backgroundColor: red[800],
+        },
     },
     cancelButton: {
         marginLeft: 16,
@@ -127,6 +128,7 @@ const styles = darkTheme => ({
         [darkTheme.breakpoints.up('sm')]: {
             margin: '0 16px',
         },
+        color: red[700],
     },
 })
 

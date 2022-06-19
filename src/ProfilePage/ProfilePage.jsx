@@ -3,18 +3,13 @@ import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import SearchIcon from '@material-ui/icons/Search';
 import { ThemeProvider } from "@material-ui/styles";
-import InputBase from '@material-ui/core/InputBase';
 import IconButton from "@material-ui/core/IconButton";
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Divider from '@material-ui/core/Divider';
-import Skeleton from "@material-ui/lab/Skeleton";
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -25,12 +20,8 @@ import blue from '@material-ui/core/colors/blue';
 import List from "@material-ui/core/List";
 
 //menu stuff
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Settings from "@material-ui/icons/Settings";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import GridOn from "@material-ui/icons/GridOn";
 import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import FeaturedPlayList from "@material-ui/icons/FeaturedPlayList";
@@ -52,10 +43,7 @@ import Typography from '@material-ui/core/Typography';
 import Hidden from '@material-ui/core/Hidden';
 
 //cropper tool helper inputs
-import Cropper from 'react-easy-crop'
-import Slider from '@material-ui/core/Slider'
 import { getOrientation } from 'get-orientation/browser'
-import ImgDialog from './ImgDialog'
 import { getCroppedImg, getRotatedImage } from './canvasUtils'
 import Modal from "@material-ui/core/Modal";
 import { styled } from '@material-ui/core/styles';
@@ -72,6 +60,8 @@ import ProfilePic from "../_components/ProfilePic";
 import ChangePicModal from "../_components/ChangePicModal";
 import UploadPicModal from "../_components/UploadPicModal";
 import FollowModal from "../_components/FollowModal";
+import DelFollowModal from "../_components/DelFollowModal";
+
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -84,6 +74,11 @@ const darkTheme = createMuiTheme({
                 borderLeft: '1px solid grey',
                 borderRight: '1px solid grey',
                 borderColor: fade('#ffffff', 0.5),
+            }
+        },
+        MuiButton: {
+            label: {
+                color: 'white',
             }
         },
     },
@@ -212,59 +207,6 @@ const styles = darkTheme => ({
     linkText: {
         color: blue[700],
     },
-    // styling for viewing image cropper tool
-    cropContainer: {
-        position: 'relative',
-        width: '100%',
-        minWidth: 400,
-        minHeight: 400,
-        background: darkTheme.palette.common.black,
-        [darkTheme.breakpoints.up('sm')]: {
-            height: 400,
-        },
-    },
-    cropButton: {
-        marginLeft: 16,
-        width: 10,
-        flex: '1',
-    },
-    cancelButton: {
-        marginLeft: 16,
-        backgroundColor: grey[500],
-        '&:hover': {
-            backgroundColor: grey[600],
-        },
-        width: 10,
-        flex: '1',
-    },
-    controls: {
-        padding: 16,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'stretch',
-        [darkTheme.breakpoints.up('sm')]: {
-        },
-    },
-    sliderContainer: {
-        display: 'flex',
-        flex: '2',
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    sliderLabel: {
-        marginLeft: 16,
-        [darkTheme.breakpoints.down('xs')]: {
-
-        },
-    },
-    slider: {
-        padding: '22px 0px',
-        marginLeft: 16,
-        minWidth: 100,
-        [darkTheme.breakpoints.up('sm')]: {
-            margin: '0 16px',
-        },
-    },
     modalUpload: {
         [darkTheme.breakpoints.up('sm')]: {
         },
@@ -284,89 +226,6 @@ const styles = darkTheme => ({
             outline: "none"
         },
         borderRadius: darkTheme.shape.borderRadius,
-    },
-    followGrid: {
-        marginBottom: 0,
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-        height: 70,
-    },
-    followGridItem: {
-
-    },
-    modalCancel: {
-        marginTop: 20,
-        position: 'absolute',
-        marginLeft: 305,
-    },
-    followingModalCancelBtn: {
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-            backgroundColor: 'transparent',
-            cursor: 'default',
-        },
-    },
-    followGrid2: {
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    followGridList: {
-        alignItems: 'left',
-        justifyContent: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    followModals: {
-        [darkTheme.breakpoints.up('sm')]: {
-        },
-        minheight: 200,
-        //minWidth: 400,
-        width: 360,
-        position: 'absolute',
-        backgroundColor: grey[700],
-        alignItems: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        top: '40%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        boxShadow: darkTheme.shadows[5],
-        padding: darkTheme.spacing(1),
-        "&:focus": {
-            outline: "none"
-        },
-        borderRadius: darkTheme.shape.borderRadius,
-        justifyContent: 'center',
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
-    },
-    hl: {
-        height: 1,
-        width: '104%',
-        marginRight: 0,
-        transform: 'translate(-2%, 0%)',
-        color: grey[700],
-    },
-    list: {
-        maxHeight: 300,
-        overflow: 'auto'
-    },
-    avatarFollow: {
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-        },
-        margin: "auto",
-        width: "30px",
-        height: "30px",
-        borderRadius: 100
     },
     followingButton: {
         textTransform: 'none',
@@ -390,11 +249,15 @@ const styles = darkTheme => ({
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
-
-
-
-
     },
+    tabText: {
+    },
+    centerDiv: {
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: 'row',
+        marginTop: '50px',
+    }
 });
 
 const Input = styled('input')({
@@ -676,6 +539,15 @@ class ProfilePage extends React.Component {
 
     }
 
+    handleFollowerPageChange = (e, i) => {
+        const username = this.props.followerInfo[i].User.username;
+        e.persist();
+        console.log(e);
+        console.log(i);
+        console.log(this.props.followerInfo[i].User.username);
+        history.push('/' + username + '/user');
+    };
+
     handlePageChange = (e, i) => {
         const username = this.props.followingInfo[i].User.username;
         e.persist();
@@ -771,7 +643,7 @@ class ProfilePage extends React.Component {
 
 
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername } = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
         const { classes } = this.props;
         const { loadingProfile, profileLoaded } = this.props;
         const { loadingUserProfile } = this.props;
@@ -906,80 +778,36 @@ class ProfilePage extends React.Component {
                                 <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
                         </Tabs>
                         <Divider style={{ background: 'grey' }} />
-                        <Grid container spacing={5} className={classes.posts}>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <img
-                                    alt="post"
-                                    style={{ width: '100%' }}
-                                    src="https://via.placeholder.com/500/f5f5f5"
-                                />
-                            </Grid>
-                        </Grid>
+                        {tab === 0 &&
+                            <div className={classes.centerDiv}>
+                                <Typography variant="h4" className={classes.tabText}> No Posts Yet</Typography>
+                            </div>
+                        }
+                        {tab === 1 &&
+                            <div className={classes.centerDiv}>
+                                <Typography variant="h4"> No Newsfeed Posts</Typography>
+                            </div>
+                        }
+                        {tab === 2 &&
+                            <div className={classes.centerDiv}>
+                                <Typography variant="h4">No Playlists Yet</Typography>
+                            </div>
+                        }
+                        {tab === 3 &&
+                            <div className={classes.centerDiv}>
+                                <Typography variant="h4">No Saved Posts Yet</Typography>
+                            </div>
+                        }
                     </Box>
-                    <ChangePicModal 
+
+                    <ChangePicModal
                         show={show}
                         handleCloseModal={this.handleCloseModal}
                         onFileChange={this.onFileChange}
                         handleRemove={this.handleRemove}
                     />
 
-                    <UploadPicModal 
+                    <UploadPicModal
                         showImageCrop={showImageCrop}
                         handleCloseImageModal={this.handleCloseImageModal}
                         imageSrc={imageSrc}
@@ -992,242 +820,51 @@ class ProfilePage extends React.Component {
                         setZoom={this.setZoom}
                         showCroppedImage={this.showCroppedImage}
                         handleCloseImageModal={this.handleCloseImageModal}
-                    /> 
-{/** 
-                    <Modal
-                        open={showImageCrop}
-                        onClose={this.handleCloseImageModal}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <div className={classes.modalUpload}>
-                            <div className={classes.cropContainer}>
-                                <Cropper
-                                    image={imageSrc}
-                                    crop={crop}
-                                    rotation={rotation}
-                                    zoom={zoom}
-                                    aspect={1 / 1}
-                                    cropShape="round"
-                                    onCropChange={this.setCrop}
-                                    onRotationChange={this.setRotation}
-                                    onCropComplete={this.onCropComplete}
-                                    onZoomChange={this.setZoom}
-                                />
-                            </div>
-                            <div className={classes.controls}>
-                                <div className={classes.sliderContainer}>
-                                    <Typography
-                                        variant="overline"
-                                        classes={{ root: classes.sliderLabel }}
-                                    >
-                                        Zoom
-                                    </Typography>
-                                    <Slider
-                                        value={zoom}
-                                        min={1}
-                                        max={3}
-                                        step={0.1}
-                                        aria-labelledby="Zoom"
-                                        classes={{ root: classes.slider }}
-                                        onChange={this.setZoom}
-                                    />
-                                </div>
-                                <div className={classes.sliderContainer}>
-                                    <Typography
-                                        variant="overline"
-                                        classes={{ root: classes.sliderLabel }}
-                                    >
-                                        Rotation
-                                    </Typography>
-                                    <Slider
-                                        value={rotation}
-                                        min={0}
-                                        max={360}
-                                        step={1}
-                                        aria-labelledby="Rotation"
-                                        classes={{ root: classes.slider }}
-                                        onChange={this.setRotation}
-                                    />
-                                </div>
-                                <Button
-                                    disableRipple
-                                    onClick={() => { this.showCroppedImage(); this.handleCloseImageModal() }}
-                                    variant="contained"
-                                    color="primary"
-                                    classes={{ root: classes.cropButton }}
-                                >
-                                    Save
-                                </Button>
-                                <Button
-                                    disableRipple
-                                    variant="contained"
-                                    color="primary"
-                                    classes={{ root: classes.cancelButton }}
-                                    onClick={this.handleCloseImageModal}
-                                >
-                                    Cancel
-                                </Button>
-                            </div>
+                    />
 
-                        </div>
-                    </Modal>
-                    
-                    <ImgDialog img={this.croppedImage} onClose={this.onClose} /> */}
-                   
+                    {/* Unfollow Modal */}
+                    <DelFollowModal
+                        show={showUnfollow}
+                        handleCloseModal={this.handleCloseUnfollowModal}
+                        previewImg={unfollowPreviewImg}
+                        username={unfollowUsername}
+                        handleAction={this.handleUnfollow}
+                    />
 
+                    {/* Remove Folower Modal */}
+                    <DelFollowModal
+                        show={showRemove}
+                        handleCloseModal={this.handleCloseRemoveModal}
+                        previewImg={removePreviewImg}
+                        username={removeUsername}
+                        handleAction={this.handleUnfollow}
+                    />
 
-                    {/* UNFOLLOW MODAL */}
-                    <Modal
-                        open={showUnfollow}
-                        onClose={this.handleCloseUnfollowModal}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <div className={classes.modalUpload}>
-                            <Box m={1} />
-                            {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
-                            {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd} />}
+                    {/*Shows Followers*/}
+                    <FollowModal
+                        show={showFollowers}
+                        handleCloseModal={this.handleCloseFollowersModal}
+                        infoLoaded={followerInfoLoaded}
+                        loadingInfo={loadingFollowerInfo}
+                        followInfo={this.props.followerInfo}
+                        handleShow={this.handleShowRemove}
+                        handlePageChange={this.handleFollowerPageChange}
+                        buttonText={"Remove"}
+                        followText={"Followers"}
+                    />
 
-                            <Box m={1} />
-                            <Typography variant="subtitle2"> Unfollow @{unfollowUsername}?</Typography>
-                            <Box m={1} />
-
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                component="span"
-                                classes={{ root: classes.modalButton }}
-                                onClick={this.handleUnfollow}
-                            >
-                                Unfollow
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                classes={{ root: classes.modalButtonCancel }}
-                                onClick={this.handleCloseUnfollowModal}
-                            >
-                                Cancel
-                        </Button>
-                        </div>
-                    </Modal>
-
-                    {/* Remove Modal */}
-                    <Modal
-                        open={showRemove}
-                        onClose={this.handleCloseRemoveModal}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <div className={classes.modalUpload}>
-                            <Box m={1} />
-                            {unfollowPreviewImg && <img src={unfollowPreviewImg} className={classes.avatarMd} />}
-                            {!unfollowPreviewImg && <AccountCircle className={classes.avatarMd} />}
-
-                            <Box m={1} />
-                            <Typography variant="subtitle2"> Remove @{unfollowUsername}?</Typography>
-                            <Box m={1} />
-
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                component="span"
-                                classes={{ root: classes.modalButton }}
-                                onClick={this.handleUnfollow}
-                            >
-                                Remove
-                            </Button>
-
-
-
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                classes={{ root: classes.modalButtonCancel }}
-                                onClick={this.handleCloseRemoveModal}
-                            >
-                                Cancel
-                        </Button>
-                        </div>
-                    </Modal>
-                    {/* MODAL FOR FOLLOWERS*/}
-                    <Modal
-                        open={showFollowers}
-                        onClose={this.handleCloseFollowersModal}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <div className={classes.followModals}>
-                            <Grid container spacing={10} className={classes.followGrid}>
-                                <Grid item className={classes.followGridItem}>
-                                    <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Followers </b> </Typography>
-                                </Grid>
-                                <Grid item className={classes.modalCancel}>
-                                    <IconButton variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowersModal}>
-                                        {<CloseIcon />}
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                            <hr className={classes.hl}></hr>
-
-
-                            {/* 
-                        <FollowInfo followingInfo={this.props.followingInfo[0]} handleShowUnfollow={this.handleShowUnfollow} />*/}
-                            <List className={classes.list}>
-                                {followerInfoLoaded && !loadingFollowerInfo &&
-                                    this.props.followerInfo.map((followingInfo, i) => (
-                                        <div key={i}>
-                                            <FollowInfo followingInfo={this.props.followerInfo[i]} handleButton={(e) => this.handleShowRemove(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Remove" />
-                                        </div>
-                                    ))}
-                            </List>
-                        </div>
-
-                    </Modal>
-
-                    {/* MODAL FOR FOLLOWING*/}
-                    <Modal
-                        open={showFollowing}
-                        onClose={this.handleCloseFollowingModal}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <div className={classes.followModals}>
-
-
-
-
-                            <Grid container spacing={10} className={classes.followGrid}>
-
-
-                                <Grid item className={classes.followGridItem}>
-                                    <Typography variant="h6"> <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Following </b> </Typography>
-                                </Grid>
-
-
-
-                                <Grid item className={classes.modalCancel}>
-                                    <IconButton variant="contained" className={classes.followingModalCancelBtn} fullWidth={false} onClick={this.handleCloseFollowingModal}>
-                                        {<CloseIcon />}
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
-                            <hr className={classes.hl}></hr>
-
-
-                            {/* 
-                        <FollowInfo followingInfo={this.props.followingInfo[0]} handleShowUnfollow={this.handleShowUnfollow} />*/}
-                            <List className={classes.list}>
-                                {followingInfoLoaded && !loadingFollowingInfo &&
-                                    this.props.followingInfo.map((followingInfo, i) => (
-                                        <div key={i}>
-                                            <FollowInfo followingInfo={this.props.followingInfo[i]} handleButton={(e) => this.handleShowUnfollowing(e, i)} handlePageChange={(e) => this.handlePageChange(e, i)} buttonText="Following" />
-                                        </div>
-                                    ))}
-                            </List>
-                        </div>
-                    </Modal>
+                    {/*Shows Following*/}
+                    <FollowModal
+                        show={showFollowing}
+                        handleCloseModal={this.handleCloseFollowingModal}
+                        infoLoaded={followingInfoLoaded}
+                        loadingInfo={loadingFollowingInfo}
+                        followInfo={this.props.followingInfo}
+                        handleShow={this.handleShowUnfollowing}
+                        handlePageChange={this.handlePageChange}
+                        buttonText={"Following"}
+                        followText={"Following"}
+                    />
                 </div>
 
 
