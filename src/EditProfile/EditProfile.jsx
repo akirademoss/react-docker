@@ -84,7 +84,7 @@ const styles = darkTheme => ({
     flexGrow: 1,
   },
   text: {
-    width: 350,
+    width: 300,
     color: 'primary',
     backgroundColor: 'primary',
   },
@@ -509,7 +509,7 @@ class EditProfile extends React.Component {
             </Button>
               </Grid>
             </Grid>
-            <Box m={4} />
+            <Box m={5} />
           </form>
 
           <Box m={2} />
@@ -539,6 +539,8 @@ class EditProfile extends React.Component {
             handleCloseImageModal={this.handleCloseImageModal}
           />
         </div>
+
+
       </ThemeProvider>
     );
   }

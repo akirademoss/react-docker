@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
 import { alertActions } from '../_actions';
-import { PrivateRoute } from '../_components';
+import { PrivateRoute } from '../_routes';
 import  HomePage  from '../HomePage/HomePage';
 import  HomePrivate  from '../HomePrivate/HomePrivate';
 import ProfilePage from '../ProfilePage/ProfilePage';
+import UserProfilePage from '../UserProfilePage/UserProfilePage';
 import EditProfile from '../EditProfile/EditProfile';
 import  LoginPage  from '../LoginPage/LoginPage';
 import  RegisterPage  from '../RegisterPage/RegisterPage';
@@ -35,11 +36,11 @@ class App extends React.Component {
                         <Router history={history}>
                             <Switch>
                                 <PrivateRoute exact path="/:username/home" component={HomePrivate} />
-                                <Route path="/:username/profile" component={(props) => <ProfilePage username={props.match.params.username}/>} /> 
+                                <Route path="/:username/profile" component={(props) => <ProfilePage username={props.match.params.username}/>}/>
                                 <PrivateRoute exact path="/:username/edit" component={EditProfile} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/register" component={RegisterPage} />
-                                <Route path="/:username/user" component={(props) => <ProfilePage username={props.match.params.username}/>} />
+                                <Route path="/:username/user" component={(props) => <UserProfilePage username={props.match.params.username}/>}/>
                                 <Route path="/" component={HomePage} />
                                 <Redirect from="*" to="/" />
                             </Switch>

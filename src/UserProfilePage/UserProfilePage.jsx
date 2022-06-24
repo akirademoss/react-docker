@@ -209,7 +209,7 @@ function readFile(file) {
 }
 
 // Profile page class
-class ProfilePage extends React.Component {
+class UserProfilePage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -519,10 +519,8 @@ class ProfilePage extends React.Component {
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
         console.log("GETTING PROFILE INFO")
-        const u = JSON.parse(localStorage.getItem('user')).username
-        console.log(this.props.username)
-        console.log(u)
-
+        console.log("LOGGING USERNAME")
+        //console.log(this.props.match.params.username)
         if (this.props.loggedIn) {
             const username = this.props.user.username;
             const id = this.props.user.id;
@@ -533,21 +531,23 @@ class ProfilePage extends React.Component {
         //if we are viewing another user's profile, this will get the user's profile information
         const username = this.props.username;
         console.log(username);
+        console.log(this.props.match)
         const userProfile = await this.props.getUserInfo(username);
-        if (userProfile) {
-            history.replace('/' + username + '/user');
-        }
+
 
         //if we aren viewing a user's profile, view will be of their profile
         //add code to query if we are following user here
         if (!isEqual(this.props.userProfile, this.props.profile)) {
-            history.replace('/' + username + '/user');
             this.setState({ viewingMyProfile: false })
             const id = this.props.user.id;
             const userId = this.props.userProfile.userId;
             console.log("Following Status for ids listed below")
             console.log("id: ", id, "userId: ", userId)
         }
+        else{
+            history.replace('/' + username + '/profile');
+        }
+
     }
 
     followingStatus = async (e) => {
@@ -839,4 +839,4 @@ const actionCreators = {
     getFollowingStatus: followActions.getFollowingStatus,
 };
 
-export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));
+export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(UserProfilePage));

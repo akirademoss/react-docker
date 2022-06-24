@@ -73,7 +73,7 @@ const darkTheme = createMuiTheme({
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       backgroundSize: 'cover',
-      height: 1068,
+      height: '100%',
       width: '100%',
       minHeight: '100vh',
       backgroundAttachment: 'fixed',
