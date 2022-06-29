@@ -5,56 +5,42 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from "@material-ui/styles";
 import IconButton from "@material-ui/core/IconButton";
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+
+//responsive UI
+import Hidden from '@material-ui/core/Hidden';
+
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
-import grey from '@material-ui/core/colors/grey';
 import blue from '@material-ui/core/colors/blue';
-import List from "@material-ui/core/List";
 
 //menu stuff
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import Settings from "@material-ui/icons/Settings";
 import GridOn from "@material-ui/icons/GridOn";
 import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import FeaturedPlayList from "@material-ui/icons/FeaturedPlayList";
 import VideoLibrary from "@material-ui/icons/VideoLibrary";
 
-
 //router and page imports
-//import history from '../history';
 import { history } from '../_helpers';
-
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
 import { followActions } from '../_actions/follow';
 
-//custom component import
-import Typography from '@material-ui/core/Typography';
-
-//responsive UI
-import Hidden from '@material-ui/core/Hidden';
-
 //cropper tool helper inputs
 import { getOrientation } from 'get-orientation/browser'
 import { getCroppedImg, getRotatedImage } from './canvasUtils'
-import Modal from "@material-ui/core/Modal";
 import { styled } from '@material-ui/core/styles';
 import isEqual from 'lodash.isequal';
 
-//icon import
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import CloseIcon from '@material-ui/icons/Close';
-
 //import custom component
-import FollowInfo from "../_components/FollowInfo";
 import CustomToolbar from "../_components/CustomToolbar";
 import ProfilePic from "../_components/ProfilePic";
 import ChangePicModal from "../_components/ChangePicModal";
@@ -483,8 +469,8 @@ class ProfilePage extends React.Component {
             const token = this.props.user.accessToken;
             const profile = await this.props.getInfo(username, id, token);
         }
-        else{
-           history.replace('/error');
+        else {
+            history.replace('/error');
         }
 
         // provide error messaging for URL browsing
@@ -494,17 +480,17 @@ class ProfilePage extends React.Component {
     }
 
     myFollowCount = async (e) => {
-        if(this.props.loggedIn){
-        const dispatch1 = await this.props.getFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
-        const dispatch2 = await this.props.getFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
+        if (this.props.loggedIn) {
+            const dispatch1 = await this.props.getFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
+            const dispatch2 = await this.props.getFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
         }
     }
 
     render() {
         const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
         const { classes, loadingProfile } = this.props;
-        const { loadingMyFollowerCount, loadingMyFollowingCount} = this.props;
-        const { loadingFollowingInfo, loadingFollowerInfo} = this.props;
+        const { loadingMyFollowerCount, loadingMyFollowingCount } = this.props;
+        const { loadingFollowingInfo, loadingFollowerInfo } = this.props;
         const { followingInfoLoaded, followerInfoLoaded } = this.props;
 
         return (
@@ -528,7 +514,9 @@ class ProfilePage extends React.Component {
                         profileOpen={profileOpen}
                     />
 
+                    {/* Profile Here */}
                     <div className={classes.profileContainer}>
+                        {/* Profile Info Here */}
                         <div mb="44px" className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
@@ -547,14 +535,14 @@ class ProfilePage extends React.Component {
                                                     {this.props.username}
                                                 </Typography>
                                             </Grid>
-                                                <Grid item>
-                                                    <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
-                                                        <b>Edit Profile</b>
-                                                    </Button>
-                                                    <IconButton disableRipple className={classes.iconButtonTransparent}>
-                                                        {<Settings />}
-                                                    </IconButton>
-                                                </Grid>
+                                            <Grid item>
+                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
+                                                    <b>Edit Profile</b>
+                                                </Button>
+                                                <IconButton disableRipple className={classes.iconButtonTransparent}>
+                                                    {<Settings />}
+                                                </IconButton>
+                                            </Grid>
                                         </Grid>
                                     </div>
                                     <div className={classes.profileFormat}>
@@ -579,13 +567,13 @@ class ProfilePage extends React.Component {
                                             </Grid>
                                         </Grid>
                                     </div>
-                                    <Typography variant="subtitle1" bold>
-                                        <b>{this.props.profile.name}</b>
-                                    </Typography>
+                                    <Typography variant="subtitle1" bold> <b>{this.props.profile.name}</b></Typography>
                                     <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
                                     <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
                                 </Grid>
                             </Grid>
+
+                        {/* Profile Posts, Newsfeed, Playlist, and Saved here [TODO: provide functionality on backend]*/}
                         </div>
                         <Tabs
                             value={tab}
@@ -696,25 +684,19 @@ function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
     const { loggedIn } = state.authentication;
-    const { profile, loadingProfile, profileLoaded } = state.getProfile;
+    const { profile, loadingProfile } = state.getProfile;
     const { userProfile } = state.getUserProfile;
     const { follow, loadingFollowStatus } = state.getFollowStatus;
-    const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
-    const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded } = state.getMyFollowingCount;
-    const { userFollowerCount, loadingUserFollowerCount } = state.getUserFollowerCount;
-    const { userFollowingCount, loadingUserFollowingCount } = state.getUserFollowingCount;
+    const { myFollowerCount, loadingMyFollowerCount } = state.getMyFollowerCount;
+    const { myFollowingCount, loadingMyFollowingCount } = state.getMyFollowingCount;
     const { followingInfo, loadingFollowingInfo, followingInfoLoaded } = state.getFollowingInfo;
     const { followerInfo, loadingFollowerInfo, followerInfoLoaded } = state.getFollowerInfo;
-    const { userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded } = state.getUserFollowingInfo;
-    const { userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded } = state.getUserFollowerInfo;
     return {
-        loggedIn, user, users, profile, loadingProfile, userProfile, 
-        follow, loadingFollowStatus, myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded,
-        myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded, userFollowerCount,
-        loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
-        loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
-        followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
-        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded, profileLoaded
+        loggedIn, user, users, profile, loadingProfile, userProfile, follow,
+        loadingFollowStatus, myFollowerCount, loadingMyFollowerCount,
+        myFollowingCount, loadingMyFollowingCount, followingInfo,
+        loadingFollowingInfo, followingInfoLoaded, followerInfo,
+        loadingFollowerInfo, followerInfoLoaded,
     };
 }
 
