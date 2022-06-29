@@ -12,7 +12,7 @@ import UserProfilePage from '../UserProfilePage/UserProfilePage';
 import EditProfile from '../EditProfile/EditProfile';
 import  LoginPage  from '../LoginPage/LoginPage';
 import  RegisterPage  from '../RegisterPage/RegisterPage';
-
+import  ErrorPage  from '../ErrorPage/ErrorPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -37,11 +37,13 @@ class App extends React.Component {
                             <Switch>
                                 <PrivateRoute exact path="/:username/home" component={HomePrivate} />
                                 <Route path="/:username/profile" component={(props) => <ProfilePage username={props.match.params.username}/>}/>
+                                <Route path="/:username/user" component={(props) => <UserProfilePage username={props.match.params.username}/>}/>
                                 <PrivateRoute exact path="/:username/edit" component={EditProfile} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/register" component={RegisterPage} />
-                                <Route path="/:username/user" component={(props) => <UserProfilePage username={props.match.params.username}/>}/>
+                                <Route path="/error" component={ErrorPage} />
                                 <Route path="/" component={HomePage} />
+
                                 <Redirect from="*" to="/" />
                             </Switch>
                         </Router>

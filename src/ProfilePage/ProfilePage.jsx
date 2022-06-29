@@ -246,12 +246,7 @@ class ProfilePage extends React.Component {
     //Each time page refreshes we call this function 
     async componentDidMount() {
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 300); });
-        this.followingStatus();
         this.myFollowCount();
-        this.userFollowCount();
-        this.setState({ followStatusLoaded: true });
-        return Promise.resolve();
     }
 
     componentDidUpdate() {
@@ -419,24 +414,13 @@ class ProfilePage extends React.Component {
     handleShowFollowers = () => {
         this.setState({ showFollowers: true })
         console.log("showFollowers status: ", this.state.showFollowers)
-        if (this.state.viewingMyProfile) {
-            const dispatch = this.props.getFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.username);
-        }
-        else {
-            const dispatch = this.props.getUserFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-        }
+        const dispatch = this.props.getFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.username);
     }
 
     handleShowFollowing = () => {
         this.setState({ showFollowing: true })
         console.log("showFollowing status: ", this.state.showFollowing)
-        if (this.state.viewingMyProfile) {
-            const dispatch = this.props.getFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.username);
-        }
-        else {
-            const dispatch = this.props.getUserFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-        }
-
+        const dispatch = this.props.getFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.username);
     }
 
     handleShowImageCrop = () => {
@@ -519,9 +503,6 @@ class ProfilePage extends React.Component {
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
         console.log("GETTING PROFILE INFO")
-        const u = JSON.parse(localStorage.getItem('user')).username
-        console.log(this.props.username)
-        console.log(u)
 
         if (this.props.loggedIn) {
             const username = this.props.user.username;
@@ -529,24 +510,13 @@ class ProfilePage extends React.Component {
             const token = this.props.user.accessToken;
             const profile = await this.props.getInfo(username, id, token);
         }
-
-        //if we are viewing another user's profile, this will get the user's profile information
-        const username = this.props.username;
-        console.log(username);
-        const userProfile = await this.props.getUserInfo(username);
-        if (userProfile) {
-            history.replace('/' + username + '/user');
+        else{
+           history.replace('/error');
         }
 
-        //if we aren viewing a user's profile, view will be of their profile
-        //add code to query if we are following user here
-        if (!isEqual(this.props.userProfile, this.props.profile)) {
-            history.replace('/' + username + '/user');
-            this.setState({ viewingMyProfile: false })
-            const id = this.props.user.id;
-            const userId = this.props.userProfile.userId;
-            console.log("Following Status for ids listed below")
-            console.log("id: ", id, "userId: ", userId)
+        // provide error messaging for URL browsing
+        if (!isEqual(this.props.username, this.props.user.username)) {
+            history.push('/error');
         }
     }
 
@@ -560,8 +530,10 @@ class ProfilePage extends React.Component {
     }
 
     myFollowCount = async (e) => {
+        if(this.props.loggedIn){
         const dispatch1 = await this.props.getFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
         const dispatch2 = await this.props.getFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
+        }
     }
 
     userFollowCount = async (e) => {
@@ -609,7 +581,7 @@ class ProfilePage extends React.Component {
                             <Grid container>
                                 <Grid item xs={4}>
                                     <ProfilePic
-                                        profile={this.props.userProfile}
+                                        profile={this.props.profile}
                                         loadingProfile={loadingUserProfile}
                                         viewingMyProfile={viewingMyProfile}
                                         handleShow={this.handleShow}
@@ -623,7 +595,6 @@ class ProfilePage extends React.Component {
                                                     {this.props.username}
                                                 </Typography>
                                             </Grid>
-                                            {viewingMyProfile &&
                                                 <Grid item>
                                                     <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
                                                         <b>Edit Profile</b>
@@ -631,28 +602,7 @@ class ProfilePage extends React.Component {
                                                     <IconButton disableRipple className={classes.iconButtonTransparent}>
                                                         {<Settings />}
                                                     </IconButton>
-                                                </Grid>}
-                                            {!viewingMyProfile &&
-                                                <Grid item>
-                                                    <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
-                                                        <b>Message</b>
-                                                    </Button>
-                                                </Grid>}
-                                            {!viewingMyProfile && !loadingFollowStatus && (this.props.follow.isFollowing == '') && (this.state.followStatusLoaded == true) &&
-                                                <Grid item>
-                                                    <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
-                                                        Follow
-                                                </Button>
-                                                </Grid>}
-                                            {!viewingMyProfile && !loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
-                                                <Grid item>
-                                                    <div className={classes.followingBoarder}>
-                                                        <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
-                                                            {<PeopleAltIcon />}
-                                                        </IconButton>
-                                                    </div>
-                                                </Grid>}
-
+                                                </Grid>
                                         </Grid>
                                     </Box>
                                     <Box mb="20px">
@@ -665,25 +615,23 @@ class ProfilePage extends React.Component {
                                             </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowers}>
-                                                    {viewingMyProfile && !loadingMyFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowerCount.count} </b>}
-                                                    {!viewingMyProfile && !loadingUserFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>}
+                                                    {!loadingMyFollowerCount && <b>{this.props.myFollowerCount.count} </b>}
                                                     &nbsp;followers
                                                 </Button>
                                             </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowing}>
-                                                    {viewingMyProfile && !loadingMyFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.myFollowingCount.count} </b>}
-                                                    {!viewingMyProfile && !loadingUserFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
+                                                    {!loadingMyFollowingCount && <b>{this.props.myFollowingCount.count} </b>}
                                                     &nbsp;following
                                                 </Button>
                                             </Grid>
                                         </Grid>
                                     </Box>
                                     <Typography variant="subtitle1" bold>
-                                        <b>{this.props.userProfile.name}</b>
+                                        <b>{this.props.profile.name}</b>
                                     </Typography>
-                                    <Typography variant="subtitle1">{this.props.userProfile.bio}</Typography>
-                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.userProfile.link} target="_blank" rel="noreferrer noopener">{this.props.userProfile.link}</a></b>
+                                    <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
+                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
                                 </Grid>
                             </Grid>
                         </Box>
@@ -694,11 +642,9 @@ class ProfilePage extends React.Component {
                             indicatorColor="primary"
                         >
                             <Tab disableRipple label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
-                            {viewingMyProfile &&
-                                <Tab disableRipple label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />}
+                            <Tab disableRipple label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />
                             <Tab disableRipple label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
-                            {viewingMyProfile &&
-                                <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />}
+                            <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />
                         </Tabs>
                         <Divider style={{ background: 'grey' }} />
                         {tab === 0 &&
