@@ -5,60 +5,41 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from "@material-ui/styles";
 import IconButton from "@material-ui/core/IconButton";
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
-import grey from '@material-ui/core/colors/grey';
 import blue from '@material-ui/core/colors/blue';
-import List from "@material-ui/core/List";
+
 
 //menu stuff
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Settings from "@material-ui/icons/Settings";
-import GridOn from "@material-ui/icons/GridOn";
-import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
 import FeaturedPlayList from "@material-ui/icons/FeaturedPlayList";
 import VideoLibrary from "@material-ui/icons/VideoLibrary";
 
 
 //router and page imports
-//import history from '../history';
 import { history } from '../_helpers';
-
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
 import { followActions } from '../_actions/follow';
-
-//custom component import
-import Typography from '@material-ui/core/Typography';
 
 //responsive UI
 import Hidden from '@material-ui/core/Hidden';
 
 //cropper tool helper inputs
-import { getOrientation } from 'get-orientation/browser'
-import { getCroppedImg, getRotatedImage } from './canvasUtils'
-import Modal from "@material-ui/core/Modal";
-import { styled } from '@material-ui/core/styles';
 import isEqual from 'lodash.isequal';
 
-//icon import
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import CloseIcon from '@material-ui/icons/Close';
-
 //import custom component
-import FollowInfo from "../_components/FollowInfo";
 import CustomToolbar from "../_components/CustomToolbar";
 import ProfilePic from "../_components/ProfilePic";
-import ChangePicModal from "../_components/ChangePicModal";
-import UploadPicModal from "../_components/UploadPicModal";
 import FollowModal from "../_components/FollowModal";
 import DelFollowModal from "../_components/DelFollowModal";
 
@@ -113,9 +94,15 @@ const styles = darkTheme => ({
     grow: {
         flexGrow: 1,
     },
+    profileContainer: {
+        maxWidth: 935,
+        margin: "auto",
+        padding: "60px 10px 0",
+    },
     profile: {
         marginTop: 20,
         minWidth: 430,
+        marginBottom: "44px",
     },
     editButton: {
         background: 'transparent',
@@ -186,27 +173,11 @@ const styles = darkTheme => ({
         justifyContent: "center",
         flexDirection: 'row',
         marginTop: '50px',
+    },
+    profileFormat: {
+        marginBottom: '20px',
     }
 });
-
-const Input = styled('input')({
-    display: 'none',
-});
-
-//Profile image edit rotation helpers
-const ORIENTATION_TO_ANGLE = {
-    '3': 180,
-    '6': 90,
-    '8': -90,
-}
-
-function readFile(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader()
-        reader.addEventListener('load', () => resolve(reader.result), false)
-        reader.readAsDataURL(file)
-    })
-}
 
 // Profile page class
 class UserProfilePage extends React.Component {
@@ -232,7 +203,6 @@ class UserProfilePage extends React.Component {
             showRemove: false,
             showFollowers: false,
             showFollowing: false,
-            viewingMyProfile: false,
             followStatusLoaded: false,
             unfollowPreviewImg: null,
             unfollowUsername: null,
@@ -242,8 +212,6 @@ class UserProfilePage extends React.Component {
 
         this.handleLogout = this.handleLogout.bind(this);
     }
-
-
 
     handleChange = (event, checked) => {
         this.setState({ auth: checked });
@@ -304,69 +272,6 @@ class UserProfilePage extends React.Component {
         this.setState({ notificationsOpen: false });
     };
 
-    //Events for profile image functionality
-    setCrop = crop => {
-        this.setState({ crop });
-    }
-
-    setRotation = (e, rotation) => {
-        console.log(rotation)
-        this.setState({ rotation: rotation });
-    }
-
-    setZoom = (e, zoom) => {
-        this.setState({ zoom: zoom });
-    }
-    //when image is added 
-    onFileChange = async (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            let imageDataUrl = await readFile(file);
-
-            // apply rotation if needed
-            const orientation = await getOrientation(file);
-            const rotation = ORIENTATION_TO_ANGLE[orientation];
-            if (rotation) {
-                imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
-            }
-
-            this.setState({ imageSrc: imageDataUrl });
-            this.setState({ showImageCrop: true })
-            this.setState({ show: false })
-            console.log(this.state.imageSrc)
-
-        }
-    }
-
-    onCropComplete = (croppedArea, croppedAreaPixels) => {
-        console.log(croppedArea, croppedAreaPixels)
-        this.setState({ croppedAreaPixels: croppedAreaPixels })
-        console.log(croppedArea, croppedAreaPixels)
-        console.log("(oncropcomplete) croppedAreaPixels: ", croppedAreaPixels)
-    }
-
-    //save the new image to database
-    showCroppedImage = async () => {
-        console.log("(showCroppedImage) croppedAreaPixels: ", this.state.croppedAreaPixels)
-        try {
-            const croppedImage = await getCroppedImg(
-                this.state.imageSrc,
-                this.state.croppedAreaPixels,
-                this.state.rotation
-            )
-            console.log('donee', { croppedImage });
-            this.setState({ croppedImage: croppedImage });
-            console.log(this.state.croppedImage)
-
-            if (croppedImage) {
-                const dispatch = await this.props.uploadAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken, croppedImage);
-            }
-        } catch (e) {
-            console.error(e)
-        }
-
-    }
-
     follow = async () => {
         console.log("testing followership");
         console.log("userId:", this.props.userProfile.id)
@@ -375,11 +280,6 @@ class UserProfilePage extends React.Component {
 
     handleUnfollow = async () => {
         const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-    }
-
-    handleRemove = async () => {
-        const dispatch = await this.props.removeAvatar(this.props.user.id, this.props.user.username, this.props.user.accessToken)
-        this.setState({ show: false })
     }
 
     handleCloseModal = () => {
@@ -401,8 +301,6 @@ class UserProfilePage extends React.Component {
         console.log("showUnfollow status: ", this.state.showUnfollow)
     }
 
-
-
     handleShowFollowers = () => {
         this.setState({ showFollowers: true })
         console.log("showFollowers status: ", this.state.showFollowers)
@@ -415,15 +313,6 @@ class UserProfilePage extends React.Component {
         this.setState({ showFollowing: true })
         console.log("showFollowing status: ", this.state.showFollowing)
         const dispatch = this.props.getUserFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-    }
-
-    handleShowImageCrop = () => {
-        this.setState({ showImageCrop: true })
-    }
-
-    handleCloseImageModal = () => {
-        this.setState({ showImageCrop: false })
-
     }
 
     handleCloseUnfollowModal = () => {
@@ -493,6 +382,7 @@ class UserProfilePage extends React.Component {
         this.setState({ removeUsername: username })
         this.setState({ showRemove: true })
     }
+
     //Get all of our profile props to display the user information
     getProfile = async (e) => {
         console.log("GETTING PROFILE INFO")
@@ -513,7 +403,6 @@ class UserProfilePage extends React.Component {
             const profile = await this.props.getInfo(username, id, token);
             console.log("username 2: " + this.props.username)
         }
-
 
         //if we are viewing another user's profile, this will get the user's profile information
         const username = this.props.username;
@@ -536,37 +425,29 @@ class UserProfilePage extends React.Component {
 
     //Each time page refreshes we call this function 
     async componentDidMount() {
-        
-
-
         this.getProfile();
         await new Promise(resolve => { setTimeout(resolve, 200); });
         this.followingStatus();
         this.userFollowCount();
         this.setState({ followStatusLoaded: true });
         return Promise.resolve();
-        
-
     }
 
     componentDidUpdate() {
         console.log("component did update")
     }
 
-
-
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
         const { classes } = this.props;
-        const { loadingProfile, profileLoaded } = this.props;
+        const { loadingProfile } = this.props;
         const { loadingUserProfile } = this.props;
         const { loadingFollowStatus } = this.props;
-        const { loadingMyFollowerCount, loadingMyFollowingCount, loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
+        const { loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo, loadingUserFollowingInfo, loadingUserFollowerInfo } = this.props;
         const { followingInfoLoaded, followerInfoLoaded, userFollowingInfoLoaded, userFollowerInfoLoaded } = this.props;
 
         return (
-
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <div className={classes.grow}>
@@ -586,19 +467,21 @@ class UserProfilePage extends React.Component {
                         profileOpen={profileOpen}
                     />
 
-                    <Box component="main" maxWidth={935} margin="auto" padding="60px 10px 0">
-                        <Box mb="44px" className={classes.profile}>
+                    {/* User Profile Here */}
+                    <div className={classes.profileContainer}>
+                        {/* User Profile Info Here */}
+                        <div className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
                                     <ProfilePic
                                         profile={this.props.userProfile}
                                         loadingProfile={loadingUserProfile}
-                                        viewingMyProfile={viewingMyProfile}
+                                        viewingMyProfile={false}
                                         handleShow={this.handleShow}
                                     />
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Box clone mb="20px">
+                                    <div className={classes.profileFormat}>
                                         <Grid container alignItems="center" spacing={2}>
                                             <Grid item>
                                                 <Typography component="h1" variant="h4">
@@ -626,8 +509,8 @@ class UserProfilePage extends React.Component {
                                                 </Grid>}
 
                                         </Grid>
-                                    </Box>
-                                    <Box mb="20px">
+                                    </div>
+                                    <div className={classes.profileFormat}>
                                         <Grid container spacing={1}>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} >
@@ -650,7 +533,7 @@ class UserProfilePage extends React.Component {
                                                 </Button>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    </div>
                                     <Typography variant="subtitle1" bold>
                                         <b>{this.props.userProfile.name}</b>
                                     </Typography>
@@ -658,7 +541,9 @@ class UserProfilePage extends React.Component {
                                     <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.userProfile.link} target="_blank" rel="noreferrer noopener">{this.props.userProfile.link}</a></b>
                                 </Grid>
                             </Grid>
-                        </Box>
+
+                        {/* Profile Posts, & Playlists here [TODO: provide functionality on backend]*/}
+                        </div>
                         <Tabs
                             value={tab}
                             centered
@@ -689,29 +574,7 @@ class UserProfilePage extends React.Component {
                                 <Typography variant="h4">No Saved Posts Yet</Typography>
                             </div>
                         }
-                    </Box>
-
-                    <ChangePicModal
-                        show={show}
-                        handleCloseModal={this.handleCloseModal}
-                        onFileChange={this.onFileChange}
-                        handleRemove={this.handleRemove}
-                    />
-
-                    <UploadPicModal
-                        showImageCrop={showImageCrop}
-                        handleCloseImageModal={this.handleCloseImageModal}
-                        imageSrc={imageSrc}
-                        crop={crop}
-                        rotation={rotation}
-                        zoom={zoom}
-                        setCrop={this.setCrop}
-                        setRotation={this.setRotation}
-                        onCropComplete={this.onCropComplete}
-                        setZoom={this.setZoom}
-                        showCroppedImage={this.showCroppedImage}
-                        handleCloseImageModal={this.handleCloseImageModal}
-                    />
+                    </div>
 
                     {/* Unfollow Modal */}
                     <DelFollowModal
@@ -766,11 +629,9 @@ function mapStateToProps(state) {
     const { users, authentication } = state;
     const { user } = authentication;
     const { loggedIn } = state.authentication;
-    const { profile, loadingProfile, profileLoaded } = state.getProfile;
+    const { profile, loadingProfile, } = state.getProfile;
     const { userProfile, loadingUserProfile } = state.getUserProfile;
     const { follow, loadingFollowStatus } = state.getFollowStatus;
-    const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
-    const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded } = state.getMyFollowingCount;
     const { userFollowerCount, loadingUserFollowerCount } = state.getUserFollowerCount;
     const { userFollowingCount, loadingUserFollowingCount } = state.getUserFollowingCount;
     const { followingInfo, loadingFollowingInfo, followingInfoLoaded } = state.getFollowingInfo;
@@ -779,12 +640,11 @@ function mapStateToProps(state) {
     const { userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded } = state.getUserFollowerInfo;
     return {
         loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile,
-        follow, loadingFollowStatus, myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded,
-        myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded, userFollowerCount,
+        follow, loadingFollowStatus, userFollowerCount,
         loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
         loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
         followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
-        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded, profileLoaded
+        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded
     };
 }
 
@@ -792,8 +652,6 @@ const actionCreators = {
     logout: userActions.logout,
     getInfo: profileActions.getInfo,
     getUserInfo: profileActions.getUserInfo,
-    uploadAvatar: profileActions.uploadAvatar,
-    removeAvatar: profileActions.removeAvatar,
     followUser: followActions.followUser,
     unfollow: followActions.unfollow,
     getFollowerCount: followActions.getFollowerCount,
