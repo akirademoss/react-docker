@@ -83,15 +83,9 @@ async function getProfile(id) {
 }
 
 async function getUserProfile(username) {
-    console.log("Tesing getUserProfile")
-    const user = await db.User.findAll({
-        raw: true,
-        where: {
-            username: username,
-        }
-    })
-    id = user[0].id
-    
+
+    const user = await db.User.scope('withHash').findOne({ where: { username }, attributes: ['id', 'username'] });
+    id = user.id
     return getProfile(id);
 }
 //make directory

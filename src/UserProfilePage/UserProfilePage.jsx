@@ -134,6 +134,9 @@ const styles = darkTheme => ({
             background: 'transparent',
         },
     },
+    pplAlt: {
+        fontSize: '20px',
+    },
     followingBoarder: {
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
@@ -426,7 +429,7 @@ class UserProfilePage extends React.Component {
     //Each time page refreshes we call this function 
     async componentDidMount() {
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 200); });
+        await new Promise(resolve => { setTimeout(resolve, 100); });
         this.followingStatus();
         this.userFollowCount();
         this.setState({ followStatusLoaded: true });
@@ -503,7 +506,7 @@ class UserProfilePage extends React.Component {
                                                 <Grid item>
                                                     <div className={classes.followingBoarder}>
                                                         <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
-                                                            {<PeopleAltIcon />}
+                                                            {<PeopleAltIcon className={classes.pplAlt}/>}
                                                         </IconButton>
                                                     </div>
                                                 </Grid>}

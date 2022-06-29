@@ -10,7 +10,8 @@ module.exports = {
     create,
     update,
     delete: _delete,
-    newAccessToken
+    newAccessToken,
+    getUserDetails
 };
 
 //note do not do this in production, but this is easier to demo
@@ -159,4 +160,9 @@ async function getUser(id) {
 function omitHash(user) {
     const { hash, ...userWithoutHash } = user;
     return userWithoutHash;
+}
+
+async function getUserDetails(username){
+    const user = await db.User.scope('withHash').findOne({ where: { username }, attributes: ['id', 'username'] });
+    return user;
 }

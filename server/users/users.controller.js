@@ -20,6 +20,7 @@ router.get('/:id', authorize(), getById);
 router.get('/:id/refresh-token', authorize(), getRefreshTokens);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
+router.post('/getUserDetails', getUserDetails)
 
 module.exports = router;
 
@@ -137,5 +138,13 @@ function update(req, res, next) {
 function _delete(req, res, next) {
     userService.delete(req.params.id)
         .then(() => res.json({ message: 'User deleted successfully' }))
+        .catch(next);
+}
+
+function getUserDetails(req, res, next) {
+    console.log(req.body)
+    console.log(req.params)
+    userService.getUserDetails(req.body.username)
+        .then(userDetails => res.json(userDetails))
         .catch(next);
 }
