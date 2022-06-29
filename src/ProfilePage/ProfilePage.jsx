@@ -113,9 +113,15 @@ const styles = darkTheme => ({
     grow: {
         flexGrow: 1,
     },
+    profileContainer: {
+        maxWidth: 935,
+        margin: "auto",
+        padding: "60px 10px 0",
+    },
     profile: {
         marginTop: 20,
         minWidth: 430,
+        marginBottom: '44px'
     },
     editButton: {
         background: 'transparent',
@@ -129,36 +135,6 @@ const styles = darkTheme => ({
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
         textTransform: 'none',
-    },
-    followButton: {
-        backgroundColor: blue[700],
-        color: darkTheme.palette.common.white,
-        '&:hover': {
-            backgroundColor: blue[800],
-        },
-    },
-    followingButton: {
-        textTransform: 'none',
-        borderRadius: 5,
-        fontSize: '11px',
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-        },
-    },
-    followingBoarder: {
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
-        textTransform: 'none',
-        borderRadius: 5,
-        fontSize: '11px',
-        maxHeight: 38,
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'row',
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -186,6 +162,9 @@ const styles = darkTheme => ({
         justifyContent: "center",
         flexDirection: 'row',
         marginTop: '50px',
+    },
+    profileFormat: {
+        marginBottom: '20px',
     }
 });
 
@@ -375,12 +354,6 @@ class ProfilePage extends React.Component {
 
     }
 
-    follow = async () => {
-        console.log("testing followership");
-        console.log("userId:", this.props.userProfile.id)
-        const dispatch = await this.props.followUser(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-    }
-
     handleUnfollow = async () => {
         const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
@@ -520,15 +493,6 @@ class ProfilePage extends React.Component {
         }
     }
 
-    followingStatus = async (e) => {
-        const id = this.props.user.id;
-        const userId = this.props.userProfile.userId;
-        console.log("Following Status for ids listed below")
-        console.log("id: ", id, "userId: ", userId)
-        const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId)
-
-    }
-
     myFollowCount = async (e) => {
         if(this.props.loggedIn){
         const dispatch1 = await this.props.getFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.user.username);
@@ -536,24 +500,12 @@ class ProfilePage extends React.Component {
         }
     }
 
-    userFollowCount = async (e) => {
-        const dispatch1 = await this.props.getUserFollowerCount(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-        const dispatch2 = await this.props.getUserFollowingCount(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-    }
-
-
-
-
-
     render() {
         const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
-        const { classes } = this.props;
-        const { loadingProfile, profileLoaded } = this.props;
-        const { loadingUserProfile } = this.props;
-        const { loadingFollowStatus } = this.props;
-        const { loadingMyFollowerCount, loadingMyFollowingCount, loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
-        const { loadingFollowingInfo, loadingFollowerInfo, loadingUserFollowingInfo, loadingUserFollowerInfo } = this.props;
-        const { followingInfoLoaded, followerInfoLoaded, userFollowingInfoLoaded, userFollowerInfoLoaded } = this.props;
+        const { classes, loadingProfile } = this.props;
+        const { loadingMyFollowerCount, loadingMyFollowingCount} = this.props;
+        const { loadingFollowingInfo, loadingFollowerInfo} = this.props;
+        const { followingInfoLoaded, followerInfoLoaded } = this.props;
 
         return (
 
@@ -576,19 +528,19 @@ class ProfilePage extends React.Component {
                         profileOpen={profileOpen}
                     />
 
-                    <Box component="main" maxWidth={935} margin="auto" padding="60px 10px 0">
-                        <Box mb="44px" className={classes.profile}>
+                    <div className={classes.profileContainer}>
+                        <div mb="44px" className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
                                     <ProfilePic
                                         profile={this.props.profile}
-                                        loadingProfile={loadingUserProfile}
+                                        loadingProfile={loadingProfile}
                                         viewingMyProfile={viewingMyProfile}
                                         handleShow={this.handleShow}
                                     />
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Box clone mb="20px">
+                                    <div className={classes.profileFormat}>
                                         <Grid container alignItems="center" spacing={2}>
                                             <Grid item>
                                                 <Typography component="h1" variant="h4">
@@ -604,8 +556,8 @@ class ProfilePage extends React.Component {
                                                     </IconButton>
                                                 </Grid>
                                         </Grid>
-                                    </Box>
-                                    <Box mb="20px">
+                                    </div>
+                                    <div className={classes.profileFormat}>
                                         <Grid container spacing={1}>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} >
@@ -626,7 +578,7 @@ class ProfilePage extends React.Component {
                                                 </Button>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    </div>
                                     <Typography variant="subtitle1" bold>
                                         <b>{this.props.profile.name}</b>
                                     </Typography>
@@ -634,7 +586,7 @@ class ProfilePage extends React.Component {
                                     <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
                                 </Grid>
                             </Grid>
-                        </Box>
+                        </div>
                         <Tabs
                             value={tab}
                             centered
@@ -667,7 +619,7 @@ class ProfilePage extends React.Component {
                                 <Typography variant="h4">No Saved Posts Yet</Typography>
                             </div>
                         }
-                    </Box>
+                    </div>
 
                     <ChangePicModal
                         show={show}
@@ -745,7 +697,7 @@ function mapStateToProps(state) {
     const { user } = authentication;
     const { loggedIn } = state.authentication;
     const { profile, loadingProfile, profileLoaded } = state.getProfile;
-    const { userProfile, loadingUserProfile } = state.getUserProfile;
+    const { userProfile } = state.getUserProfile;
     const { follow, loadingFollowStatus } = state.getFollowStatus;
     const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
     const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded } = state.getMyFollowingCount;
@@ -756,7 +708,7 @@ function mapStateToProps(state) {
     const { userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded } = state.getUserFollowingInfo;
     const { userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded } = state.getUserFollowerInfo;
     return {
-        loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile,
+        loggedIn, user, users, profile, loadingProfile, userProfile, 
         follow, loadingFollowStatus, myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded,
         myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded, userFollowerCount,
         loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
@@ -772,17 +724,11 @@ const actionCreators = {
     getUserInfo: profileActions.getUserInfo,
     uploadAvatar: profileActions.uploadAvatar,
     removeAvatar: profileActions.removeAvatar,
-    followUser: followActions.followUser,
     unfollow: followActions.unfollow,
     getFollowerCount: followActions.getFollowerCount,
-    getUserFollowerCount: followActions.getUserFollowerCount,
     getFollowingCount: followActions.getFollowingCount,
-    getUserFollowingCount: followActions.getUserFollowingCount,
     getFollowerInfo: followActions.getFollowerInfo,
-    getUserFollowerInfo: followActions.getUserFollowerInfo,
     getFollowingInfo: followActions.getFollowingInfo,
-    getUserFollowingInfo: followActions.getUserFollowingInfo,
-    getFollowingStatus: followActions.getFollowingStatus,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));
