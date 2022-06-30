@@ -19,8 +19,9 @@ const initialState5 = userFollowingCount ? { userFollowingCountLoaded: false, us
 
 const initialState6 = followerInfo ? { followerInfoLoaded: false, followerInfo } : {};
 const initialState7 = followingInfo ? { followingInfoLoaded: false, followingInfo } : {};
-const initialState8 = userFollowerInfo? { userFollowerInfoLoaded: false, userFollowerInfo  } : {};
-const initialState9 = userFollowingInfo ? { userFollowingInfoLoaded: false, userFollowingInfo } : {};
+const initialState8 = userFollowingInfo ? { userFollowingInfoLoaded: false, userFollowingInfo } : {};
+const initialState9 = userFollowerInfo? { userFollowerInfoLoaded: false, userFollowerInfo  } : {};
+
 
 
 export function getFollowStatus(state = initialState, action) {
@@ -163,6 +164,26 @@ export function getFollowerInfo(state = initialState7, action) {
   }
 }
 
+export function getUserFollowerInfo(state = initialState9, action) {
+  switch (action.type) {
+    case followConstants.USER_FOLLOWER_INFO_REQUEST:
+      return {
+        loadingUserFollowerInfo: true,
+        userFollowerInfo: action.userFollowerInfo
+      };
+    case followConstants.USER_FOLLOWER_INFO_SUCCESS:
+      return {
+        userFollowerInfoLoaded: true,
+        userFollowerInfo: action.userFollowerInfo
+      };
+    case followConstants.USER_FOLLOWER_INFO_FAILURE:
+      return {};
+      
+    default:
+      return state
+  }
+}
+
 export function getUserFollowingInfo(state = initialState8, action) {
   switch (action.type) {
     case followConstants.USER_FOLLOWING_INFO_REQUEST:
@@ -183,22 +204,3 @@ export function getUserFollowingInfo(state = initialState8, action) {
   }
 }
 
-export function getUserFollowerInfo(state = initialState9, action) {
-  switch (action.type) {
-    case followConstants.USER_FOLLOWER_INFO_REQUEST:
-      return {
-        loadingUserFollowerInfo: true,
-        userFollowerInfo: action.userFollowerInfo
-      };
-    case followConstants.USER_FOLLOWER_INFO_SUCCESS:
-      return {
-        userFollowerInfoLoaded: true,
-        userFollowerInfo: action.userFollowerInfo
-      };
-    case followConstants.USER_FOLLOWER_INFO_FAILURE:
-      return {};
-      
-    default:
-      return state
-  }
-}

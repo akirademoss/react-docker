@@ -1,13 +1,15 @@
 import { userConstants } from '../_constants/user.constants';
 import { alertActions } from './alert';
 import AuthService from "../_services/auth.service";
+import UserService from "../_services/user.service";
 
 import { history } from '../_helpers';
 
 export const userActions = {
   login,
   logout,
-  register
+  register,
+  getUserDetails,
 };
 
 
@@ -76,6 +78,28 @@ function login(username, password){
   function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
   function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
   function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
+}
+
+function getUserDetails(username){
+  return dispatch =>{
+    dispatch(request(username));
+
+    UserService.getUserDetails(username)
+    .then(
+    
+      userDetails => {
+        dispatch(success(userDetails));
+      },
+      error => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request(userDetails) { return { type: userConstants.USER_DETAILS_REQUEST, userDetails } }
+  function success(userDetails) { return { type: userConstants.USER_DETAILS_SUCCESS, userDetails } }
+  function failure(error) { return { type: userConstants.USER_DETAILS_FAILURE, error } }
 }
 
 function logout() {

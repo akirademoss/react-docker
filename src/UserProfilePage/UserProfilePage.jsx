@@ -313,9 +313,9 @@ class UserProfilePage extends React.Component {
     }
 
     handleShowFollowing = () => {
+        const dispatch = this.props.getUserFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
         this.setState({ showFollowing: true })
         console.log("showFollowing status: ", this.state.showFollowing)
-        const dispatch = this.props.getUserFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
     handleCloseUnfollowModal = () => {
@@ -390,7 +390,7 @@ class UserProfilePage extends React.Component {
     getProfile = async (e) => {
         console.log("GETTING PROFILE INFO")
         console.log("LOGGING USERNAME")
-
+        
         //if we aren viewing a user's profile, view will be of their profile
         //add code to query if we are following user here
         if (isEqual(this.props.username, this.props.user.username)) {
@@ -413,6 +413,8 @@ class UserProfilePage extends React.Component {
     }
 
     followingStatus = async (e) => {
+        console.log("GETTING FOLLOW STATUS")
+        //const userDetails = await this.props.getUserDetails(this.props.username)
         const id = this.props.user.id;
         const userId = this.props.userProfile.userId;
         console.log("Following Status for ids listed below")
@@ -429,7 +431,7 @@ class UserProfilePage extends React.Component {
     //Each time page refreshes we call this function 
     async componentDidMount() {
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 100); });
+        await new Promise(resolve => { setTimeout(resolve, 300); });
         this.followingStatus();
         this.userFollowCount();
         this.setState({ followStatusLoaded: true });
@@ -601,9 +603,9 @@ class UserProfilePage extends React.Component {
                     <FollowModal
                         show={showFollowers}
                         handleCloseModal={this.handleCloseFollowersModal}
-                        infoLoaded={followerInfoLoaded}
-                        loadingInfo={loadingFollowerInfo}
-                        followInfo={this.props.followerInfo}
+                        infoLoaded={userFollowerInfoLoaded}
+                        loadingInfo={loadingUserFollowerInfo}
+                        followInfo={this.props.userFollowerInfo}
                         handleShow={this.handleShowRemove}
                         handlePageChange={this.handleFollowerPageChange}
                         buttonText={"Remove"}
@@ -614,9 +616,9 @@ class UserProfilePage extends React.Component {
                     <FollowModal
                         show={showFollowing}
                         handleCloseModal={this.handleCloseFollowingModal}
-                        infoLoaded={followingInfoLoaded}
-                        loadingInfo={loadingFollowingInfo}
-                        followInfo={this.props.followingInfo}
+                        infoLoaded={userFollowingInfoLoaded}
+                        loadingInfo={loadingUserFollowingInfo}
+                        followInfo={this.props.userFollowingInfo}
                         handleShow={this.handleShowUnfollowing}
                         handlePageChange={this.handlePageChange}
                         buttonText={"Following"}
@@ -633,6 +635,7 @@ function mapStateToProps(state) {
     const { user } = authentication;
     const { loggedIn } = state.authentication;
     const { profile, loadingProfile, } = state.getProfile;
+    const { userDetails, loadingUserDetails } = state.getUserDetails;
     const { userProfile, loadingUserProfile } = state.getUserProfile;
     const { follow, loadingFollowStatus } = state.getFollowStatus;
     const { userFollowerCount, loadingUserFollowerCount } = state.getUserFollowerCount;
@@ -643,7 +646,7 @@ function mapStateToProps(state) {
     const { userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded } = state.getUserFollowerInfo;
     return {
         loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile,
-        follow, loadingFollowStatus, userFollowerCount,
+        follow, loadingFollowStatus, userFollowerCount, userDetails, loadingUserDetails,
         loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
         loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
         followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
@@ -666,6 +669,8 @@ const actionCreators = {
     getFollowingInfo: followActions.getFollowingInfo,
     getUserFollowingInfo: followActions.getUserFollowingInfo,
     getFollowingStatus: followActions.getFollowingStatus,
+    getUserDetails: userActions.getUserDetails,
+
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(UserProfilePage));
