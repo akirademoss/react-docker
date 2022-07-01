@@ -203,6 +203,7 @@ class ProfilePage extends React.Component {
             unfollowId: null,
             unfollowUsername: null,
             removePreviewImg: null,
+            removeId: null,
             removeUsername: null,
         };
 
@@ -346,7 +347,7 @@ class ProfilePage extends React.Component {
     }
 
     handleRemoveFollower = async () => {
-        const dispatch = await this.props.removeFollower(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
+        const dispatch = await this.props.removeFollower(this.props.user.id, this.props.user.accessToken, this.state.removeId, this.props.username);
     }
 
     handleRemove = async () => {
@@ -455,12 +456,14 @@ class ProfilePage extends React.Component {
         console.log("testing handleShowRemove")
         const username = this.props.followerInfo[i].User.username;
         const previewImg = this.props.followerInfo[i].previewImg;
+        const id = this.props.followerInfo[i].User.id
         e.persist();
         console.log(e);
         console.log(i);
         console.log(username);
         console.log(previewImg);
         console.log("showRemove status: ", this.state.showRemove)
+        this.setState({removeId: id})
         this.setState({ removePreviewImg: previewImg })
         this.setState({ removeUsername: username })
         this.setState({ showRemove: true })
