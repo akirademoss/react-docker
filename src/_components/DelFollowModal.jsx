@@ -105,7 +105,7 @@ const styles = darkTheme => ({
 
 class DelFollowModal extends React.Component {
     render() {
-        const { classes, show, handleCloseModal, previewImg, username, handleAction } = this.props;
+        const { classes, show, handleCloseModal, previewImg, username, handleAction, text } = this.props;
         return (
 
             <div>
@@ -121,19 +121,21 @@ class DelFollowModal extends React.Component {
                         {!previewImg && <AccountCircle className={classes.avatarMd} />}
 
                         <Box m={1} />
-                        <Typography variant="subtitle2"> Unfollow @{username}?</Typography>
+                        <Typography variant="subtitle2"> {text} @{username}?</Typography>
                         <Box m={1} />
 
                         <Button
+                            disableRipple
                             variant="contained"
                             color="primary"
                             component="span"
                             classes={{ root: classes.modalButton }}
                             onClick={handleAction}
                         >
-                            Unfollow
+                            {text}
                             </Button>
                         <Button
+                            disableRipple
                             variant="contained"
                             color="primary"
                             classes={{ root: classes.modalButtonCancel }}

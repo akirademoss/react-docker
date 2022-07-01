@@ -200,6 +200,7 @@ class ProfilePage extends React.Component {
             viewingMyProfile: true,
             followStatusLoaded: false,
             unfollowPreviewImg: null,
+            unfollowId: null,
             unfollowUsername: null,
             removePreviewImg: null,
             removeUsername: null,
@@ -341,7 +342,11 @@ class ProfilePage extends React.Component {
     }
 
     handleUnfollow = async () => {
-        const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
+        const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.state.unfollowId, this.props.username);
+    }
+
+    handleRemoveFollower = async () => {
+        const dispatch = await this.props.removeFollower(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
     handleRemove = async () => {
@@ -433,6 +438,7 @@ class ProfilePage extends React.Component {
         console.log("testing handleShowUnfollowing")
         const username = this.props.followingInfo[i].User.username;
         const previewImg = this.props.followingInfo[i].previewImg;
+        const id = this.props.followingInfo[i].User.id;
         e.persist();
         console.log(e);
         console.log(i);
@@ -442,6 +448,7 @@ class ProfilePage extends React.Component {
         this.setState({ unfollowPreviewImg: previewImg })
         this.setState({ unfollowUsername: username })
         this.setState({ showUnfollow: true })
+        this.setState({ unfollowId: id})
     }
 
     handleShowRemove = (e, i) => {
@@ -638,6 +645,7 @@ class ProfilePage extends React.Component {
                         previewImg={unfollowPreviewImg}
                         username={unfollowUsername}
                         handleAction={this.handleUnfollow}
+                        text={"Unfollow"}
                     />
 
                     {/* Remove Folower Modal */}
@@ -646,7 +654,8 @@ class ProfilePage extends React.Component {
                         handleCloseModal={this.handleCloseRemoveModal}
                         previewImg={removePreviewImg}
                         username={removeUsername}
-                        handleAction={this.handleUnfollow}
+                        handleAction={this.handleRemoveFollower}
+                        text={"Remove"}
                     />
 
                     {/*Shows Followers*/}
@@ -707,6 +716,7 @@ const actionCreators = {
     uploadAvatar: profileActions.uploadAvatar,
     removeAvatar: profileActions.removeAvatar,
     unfollow: followActions.unfollow,
+    removeFollower: followActions.removeFollower,
     getFollowerCount: followActions.getFollowerCount,
     getFollowingCount: followActions.getFollowingCount,
     getFollowerInfo: followActions.getFollowerInfo,

@@ -12,7 +12,8 @@ module.exports = {
     getUserFollowersCount,
     getMyFollowingCount,
     getUserFollowingCount,
-    getFollowingStatus
+    getFollowingStatus, 
+    removeFollower,
 };
 
 async function follow(followerId, followedId) {
@@ -42,6 +43,18 @@ async function follow(followerId, followedId) {
 }
 
 async function unfollow(followerId, followedId) {
+    const params = {};
+    const dict = {}
+    params["follower"] = followerId;
+    params["followed"] = followedId;
+    const follow = await getFollowed(followerId, followedId)
+    if(follow){
+        await follow.destroy();
+        dict["followingUser"] = "";
+    }
+}
+
+async function removeFollower(followerId, followedId) {
     const params = {};
     const dict = {}
     params["follower"] = followerId;

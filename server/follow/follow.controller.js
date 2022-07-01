@@ -10,6 +10,7 @@ const path = require('path');
 
 router.post('/:id/follow', authorize(), follow)
 router.delete('/:id/unfollow', unfollow);
+router.delete('/:id/removefollower', removeFollower);
 router.get('/:id/myFollowers', authorize(), getMyFollowers);
 router.post('/:id/userFollowers', getUserFollowers);
 router.get('/:id/myFollowing',  getMyFollowing);
@@ -44,6 +45,17 @@ function unfollow(req, res, next) {
     console.log(followedId);
     followService.unfollow(followerId, followedId)
         .then(unfollow => res.json(unfollow))
+        .catch(next);
+}
+
+function removeFollower(req, res, next) {
+    console.log("entering removeFollower code")
+    const followedId = req.params.id;
+    const followerId = req.body.followerId;
+    console.log(followerId);
+    console.log(followedId);
+    followService.removeFollower(followerId, followedId)
+        .then(removeFollow => res.json(removeFollow))
         .catch(next);
 }
 

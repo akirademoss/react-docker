@@ -131,6 +131,7 @@ class FollowInfo extends React.Component {
                   
                     
                       <IconButton
+                        disableRipple
                         color="inherit"
                         className={classes.iconButtonAvatar}
                         onClick={handlePageChange}

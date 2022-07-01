@@ -16,6 +16,7 @@ export const followActions = {
   getFollowingInfo,
   getUserFollowingInfo,
   getFollowingStatus,
+  removeFollower,
 };
 
 
@@ -65,6 +66,29 @@ function unfollow(id, token, followedId, username){
     function request(unfollow) { return { type: followConstants.UNFOLLOW_REQUEST, unfollow } }
     function success(unfollow) { return { type: followConstants.UNFOLLOW_SUCCESS, unfollow } }
     function failure(error) { return { type: followConstants.UNFOLLOW_FAILURE, error } }
+  }
+
+  function removeFollower(id, token, followerId, username){
+    return dispatch =>{
+      dispatch(request(username));
+  
+      FollowService.removeFollower(id, token, followerId)
+      .then(
+      
+        removeFollower => {
+          dispatch(success(removeFollower));
+          window.location.reload();
+        },
+        error => {
+          dispatch(failure(error.toString()));
+          dispatch(alertActions.error(error.toString()));
+        }
+      );
+    };
+  
+    function request(removeFollower) { return { type: followConstants.REMOVE_FOLLOWER_REQUEST, removeFollower } }
+    function success(removeFollower) { return { type: followConstants.REMOVE_FOLLOWER_SUCCESS, removeFollower } }
+    function failure(error) { return { type: followConstants.REMOVE_FOLLOWER_FAILURE, error } }
   }
 
   function getFollowerCount(id, token, username){

@@ -588,6 +588,7 @@ class UserProfilePage extends React.Component {
                         previewImg={unfollowPreviewImg}
                         username={unfollowUsername}
                         handleAction={this.handleUnfollow}
+                        text={"Unfollow"}
                     />
 
                     {/* Remove Folower Modal */}
@@ -597,6 +598,7 @@ class UserProfilePage extends React.Component {
                         previewImg={removePreviewImg}
                         username={removeUsername}
                         handleAction={this.handleUnfollow}
+                        text={"Remove"}
                     />
 
                     {/*Shows Followers*/}

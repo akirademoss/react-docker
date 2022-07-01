@@ -32,6 +32,21 @@ class FollowService {
     return response.data;
   }
 
+  async removeFollower(id, token, followerId){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token}
+    };
+    const data = {
+      data: {followerId: followerId}
+    }
+      const response = await axios
+      .delete(API_URL + "/follow/" + id + "/removefollower", data, config);
+    if (response.data) {
+      localStorage.setItem("removefollower", JSON.stringify(response.data));
+    }
+    return response.data;
+  }
+
   async getFollowerCount(id, token){
     const config = {
       headers: { Authorization: 'Bearer ' + token}
