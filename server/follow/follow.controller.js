@@ -21,6 +21,8 @@ router.get('/:id/myFollowingCount',  getMyFollowingCount);
 router.post('/:id/userFollowingCount',  getUserFollowingCount);
 //note: this should be get request but axios cannot add body with get method so we are using post
 router.post('/:id/followingStatus',  authorize(),getFollowingStatus);
+router.post('/:id/followingStatusEUM',  authorize(),getFollowingStatusEUM);
+router.post('/:id/followingStatusIUM',  authorize(),getFollowingStatusIUM);
 
 module.exports = router;
 
@@ -66,6 +68,13 @@ function getMyFollowers(req, res, next) {
     .catch(next);
 }
 
+function getMyFollowing(req, res, next){
+    const id = req.params.id;
+    followService.getFollowing(id)
+    .then(following => res.json(following))
+    .catch(next);
+}
+
 function getUserFollowers(req, res, next) {
     const id = req.body.followedId;
     console.log(id)
@@ -75,18 +84,29 @@ function getUserFollowers(req, res, next) {
     .catch(next);
 }
 
-function getMyFollowing(req, res, next){
-    const id = req.params.id;
-    followService.getFollowing(id)
-    .then(following => res.json(following))
-    .catch(next);
-}
-
 function getUserFollowing(req, res, next){
     const id = req.body.followedId;
     console.log(id)
     console.log("ENTERING USERFOLLOWING")
     followService.getFollowing(id)
+    .then(following => res.json(following))
+    .catch(next);
+}
+
+function getFollowingStatusEUM(req, res, next) {
+    const id = req.body.followedId;
+    console.log(id)
+    console.log("ENTERING USERFOLLOWER")
+    followService.getFollowingStatusEUM(id)
+    .then(followers => res.json(followers))
+    .catch(next);
+}
+
+function getFollowingStatusIUM(req, res, next){
+    const id = req.body.followedId;
+    console.log(id)
+    console.log("ENTERING USERFOLLOWING")
+    followService.getFollowingStatusIUM(id)
     .then(following => res.json(following))
     .catch(next);
 }

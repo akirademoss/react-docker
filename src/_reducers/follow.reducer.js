@@ -164,6 +164,27 @@ export function getFollowerInfo(state = initialState7, action) {
   }
 }
 
+export function getUserFollowingInfo(state = initialState8, action) {
+  switch (action.type) {
+    case followConstants.USER_FOLLOWING_INFO_REQUEST:
+      return {
+        loadingUserFollowingInfo: true,
+        userFollowingInfo: action.userFollowingInfo
+      };
+    case followConstants.USER_FOLLOWING_INFO_SUCCESS:
+      return {
+        userFollowingInfoLoaded: true,
+        userFollowingInfo: action.userFollowingInfo
+      };
+    case followConstants.USER_FOLLOWING_INFO_FAILURE:
+      return {};
+      
+    default:
+      return state
+  }
+}
+
+
 export function getUserFollowerInfo(state = initialState9, action) {
   switch (action.type) {
     case followConstants.USER_FOLLOWER_INFO_REQUEST:
@@ -184,23 +205,4 @@ export function getUserFollowerInfo(state = initialState9, action) {
   }
 }
 
-export function getUserFollowingInfo(state = initialState8, action) {
-  switch (action.type) {
-    case followConstants.USER_FOLLOWING_INFO_REQUEST:
-      return {
-        loadingUserFollowingInfo: true,
-        userFollowingInfo: action.userFollowingInfo
-      };
-    case followConstants.USER_FOLLOWING_INFO_SUCCESS:
-      return {
-        userFollowingInfoLoaded: true,
-        userFollowingInfo: action.userFollowingInfo
-      };
-    case followConstants.USER_FOLLOWING_INFO_FAILURE:
-      return {};
-      
-    default:
-      return state
-  }
-}
 

@@ -41,6 +41,7 @@ import isEqual from 'lodash.isequal';
 import CustomToolbar from "../_components/CustomToolbar";
 import ProfilePic from "../_components/ProfilePic";
 import FollowModal from "../_components/FollowModal";
+import UserFollowModal from "../_components/UserFollowModal";
 import DelFollowModal from "../_components/DelFollowModal";
 
 
@@ -339,27 +340,27 @@ class UserProfilePage extends React.Component {
     }
 
     handleFollowerPageChange = (e, i) => {
-        const username = this.props.followerInfo[i].User.username;
+        const username = this.props.userFollowerInfo[i].User.username;
         e.persist();
         console.log(e);
         console.log(i);
-        console.log(this.props.followerInfo[i].User.username);
+        console.log(this.props.userFollowerInfo[i].User.username);
         history.push('/' + username + '/user');
     };
 
     handlePageChange = (e, i) => {
-        const username = this.props.followingInfo[i].User.username;
+        const username = this.props.userFollowingInfo[i].User.username;
         e.persist();
         console.log(e);
         console.log(i);
-        console.log(this.props.followingInfo[i].User.username);
+        console.log(this.props.userFollowingInfo[i].User.username);
         history.push('/' + username + '/user');
     };
 
     handleShowUnfollowing = (e, i) => {
         console.log("testing handleShowUnfollowing")
-        const username = this.props.followingInfo[i].User.username;
-        const previewImg = this.props.followingInfo[i].previewImg;
+        const username = this.props.userFollowingInfo[i].User.username;
+        const previewImg = this.props.userFollowingInfo[i].previewImg;
         e.persist();
         console.log(e);
         console.log(i);
@@ -373,8 +374,8 @@ class UserProfilePage extends React.Component {
 
     handleShowRemove = (e, i) => {
         console.log("testing handleShowRemove")
-        const username = this.props.followerInfo[i].User.username;
-        const previewImg = this.props.followerInfo[i].previewImg;
+        const username = this.props.userFollowerInfo[i].User.username;
+        const previewImg = this.props.userFollowerInfo[i].previewImg;
         e.persist();
         console.log(e);
         console.log(i);
@@ -394,7 +395,7 @@ class UserProfilePage extends React.Component {
         //if we aren viewing a user's profile, view will be of their profile
         //add code to query if we are following user here
         if (isEqual(this.props.username, this.props.user.username)) {
-            history.push('/error');
+            history.replace('/' + this.props.username + '/profile')
         }
 
         //console.log(this.props.match.params.username)
@@ -421,6 +422,10 @@ class UserProfilePage extends React.Component {
         console.log("id: ", id, "userId: ", userId)
         const dispatch2 = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId)
 
+    }
+
+    userFollowingStatus  = async (e, i) => {
+        const dispatch = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userFollowingInfo[i].User.username)
     }
 
     userFollowCount = async (e) => {
@@ -602,7 +607,7 @@ class UserProfilePage extends React.Component {
                     />
 
                     {/*Shows Followers*/}
-                    <FollowModal
+                    <UserFollowModal
                         show={showFollowers}
                         handleCloseModal={this.handleCloseFollowersModal}
                         infoLoaded={userFollowerInfoLoaded}
@@ -615,7 +620,7 @@ class UserProfilePage extends React.Component {
                     />
 
                     {/*Shows Following*/}
-                    <FollowModal
+                    <UserFollowModal
                         show={showFollowing}
                         handleCloseModal={this.handleCloseFollowingModal}
                         infoLoaded={userFollowingInfoLoaded}

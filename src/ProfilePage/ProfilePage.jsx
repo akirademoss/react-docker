@@ -485,7 +485,7 @@ class ProfilePage extends React.Component {
 
         // provide error messaging for URL browsing
         if (!isEqual(this.props.username, this.props.user.username)) {
-            history.push('/error');
+            history.replace('/' + this.props.username + '/user');
         }
     }
 

@@ -8,6 +8,8 @@ module.exports = {
     unfollow,
     getFollowers,
     getFollowing,
+    getFollowingStatusEUM,
+    getFollowingStatusIUM,
     getMyFollowersCount,
     getUserFollowersCount,
     getMyFollowingCount,
@@ -103,7 +105,6 @@ async function getFollowers(id) {
     return followerInfo;
 }
 
-
 async function getFollowing(id) {
     const followerInfo = await db.Profile.findAll({
         raw: true,
@@ -127,6 +128,55 @@ async function getFollowing(id) {
     console.log(followerInfo)
     
 return followerInfo;
+}
+
+
+async function getFollowingStatusEUM(id) {
+    const followerInfo = await db.Profile.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['name', 'previewImg', 'previewImgKey'],
+        include: [{
+            model: db.User,
+            required: true,
+            attributes: ['id', 'username'],
+            include: [{
+                model: db.Follow,
+                where: {
+                    followed: id
+                },
+                as: 'follower',
+                attributes: [],
+                required: true
+            }]
+        }],
+    })
+    console.log(followerInfo)
+    return followerInfo;
+}
+
+async function getFollowingStatusIUM(id) {
+    const followerInfo = await db.Profile.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['name', 'previewImg', 'previewImgKey'],
+        include: [{
+            model: db.User,
+            required: true,
+            attributes: ['id', 'username'],
+            include: [{
+                model: db.Follow,
+                where: {
+                    followed: id
+                },
+                as: 'follower',
+                attributes: [],
+                required: true
+            }]
+        }],
+    })
+    console.log(followerInfo)
+    return followerInfo;
 }
 
 async function getMyFollowersCount(id) {
