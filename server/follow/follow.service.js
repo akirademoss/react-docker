@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../_helpers/db');
 
+
+
+
 module.exports = {
     follow,
     unfollow,
@@ -131,52 +134,22 @@ return followerInfo;
 }
 
 
-async function getFollowingStatusEUM(id) {
-    const followerInfo = await db.Profile.findAll({
-        raw: true,
-        nest: true,
-        attributes: ['name', 'previewImg', 'previewImgKey'],
-        include: [{
-            model: db.User,
-            required: true,
-            attributes: ['id', 'username'],
-            include: [{
-                model: db.Follow,
-                where: {
-                    followed: id
-                },
-                as: 'follower',
-                attributes: [],
-                required: true
-            }]
-        }],
-    })
-    console.log(followerInfo)
-    return followerInfo;
+async function getFollowingStatusEUM(id, myId) {
+    const [results, metadata] = await db.sequelize.query("SELECT user.follower, IF(i.followed, 'True', 'False') AS followingStatusEUM FROM Follows user LEFT JOIN Follows i ON (i.followed = user.follower AND i.follower= :myId) WHERE user.followed= :id", {replacements: {myId, id}});
+    console.log(results)
+    console.log(metadata)
+
+    return results;
+
 }
 
-async function getFollowingStatusIUM(id) {
-    const followerInfo = await db.Profile.findAll({
-        raw: true,
-        nest: true,
-        attributes: ['name', 'previewImg', 'previewImgKey'],
-        include: [{
-            model: db.User,
-            required: true,
-            attributes: ['id', 'username'],
-            include: [{
-                model: db.Follow,
-                where: {
-                    followed: id
-                },
-                as: 'follower',
-                attributes: [],
-                required: true
-            }]
-        }],
-    })
-    console.log(followerInfo)
-    return followerInfo;
+async function getFollowingStatusIUM(id, myId) {
+    //TODO rewrite this to work for user's following list
+    const [results, metadata] = await db.sequelize.query("SELECT user.followed, IF(i.followed, 'True', 'False') AS followingStatusIUM FROM Follows user LEFT JOIN Follows i ON (i.followed = user.followed AND i.follower= :myId) WHERE user.follower= :id", {replacements: {myId, id}});
+    console.log(results)
+    console.log(metadata)
+    
+return results;
 }
 
 async function getMyFollowersCount(id) {

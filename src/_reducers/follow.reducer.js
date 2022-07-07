@@ -11,6 +11,9 @@ let followingInfo = JSON.parse(localStorage.getItem('followingInfo'));
 let userFollowerInfo = JSON.parse(localStorage.getItem('userFollowerInfo'));
 let userFollowingInfo = JSON.parse(localStorage.getItem('userFollowingInfo'));
 
+let followingStatusEUM = JSON.parse(localStorage.getItem('followingStatusEUM'));
+let followingStatusIUM = JSON.parse(localStorage.getItem('followingStatusIUM'));
+
 const initialState = follow ? { followStatusLoaded: false, follow } : {};
 const initialState2 = myFollowerCount ? { myFollowerCountLoaded: false, myFollowerCount } : {};
 const initialState3 = myFollowingCount ? { myFollowingCountLoaded: false, myFollowingCount } : {};
@@ -22,7 +25,8 @@ const initialState7 = followingInfo ? { followingInfoLoaded: false, followingInf
 const initialState8 = userFollowingInfo ? { userFollowingInfoLoaded: false, userFollowingInfo } : {};
 const initialState9 = userFollowerInfo? { userFollowerInfoLoaded: false, userFollowerInfo  } : {};
 
-
+const initialState10 = followingStatusEUM? { followingStatusEUMLoaded: false, followingStatusEUM  } : {};
+const initialState11 = followingStatusIUM? { followingStatusIUMLoaded: false, followingStatusIUM  } : {};
 
 export function getFollowStatus(state = initialState, action) {
   switch (action.type) {
@@ -205,4 +209,43 @@ export function getUserFollowerInfo(state = initialState9, action) {
   }
 }
 
+export function getFollowingStatusEUM(state = initialState10, action) {
+  switch (action.type) {
+    case followConstants.FOLLOW_STATUS_EUM_REQUEST:
+      return {
+        loadingFollowingStatusEUM: true,
+        followingStatusEUM: action.followingStatusEUM
+      };
+    case followConstants.FOLLOW_STATUS_EUM_SUCCESS:
+      return {
+        followingStatusEUMLoaded: true,
+        followingStatusEUM: action.followingStatusEUM
+      };
+    case followConstants.FOLLOW_STATUS_EUM_FAILURE:
+      return {};
+      
+    default:
+      return state
+  }
+}
+
+export function getFollowingStatusIUM(state = initialState11, action) {
+  switch (action.type) {
+    case followConstants.FOLLOW_STATUS_IUM_REQUEST:
+      return {
+        loadingFollowingStatusIUM: true,
+        followingStatusIUM: action.followingStatusIUM
+      };
+    case followConstants.FOLLOW_STATUS_IUM_SUCCESS:
+      return {
+        followingStatusIUMLoaded: true,
+        followingStatusIUM: action.followingStatusIUM
+      };
+    case followConstants.FOLLOW_STATUS_IUM_FAILURE:
+      return {};
+      
+    default:
+      return state
+  }
+}
 

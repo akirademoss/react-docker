@@ -306,15 +306,15 @@ class UserProfilePage extends React.Component {
     }
 
     handleShowFollowers = () => {
+        const dispatch = this.props.getUserFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
+        const dispatch2 = this.props.getFollowingStatusEUM(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.user.username)
         this.setState({ showFollowers: true })
         console.log("showFollowers status: ", this.state.showFollowers)
-
-        const dispatch = this.props.getUserFollowerInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
-
     }
 
     handleShowFollowing = () => {
         const dispatch = this.props.getUserFollowingInfo(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
+        const dispatch2 = this.props.getFollowingStatusIUM(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.user.username)
         this.setState({ showFollowing: true })
         console.log("showFollowing status: ", this.state.showFollowing)
     }
@@ -436,7 +436,7 @@ class UserProfilePage extends React.Component {
     //Each time page refreshes we call this function 
     async componentDidMount() {
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 300); });
+        await new Promise(resolve => { setTimeout(resolve, 150); });
         this.followingStatus();
         this.userFollowCount();
         this.setState({ followStatusLoaded: true });
@@ -456,6 +456,8 @@ class UserProfilePage extends React.Component {
         const { loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo, loadingUserFollowingInfo, loadingUserFollowerInfo } = this.props;
         const { followingInfoLoaded, followerInfoLoaded, userFollowingInfoLoaded, userFollowerInfoLoaded } = this.props;
+        const { loadingFollowingStatusEUM, followingStatusEUMLoaded } = this.props;
+        const { loadingFollowingStatusIUM, followingStatusIUMLoaded } = this.props;
 
         return (
             <ThemeProvider theme={darkTheme}>
@@ -651,13 +653,17 @@ function mapStateToProps(state) {
     const { followerInfo, loadingFollowerInfo, followerInfoLoaded } = state.getFollowerInfo;
     const { userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded } = state.getUserFollowingInfo;
     const { userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded } = state.getUserFollowerInfo;
+    const { followingStatusEUM, loadingFollowingStatusEUM, followingStatusEUMLoaded } = state.getFollowingStatusEUM;
+    const { followingStatusIUM, loadingFollowingStatusIUM, followingStatusIUMLoaded } = state.getFollowingStatusIUM;
     return {
         loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile,
         follow, loadingFollowStatus, userFollowerCount, userDetails, loadingUserDetails,
         loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
         loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
         followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
-        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded
+        userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded, followingStatusEUM,
+        loadingFollowingStatusEUM, followingStatusEUMLoaded, followingStatusIUM, loadingFollowingStatusIUM, 
+        followingStatusIUMLoaded
     };
 }
 
@@ -677,7 +683,8 @@ const actionCreators = {
     getUserFollowingInfo: followActions.getUserFollowingInfo,
     getFollowingStatus: followActions.getFollowingStatus,
     getUserDetails: userActions.getUserDetails,
-
+    getFollowingStatusEUM: followActions.getFollowingStatusEUM,
+    getFollowingStatusIUM: followActions.getFollowingStatusIUM,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(UserProfilePage));

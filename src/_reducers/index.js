@@ -6,7 +6,7 @@ import { registration } from './registration.reducer';
 import { alert } from './alert.reducer';
 import { getUserDetails } from './user.reducer';
 import { getProfile, getUserProfile} from './profile.reducer';
-import {getFollowStatus, getMyFollowerCount, getMyFollowingCount, getUserFollowerCount, getUserFollowingCount, getFollowingInfo, getFollowerInfo, getUserFollowingInfo, getUserFollowerInfo} from './follow.reducer';
+import {getFollowStatus, getMyFollowerCount, getMyFollowingCount, getUserFollowerCount, getUserFollowingCount, getFollowingInfo, getFollowerInfo, getUserFollowingInfo, getUserFollowerInfo, getFollowingStatusEUM, getFollowingStatusIUM} from './follow.reducer';
 
 const rootReducer = combineReducers({
   getUserDetails,
@@ -24,6 +24,8 @@ const rootReducer = combineReducers({
   getFollowerInfo, 
   getUserFollowingInfo, 
   getUserFollowerInfo,
+  getFollowingStatusEUM,
+  getFollowingStatusIUM,
 });
 
 export default rootReducer;

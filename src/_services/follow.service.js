@@ -163,6 +163,32 @@ class FollowService {
     }
     return response.data;
   }
+
+  //NOTE: should be GET request but axios won't post data with GET 
+  async getFollowingStatusEUM(id, token, followedId){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token}
+    };
+      const response = await axios
+      .post(API_URL + "/follow/" + id + "/followingStatusEUM", {followedId}, config);
+    if (response.data) {
+      localStorage.setItem("followingStatusEUM", JSON.stringify(response.data));
+    }
+    return response.data;
+  }
+
+  //NOTE: should be GET request but axios won't post data with GET 
+  async getFollowingStatusIUM(id, token, followedId){
+    const config = {
+      headers: { Authorization: 'Bearer ' + token}
+    };
+      const response = await axios
+      .post(API_URL + "/follow/" + id + "/followingStatusIUM", {followedId}, config);
+    if (response.data) {
+      localStorage.setItem("followingStatusIUM", JSON.stringify(response.data));
+    }
+    return response.data;
+  }
 }
 
 

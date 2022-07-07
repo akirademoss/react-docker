@@ -17,6 +17,8 @@ export const followActions = {
   getUserFollowingInfo,
   getFollowingStatus,
   removeFollower,
+  getFollowingStatusEUM,
+  getFollowingStatusIUM,
 };
 
 
@@ -223,6 +225,47 @@ function unfollow(id, token, followedId, username){
     function failure(error) { return { type: followConstants.USER_FOLLOWER_INFO_FAILURE, error } }
   }
 
+  function getFollowingStatusEUM(id, token, followedId, username){
+    return dispatch =>{
+      dispatch(request(username));
+      FollowService.getFollowingStatusEUM(id, token, followedId)
+      .then(
+      
+        followingStatusEUM => {
+          dispatch(success(followingStatusEUM));
+        },
+        error => {
+          dispatch(failure(error.toString()));
+          dispatch(alertActions.error(error.toString()));
+        }
+      );
+    };
+  
+    function request(followingStatusEUM) { return { type: followConstants.FOLLOW_STATUS_EUM_REQUEST, followingStatusEUM } }
+    function success(followingStatusEUM) { return { type: followConstants.FOLLOW_STATUS_EUM_SUCCESS, followingStatusEUM } }
+    function failure(error) { return { type: followConstants.FOLLOW_STATUS_EUM_FAILURE, error } }
+  }
+
+  function getFollowingStatusIUM(id, token, followedId, username){
+    return dispatch =>{
+      dispatch(request(username));
+      FollowService.getFollowingStatusIUM(id, token, followedId)
+      .then(
+      
+        followingStatusIUM => {
+          dispatch(success(followingStatusIUM));
+        },
+        error => {
+          dispatch(failure(error.toString()));
+          dispatch(alertActions.error(error.toString()));
+        }
+      );
+    };
+  
+    function request(followingStatusIUM) { return { type: followConstants.FOLLOW_STATUS_IUM_REQUEST, followingStatusIUM } }
+    function success(followingStatusIUM) { return { type: followConstants.FOLLOW_STATUS_IUM_SUCCESS, followingStatusIUM } }
+    function failure(error) { return { type: followConstants.FOLLOW_STATUS_IUM_FAILURE, error } }
+  }
   function getFollowingInfo(id, token, username){
     return dispatch =>{
       dispatch(request(username));

@@ -2,7 +2,7 @@ const config = require('../config.json');
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
 
-module.exports = db = {};
+module.exports = (db) = {};
 
 initialize();
 
@@ -30,6 +30,9 @@ async function initialize() {
     db.Follow.belongsTo(db.User, {foreignKey: 'followed', targetKey: 'id'});
     db.Follow.belongsTo(db.User, {foreignKey: 'follower', targetKey: 'id'});
 
+    db.sequelize = sequelize;
+
+    
     // sync all models with database
     await sequelize.sync();
 }

@@ -8,6 +8,7 @@ const followService = require('./follow.service');
 const { secret } = require('../config.json');
 const path = require('path');
 
+
 router.post('/:id/follow', authorize(), follow)
 router.delete('/:id/unfollow', unfollow);
 router.delete('/:id/removefollower', removeFollower);
@@ -94,19 +95,21 @@ function getUserFollowing(req, res, next){
 }
 
 function getFollowingStatusEUM(req, res, next) {
+    const myId = req.params.id;
     const id = req.body.followedId;
     console.log(id)
     console.log("ENTERING USERFOLLOWER")
-    followService.getFollowingStatusEUM(id)
+    followService.getFollowingStatusEUM(id, myId)
     .then(followers => res.json(followers))
     .catch(next);
 }
 
 function getFollowingStatusIUM(req, res, next){
+    const myId = req.params.id;
     const id = req.body.followedId;
     console.log(id)
     console.log("ENTERING USERFOLLOWING")
-    followService.getFollowingStatusIUM(id)
+    followService.getFollowingStatusIUM(id, myId)
     .then(following => res.json(following))
     .catch(next);
 }
