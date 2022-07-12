@@ -3,6 +3,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
+import blue from '@material-ui/core/colors/blue';
 import { withStyles } from '@material-ui/core/styles';
 import Skeleton from "@material-ui/lab/Skeleton";
 import Grid from '@material-ui/core/Grid';
@@ -86,15 +87,26 @@ followGridList: {
     margin: "auto",
     width: "32px",
     height: "32px",
-    borderRadius: 100,
+    borderRadius: 100
 },
 followingButton: {
-  backgroundColor: grey[600],
+    backgroundColor: grey[600],
+    color: darkTheme.palette.common.white,
+    '&:hover': {
+        backgroundColor: grey[700],
+    },
+
+    textTransform: 'none',
+    fontSize: '11px',
+    height: "32px",
+    width: "70px"
+},
+followButton: {
+  backgroundColor: blue[700],
   color: darkTheme.palette.common.white,
   '&:hover': {
-      backgroundColor: grey[700],
+      backgroundColor: blue[800],
   },
-
   textTransform: 'none',
   fontSize: '11px',
   height: "32px",
@@ -120,9 +132,9 @@ skeleton: {
 
 });
 
-class FollowInfo extends React.Component {
+class UserFollowInfo extends React.Component {
     render() {
-      const { classes, followingInfo, handleButton, handlePageChange, buttonText, loadingInfo} = this.props;
+      const { classes, followingInfo, followingStatus, handleButton, handlePageChange, handleFollow, buttonText, loadingInfo, myUsername} = this.props;
         return (
             <div>
               <Grid container spacing={0} className={classes.followGrid}>
@@ -136,8 +148,8 @@ class FollowInfo extends React.Component {
                         onClick={handlePageChange}
                       >
                         {loadingInfo && !followingInfo.previewImg && <Skeleton variant="circle" animation="wave" className={classes.skeleton}/>}
-                        {!loadingInfo && followingInfo.previewImg && <img src={followingInfo.previewImg} className={classes.avatarFollow} />}
-                        {!loadingInfo && !followingInfo.previewImg && <AccountCircle className={classes.avatarFollow}/>}
+                        {followingInfo.previewImg && <img src={followingInfo.previewImg} className={classes.avatarFollow} />}
+                        {!followingInfo.previewImg && <AccountCircle className={classes.avatarFollow}/>}
                       </IconButton>
                  
                   
@@ -154,9 +166,18 @@ class FollowInfo extends React.Component {
                 </Grid>
 
                 <Grid item className={classes.item3}>
+                  {followingStatus.status == 'True' && (myUsername != followingInfo.User.username) &&
                   <Button disableRipple className={classes.followingButton} variant="contained" fullWidth={false} onClick={handleButton}>
-                    <b>{buttonText}</b>
-                  </Button>
+                    <b>Following</b>
+                  </Button>}
+                  {(myUsername != followingInfo.User.username) && followingStatus.status == 'False' &&
+                  <Button disableRipple className={classes.followButton} variant="contained" fullWidth={false} onClick={handleFollow}>
+                    <b>Follow</b>
+                  </Button>}
+                  {(myUsername == followingInfo.User.username) &&
+                  <Button disableRipple className={classes.followButton} variant="contained" fullWidth={false} onClick={handlePageChange}>
+                    <b>Profile</b>
+                  </Button>}
                 </Grid>             
               </Grid>
              
@@ -166,4 +187,4 @@ class FollowInfo extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(FollowInfo));;
+export default (withStyles(styles, { withTheme: true })(UserFollowInfo));;

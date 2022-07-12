@@ -10,12 +10,16 @@ import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from '@material-ui/icons/Search';
 import { history } from '../_helpers';
 import InputBase from '@material-ui/core/InputBase';
+import Input from '@material-ui/core/Input';
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MailIcon from "@material-ui/icons/Mail";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Skeleton from "@material-ui/lab/Skeleton";
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import ClearIcon from "@material-ui/icons/Clear";
 import { ThemeProvider } from "@material-ui/styles";
 
 
@@ -30,7 +34,18 @@ const darkTheme = createMuiTheme({
                 borderRight: '1px solid grey',
                 borderColor: fade('#ffffff', 0.5),
             }
-        },       
+        }, 
+        MuiInputBase: { 
+
+            endAdornment: {
+                color: '#ffffff',
+
+            },
+            primary: '#000000',
+            adornedEnd: {
+                color: '#ffffff',
+            },
+        }     
     },
     palette: {
         type: 'dark',
@@ -43,6 +58,9 @@ const darkTheme = createMuiTheme({
         background: {
             paper: fade('#000000', 0.5),
             default: '#000000',
+        },
+        neutral: {
+            main: '#ffffff',
         }
     },
     typography: {
@@ -117,11 +135,7 @@ const darkTheme = createMuiTheme({
         padding: darkTheme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
-        transition: darkTheme.transitions.create('width'),
         width: '100%',
-        [darkTheme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -163,15 +177,45 @@ const darkTheme = createMuiTheme({
         width: "26px",
         height: "26px",
     },
-
-
-
+    clearIcon: {
+        
+        color: darkTheme.palette.common.white,
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
+    },
+    clear: {
+        fontSize: '18px',
+    }
   })
 
   class CustomToolbar extends React.Component {
     render() {
       const { classes, user, profile, loadingProfile, handleMenu, handleClose, handleViewProfile, 
-        handleEditProfile, handleLogout, messagesOpen, anchorEl, notificationsOpen, profileOpen } = this.props;
+        handleEditProfile, handleLogout, messagesOpen, anchorEl, notificationsOpen, profileOpen,
+        handleTextChange, searchText, handleTextClear } = this.props;
+
+        const endAdornment = () => {
+            if (searchText) {
+              return (
+                <InputAdornment position="end">
+                  <IconButton 
+                    disableRipple
+                    onClick={handleTextClear}
+                    className={classes.clearIcon}
+                  >
+                    <ClearIcon className={classes.clear} />
+                  </IconButton>
+                </InputAdornment>
+              );
+            }
+
+            return "";
+           
+          }
         return (
             
             <div>
@@ -194,10 +238,15 @@ const darkTheme = createMuiTheme({
                             </div>
                             <InputBase
                                 fullWidth={true}
+                                type="text"
                                 placeholder="Search…"
+                                name="text"
+                                onChange={handleTextChange}
                                 classes={{
                                     input: classes.inputInput,
                                   }}
+                                value={searchText}
+                                endAdornment={endAdornment()}
                             />
                         </div>
                     </section>

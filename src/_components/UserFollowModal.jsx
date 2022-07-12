@@ -11,7 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import List from "@material-ui/core/List";
 import CloseIcon from '@material-ui/icons/Close';
 
-import FollowInfo from "../_components/FollowInfo";
+import UserFollowInfo from "../_components/UserFollowInfo";
 
 
 const darkTheme = createMuiTheme({
@@ -98,10 +98,7 @@ const styles = darkTheme => ({
         },
         borderRadius: darkTheme.shape.borderRadius,
         justifyContent: 'center',
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
+
     },
     hl: {
         height: 1,
@@ -138,7 +135,9 @@ const styles = darkTheme => ({
 
 class UserFollowModal extends React.Component {
     render() {
-        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followInfo, handleShow, handlePageChange, followText, buttonText } = this.props;
+        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followingStatusLoaded, 
+            loadingFollowingStatus, followInfo, followingStatus, handleShow, handlePageChange, 
+            followText, buttonText, handleFollow, myUsername } = this.props;
         return (
 
             <div>
@@ -172,10 +171,10 @@ class UserFollowModal extends React.Component {
                         </Grid>
                         <hr className={classes.hl}></hr>
                         <List className={classes.list}>
-                            {infoLoaded && !loadingInfo &&
+                            {infoLoaded && !loadingInfo && followingStatusLoaded && !loadingFollowingStatus &&
                                 followInfo.map((followingInfo, i) => (
                                     <div key={i}>
-                                        <FollowInfo followingInfo={followInfo[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} />
+                                        <UserFollowInfo followingInfo={followInfo[i]} followingStatus={followingStatus[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} handleFollow={(e) => handleFollow(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} myUsername={myUsername}/>
                                     </div>
                                 ))}
                         </List>

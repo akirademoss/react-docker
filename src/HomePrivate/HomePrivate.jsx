@@ -116,12 +116,22 @@ class HomePrivate extends React.Component {
       profileOpen: false,
       isLoggedIn: false,
       profile: { name: '', bio: '', link: '', previewImg: '' },
-
+      text: '',
     };
 
+    this.handleTextChange = this.handleTextChange.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
 
   }
+
+  handleTextClear = () => {
+    this.setState({ text: "" });
+  }
+
+  handleTextChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
 
   handleChange = (event, checked) => {
     this.setState({ auth: checked });
@@ -214,6 +224,9 @@ class HomePrivate extends React.Component {
               anchorEl={anchorEl}
               notificationsOpen={notificationsOpen}
               profileOpen={profileOpen}
+              handleTextChange={this.handleTextChange}
+              searchText={this.state.text}
+              handleTextClear={this.handleTextClear}
             />
             <div className={classes.centerDivCol}>
               <div className={classes.centerDiv}>

@@ -135,7 +135,7 @@ return followerInfo;
 
 
 async function getFollowingStatusEUM(id, myId) {
-    const [results, metadata] = await db.sequelize.query("SELECT user.follower, IF(i.followed, 'True', 'False') AS followingStatusEUM FROM Follows user LEFT JOIN Follows i ON (i.followed = user.follower AND i.follower= :myId) WHERE user.followed= :id", {replacements: {myId, id}});
+    const [results, metadata] = await db.sequelize.query("SELECT user.follower, IF(i.followed, 'True', 'False') AS status FROM Follows user LEFT JOIN Follows i ON (i.followed = user.follower AND i.follower= :myId) WHERE user.followed= :id", {replacements: {myId, id}});
     console.log(results)
     console.log(metadata)
 
@@ -145,7 +145,7 @@ async function getFollowingStatusEUM(id, myId) {
 
 async function getFollowingStatusIUM(id, myId) {
     //TODO rewrite this to work for user's following list
-    const [results, metadata] = await db.sequelize.query("SELECT user.followed, IF(i.followed, 'True', 'False') AS followingStatusIUM FROM Follows user LEFT JOIN Follows i ON (i.followed = user.followed AND i.follower= :myId) WHERE user.follower= :id", {replacements: {myId, id}});
+    const [results, metadata] = await db.sequelize.query("SELECT user.followed, IF(i.followed, 'True', 'False') AS status FROM Follows user LEFT JOIN Follows i ON (i.followed = user.followed AND i.follower= :myId) WHERE user.follower= :id", {replacements: {myId, id}});
     console.log(results)
     console.log(metadata)
     
@@ -211,16 +211,17 @@ async function getFollowingStatus(followerId, followedId) {
         where: {
             follower: followerId,
             followed: followedId,
-        }
+        },
     });
+    console.log("LOGGING THE RESULT FOR GETFOLLOWINGSTATUS QUERY")
     console.log(follow)
     const followingStatus = {};
 
     if (!follow) {
-        followingStatus["isFollowing"] = "";
+        followingStatus["isFollowing"] = "False";
     }
     else{
-        followingStatus["isFollowing"] = "true";
+        followingStatus["isFollowing"] = "True";
     }
     
     let result = JSON.stringify(followingStatus);

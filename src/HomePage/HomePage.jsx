@@ -10,6 +10,9 @@ import { ThemeProvider } from "@material-ui/styles";
 import InputBase from '@material-ui/core/InputBase';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import ClearIcon from "@material-ui/icons/Clear";
+import IconButton from "@material-ui/core/IconButton";
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -130,9 +133,6 @@ const styles = darkTheme => ({
     paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
     transition: darkTheme.transitions.create('width'),
     width: '100%',
-    [darkTheme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
   },
   grow: {
     flexGrow: 1,
@@ -176,12 +176,41 @@ const styles = darkTheme => ({
   text: {
     color: grey[500],
   },
-
+  clearIcon: {
+    color: darkTheme.palette.common.white,
+    background: 'transparent',
+    "&:hover": {
+        background: 'transparent',
+        backgroundColor: 'transparent',
+        cursor: 'default',
+    },
+  },
+  clear: {
+    fontSize: '18px',
+  }
 });
 
 class HomePage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      text: '',
+    };
+
+    this.handleTextChange = this.handleTextChange.bind(this);
+  }
+
+  handleTextClear = () => {
+    this.setState({ text: "" });
+  }
+
+  handleTextChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
   componentDidMount() {
-    //this.props.getUsers();
   }
 
   handleDeleteUser(id) {
@@ -191,6 +220,25 @@ class HomePage extends React.Component {
   render() {
 
     const { classes } = this.props;
+
+    const endAdornment = () => {
+      if (this.state.text) {
+        return (
+          <InputAdornment position="end">
+            <IconButton 
+              disableRipple
+              onClick={this.handleTextClear}
+              className={classes.clearIcon}
+            >
+              <ClearIcon className={classes.clear} />
+            </IconButton>
+          </InputAdornment>
+        );
+      }
+
+      return "";
+     
+    }
     return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
@@ -207,12 +255,16 @@ class HomePage extends React.Component {
                 </div>
                 <InputBase
                   fullWidth={true}
+                  type="text"
                   placeholder="Search…"
+                  name="text"
+                  onChange={this.handleTextChange}
                   classes={{
                     root: classes.inputRoot,
                     input: classes.inputInput,
                   }}
-                  inputProps={{ 'aria-label': 'search' }}
+                  value={this.state.text}
+                  endAdornment={endAdornment()}
                 />
               </div>
             </section>

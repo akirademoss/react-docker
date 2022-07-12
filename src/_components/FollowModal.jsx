@@ -98,10 +98,6 @@ const styles = darkTheme => ({
         },
         borderRadius: darkTheme.shape.borderRadius,
         justifyContent: 'center',
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
     },
     hl: {
         height: 1,

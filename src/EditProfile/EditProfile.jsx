@@ -157,11 +157,16 @@ class EditProfile extends React.Component {
       croppedImage: null,
       show: false,
       showImageCrop: false,
+      text: '',
     };
 
     this.handleLogout = this.handleLogout.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleTextClear = () => {
+    this.setState({ text: "" });
   }
 
   handleMenu = event => {
@@ -362,6 +367,9 @@ class EditProfile extends React.Component {
             anchorEl={anchorEl}
             notificationsOpen={notificationsOpen}
             profileOpen={profileOpen}
+            handleTextChange={this.handleChange}
+            searchText={this.state.text}
+            handleTextClear={this.handleTextClear}
           />
         </div>
 

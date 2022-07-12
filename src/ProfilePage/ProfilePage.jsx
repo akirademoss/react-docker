@@ -205,10 +205,20 @@ class ProfilePage extends React.Component {
             removePreviewImg: null,
             removeId: null,
             removeUsername: null,
+            text: '',
         };
-
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
+
+    handleTextClear = () => {
+        this.setState({ text: "" });
+    }
+
+    handleTextChange(e) {
+        const { name, value } = e.target;
+        this.setState({ [name]: value });
+    };
 
     //Each time page refreshes we call this function 
     async componentDidMount() {
@@ -522,6 +532,9 @@ class ProfilePage extends React.Component {
                         anchorEl={anchorEl}
                         notificationsOpen={notificationsOpen}
                         profileOpen={profileOpen}
+                        handleTextChange={this.handleTextChange}
+                        searchText={this.state.text}
+                        handleTextClear={this.handleTextClear}
                     />
 
                     {/* Profile Here */}

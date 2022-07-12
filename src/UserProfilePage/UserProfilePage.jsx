@@ -204,18 +204,28 @@ class UserProfilePage extends React.Component {
             show: false,
             showImageCrop: false,
             showUnfollow: false,
-            showRemove: false,
+            showUnfollowList: false,
             showFollowers: false,
             showFollowing: false,
             followStatusLoaded: false,
             unfollowPreviewImg: null,
+            unfollowId: null,
             unfollowUsername: null,
-            removePreviewImg: null,
-            removeUsername: null,
+            text: '',
         };
 
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
+
+    handleTextClear = () => {
+        this.setState({ text: "" });
+    }
+
+    handleTextChange(e) {
+        const { name, value } = e.target;
+        this.setState({ [name]: value });
+    };
 
     handleChange = (event, checked) => {
         this.setState({ auth: checked });
@@ -286,6 +296,10 @@ class UserProfilePage extends React.Component {
         const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.props.userProfile.userId, this.props.username);
     }
 
+    handleUnfollowList = async () => {
+        const dispatch = await this.props.unfollow(this.props.user.id, this.props.user.accessToken, this.state.unfollowId, this.props.username);
+    }
+
     handleCloseModal = () => {
         this.setState({ show: false })
     }
@@ -303,6 +317,13 @@ class UserProfilePage extends React.Component {
         this.setState({ unfollowUsername: this.props.username })
         this.setState({ showUnfollow: true })
         console.log("showUnfollow status: ", this.state.showUnfollow)
+    }
+
+    handleShowUnfollowList = () => {
+        this.setState({ unfollowPreviewImg: this.props.userProfile.previewImg })
+        this.setState({ unfollowUsername: this.props.username })
+        this.setState({ showUnfollowList: true })
+        console.log("showUnfollowList status: ", this.state.showUnfollowList)
     }
 
     handleShowFollowers = () => {
@@ -324,8 +345,8 @@ class UserProfilePage extends React.Component {
 
     }
 
-    handleCloseRemoveModal = () => {
-        this.setState({ showRemove: false })
+    handleCloseUnfollowListModal = () => {
+        this.setState({ showUnfollowList: false })
 
     }
 
@@ -357,34 +378,54 @@ class UserProfilePage extends React.Component {
         history.push('/' + username + '/user');
     };
 
-    handleShowUnfollowing = (e, i) => {
-        console.log("testing handleShowUnfollowing")
+    handleShowFollowingList = (e, i) => {
+        console.log("testing handleShowFollowingList")
         const username = this.props.userFollowingInfo[i].User.username;
         const previewImg = this.props.userFollowingInfo[i].previewImg;
+        const id = this.props.userFollowingInfo[i].User.id;
         e.persist();
         console.log(e);
         console.log(i);
         console.log(username);
         console.log(previewImg);
-        console.log("showUnfollow status: ", this.state.showUnfollow)
+        console.log("showUnfollow status: ", this.state.showUnfollowList)
         this.setState({ unfollowPreviewImg: previewImg })
         this.setState({ unfollowUsername: username })
-        this.setState({ showUnfollow: true })
+        this.setState({ showUnfollowList: true })
+        this.setState({ unfollowId: id})
     }
 
-    handleShowRemove = (e, i) => {
-        console.log("testing handleShowRemove")
+    handleShowFollowersList = (e, i) => {
+        console.log("testing handleShowFollowersList")
         const username = this.props.userFollowerInfo[i].User.username;
         const previewImg = this.props.userFollowerInfo[i].previewImg;
+        const id = this.props.userFollowerInfo[i].User.id;
         e.persist();
         console.log(e);
         console.log(i);
         console.log(username);
         console.log(previewImg);
-        console.log("showRemove status: ", this.state.showRemove)
-        this.setState({ removePreviewImg: previewImg })
-        this.setState({ removeUsername: username })
-        this.setState({ showRemove: true })
+        console.log("showUnfollow status: ", this.state.showUnfollowList)
+        this.setState({ unfollowPreviewImg: previewImg })
+        this.setState({ unfollowUsername: username })
+        this.setState({ showUnfollowList: true })
+        this.setState({ unfollowId: id})
+    }
+
+    handleFollowFollower = (e, i) => {
+        const id = this.props.userFollowerInfo[i].User.id;
+        e.persist();
+        console.log(e);
+        console.log(i);
+        const dispatch = this.props.followUser(this.props.user.id, this.props.user.accessToken, id, this.props.username);
+    }
+
+    handleFollowFollowing = (e, i) => {
+        const id = this.props.userFollowingInfo[i].User.id;
+        e.persist();
+        console.log(e);
+        console.log(i);
+        const dispatch = this.props.followUser(this.props.user.id, this.props.user.accessToken, id, this.props.username);
     }
 
     //Get all of our profile props to display the user information
@@ -436,23 +477,24 @@ class UserProfilePage extends React.Component {
     //Each time page refreshes we call this function 
     async componentDidMount() {
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 150); });
+        await new Promise(resolve => { setTimeout(resolve, 250); });
         this.followingStatus();
         this.userFollowCount();
+        //note: this is here to reduce glitchiness
         this.setState({ followStatusLoaded: true });
         return Promise.resolve();
     }
 
     componentDidUpdate() {
-        console.log("component did update")
+       // console.log("component did update")
     }
 
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showUnfollowList, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername,} = this.state;
         const { classes } = this.props;
         const { loadingProfile } = this.props;
         const { loadingUserProfile } = this.props;
-        const { loadingFollowStatus } = this.props;
+        const { loadingFollowStatus, followStatusLoaded } = this.props;
         const { loadingUserFollowerCount, loadingUserFollowingCount } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo, loadingUserFollowingInfo, loadingUserFollowerInfo } = this.props;
         const { followingInfoLoaded, followerInfoLoaded, userFollowingInfoLoaded, userFollowerInfoLoaded } = this.props;
@@ -477,6 +519,9 @@ class UserProfilePage extends React.Component {
                         anchorEl={anchorEl}
                         notificationsOpen={notificationsOpen}
                         profileOpen={profileOpen}
+                        handleTextChange={this.handleTextChange}
+                        searchText={this.state.text}
+                        handleTextClear={this.handleTextClear}
                     />
 
                     {/* User Profile Here */}
@@ -505,13 +550,13 @@ class UserProfilePage extends React.Component {
                                                         <b>Message</b>
                                                     </Button>
                                                 </Grid>
-                                            {!loadingFollowStatus && (this.props.follow.isFollowing == '') && (this.state.followStatusLoaded == true) &&
+                                            {!loadingFollowStatus && (this.props.follow.isFollowing == 'False') && (this.state.followStatusLoaded == true) &&
                                                 <Grid item>
                                                     <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
                                                         Follow
                                                 </Button>
                                                 </Grid>}
-                                            {!loadingFollowStatus && this.props.follow.isFollowing && (this.state.followStatusLoaded == true) &&
+                                            {!loadingFollowStatus && (this.props.follow.isFollowing == 'True') && (this.state.followStatusLoaded == true) &&
                                                 <Grid item>
                                                     <div className={classes.followingBoarder}>
                                                         <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
@@ -598,14 +643,14 @@ class UserProfilePage extends React.Component {
                         text={"Unfollow"}
                     />
 
-                    {/* Remove Folower Modal */}
+                    {/* Unfollow from List Modal */}
                     <DelFollowModal
-                        show={showRemove}
-                        handleCloseModal={this.handleCloseRemoveModal}
-                        previewImg={removePreviewImg}
-                        username={removeUsername}
-                        handleAction={this.handleUnfollow}
-                        text={"Remove"}
+                        show={showUnfollowList}
+                        handleCloseModal={this.handleCloseUnfollowListModal}
+                        previewImg={unfollowPreviewImg}
+                        username={unfollowUsername}
+                        handleAction={this.handleUnfollowList}
+                        text={"Unfollow"}
                     />
 
                     {/*Shows Followers*/}
@@ -614,11 +659,16 @@ class UserProfilePage extends React.Component {
                         handleCloseModal={this.handleCloseFollowersModal}
                         infoLoaded={userFollowerInfoLoaded}
                         loadingInfo={loadingUserFollowerInfo}
+                        followingStatusLoaded={followingStatusEUMLoaded}
+                        loadingFollowingStatus={loadingFollowingStatusEUM}
                         followInfo={this.props.userFollowerInfo}
-                        handleShow={this.handleShowRemove}
+                        followingStatus={this.props.followingStatusEUM}
+                        handleShow={this.handleShowFollowersList}
                         handlePageChange={this.handleFollowerPageChange}
                         buttonText={"Remove"}
                         followText={"Followers"}
+                        handleFollow={this.handleFollowFollower}
+                        myUsername={this.props.user.username}
                     />
 
                     {/*Shows Following*/}
@@ -627,11 +677,16 @@ class UserProfilePage extends React.Component {
                         handleCloseModal={this.handleCloseFollowingModal}
                         infoLoaded={userFollowingInfoLoaded}
                         loadingInfo={loadingUserFollowingInfo}
+                        followingStatusLoaded={followingStatusIUMLoaded}
+                        loadingFollowingStatus={loadingFollowingStatusIUM}
                         followInfo={this.props.userFollowingInfo}
-                        handleShow={this.handleShowUnfollowing}
+                        followingStatus={this.props.followingStatusIUM}
+                        handleShow={this.handleShowFollowingList}
                         handlePageChange={this.handlePageChange}
                         buttonText={"Following"}
                         followText={"Following"}
+                        handleFollow={this.handleFollowFollowing}
+                        myUsername={this.props.user.username}
                     />
                 </div>
             </ThemeProvider>
@@ -646,7 +701,7 @@ function mapStateToProps(state) {
     const { profile, loadingProfile, } = state.getProfile;
     const { userDetails, loadingUserDetails } = state.getUserDetails;
     const { userProfile, loadingUserProfile } = state.getUserProfile;
-    const { follow, loadingFollowStatus } = state.getFollowStatus;
+    const { follow, loadingFollowStatus, followStatusLoaded } = state.getFollowStatus;
     const { userFollowerCount, loadingUserFollowerCount } = state.getUserFollowerCount;
     const { userFollowingCount, loadingUserFollowingCount } = state.getUserFollowingCount;
     const { followingInfo, loadingFollowingInfo, followingInfoLoaded } = state.getFollowingInfo;
@@ -657,7 +712,7 @@ function mapStateToProps(state) {
     const { followingStatusIUM, loadingFollowingStatusIUM, followingStatusIUMLoaded } = state.getFollowingStatusIUM;
     return {
         loggedIn, user, users, profile, loadingProfile, userProfile, loadingUserProfile,
-        follow, loadingFollowStatus, userFollowerCount, userDetails, loadingUserDetails,
+        follow, loadingFollowStatus, followStatusLoaded, userFollowerCount, userDetails, loadingUserDetails,
         loadingUserFollowerCount, userFollowingCount, loadingUserFollowingCount, followingInfo,
         loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
         followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
