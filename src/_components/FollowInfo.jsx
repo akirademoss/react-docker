@@ -145,7 +145,7 @@ class FollowInfo extends React.Component {
                 <Grid item>
                   <Grid container className={classes.followGridList}>
                     <Grid item> 
-                      <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.User.username}</b> </Link>
+                      <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.username}</b> </Link>
                     </Grid>
                     {followingInfo.name && <Grid item>
                       <Typography variant="subtitle2" className={classes.link}>{followingInfo.name}</Typography>

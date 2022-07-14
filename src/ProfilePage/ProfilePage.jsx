@@ -428,28 +428,28 @@ class ProfilePage extends React.Component {
     }
 
     handleFollowerPageChange = (e, i) => {
-        const username = this.props.followerInfo[i].User.username;
+        const username = this.props.followerInfo[i].username;
         e.persist();
         console.log(e);
         console.log(i);
-        console.log(this.props.followerInfo[i].User.username);
+        console.log(this.props.followerInfo[i].username);
         history.push('/' + username + '/user');
     };
 
     handlePageChange = (e, i) => {
-        const username = this.props.followingInfo[i].User.username;
+        const username = this.props.followingInfo[i].username;
         e.persist();
         console.log(e);
         console.log(i);
-        console.log(this.props.followingInfo[i].User.username);
+        console.log(this.props.followingInfo[i].username);
         history.push('/' + username + '/user');
     };
 
     handleShowUnfollowing = (e, i) => {
         console.log("testing handleShowUnfollowing")
-        const username = this.props.followingInfo[i].User.username;
+        const username = this.props.followingInfo[i].username;
         const previewImg = this.props.followingInfo[i].previewImg;
-        const id = this.props.followingInfo[i].User.id;
+        const id = this.props.followingInfo[i].id;
         e.persist();
         console.log(e);
         console.log(i);
@@ -464,9 +464,9 @@ class ProfilePage extends React.Component {
 
     handleShowRemove = (e, i) => {
         console.log("testing handleShowRemove")
-        const username = this.props.followerInfo[i].User.username;
+        const username = this.props.followerInfo[i].username;
         const previewImg = this.props.followerInfo[i].previewImg;
-        const id = this.props.followerInfo[i].User.id
+        const id = this.props.followerInfo[i].id
         e.persist();
         console.log(e);
         console.log(i);
@@ -509,9 +509,10 @@ class ProfilePage extends React.Component {
     render() {
         const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername } = this.state;
         const { classes, loadingProfile } = this.props;
-        const { loadingMyFollowerCount, loadingMyFollowingCount } = this.props;
+        const { loadingMyFollowerCount, loadingMyFollowingCount, myFollowerCountLoaded, myFollowingCountLoaded } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo } = this.props;
         const { followingInfoLoaded, followerInfoLoaded } = this.props;
+        
 
         return (
 
@@ -675,6 +676,7 @@ class ProfilePage extends React.Component {
                     />
 
                     {/*Shows Followers*/}
+                   
                     <FollowModal
                         show={showFollowers}
                         handleCloseModal={this.handleCloseFollowersModal}
@@ -685,6 +687,7 @@ class ProfilePage extends React.Component {
                         handlePageChange={this.handleFollowerPageChange}
                         buttonText={"Remove"}
                         followText={"Followers"}
+                        followCount={this.props.myFollowerCount.count}
                     />
 
                     {/*Shows Following*/}
@@ -698,6 +701,7 @@ class ProfilePage extends React.Component {
                         handlePageChange={this.handlePageChange}
                         buttonText={"Following"}
                         followText={"Following"}
+                        followCount={this.props.myFollowingCount.count}
                     />
                 </div>
             </ThemeProvider>
@@ -712,8 +716,8 @@ function mapStateToProps(state) {
     const { profile, loadingProfile } = state.getProfile;
     const { userProfile } = state.getUserProfile;
     const { follow, loadingFollowStatus } = state.getFollowStatus;
-    const { myFollowerCount, loadingMyFollowerCount } = state.getMyFollowerCount;
-    const { myFollowingCount, loadingMyFollowingCount } = state.getMyFollowingCount;
+    const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
+    const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded} = state.getMyFollowingCount;
     const { followingInfo, loadingFollowingInfo, followingInfoLoaded } = state.getFollowingInfo;
     const { followerInfo, loadingFollowerInfo, followerInfoLoaded } = state.getFollowerInfo;
     return {
@@ -721,7 +725,8 @@ function mapStateToProps(state) {
         loadingFollowStatus, myFollowerCount, loadingMyFollowerCount,
         myFollowingCount, loadingMyFollowingCount, followingInfo,
         loadingFollowingInfo, followingInfoLoaded, followerInfo,
-        loadingFollowerInfo, followerInfoLoaded,
+        loadingFollowerInfo, followerInfoLoaded, myFollowerCountLoaded,
+        myFollowingCountLoaded
     };
 }
 

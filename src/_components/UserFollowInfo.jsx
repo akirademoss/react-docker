@@ -157,7 +157,7 @@ class UserFollowInfo extends React.Component {
                 <Grid item>
                   <Grid container className={classes.followGridList}>
                     <Grid item> 
-                      <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.User.username}</b> </Link>
+                      <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.username}</b> </Link>
                     </Grid>
                     {followingInfo.name && <Grid item>
                       <Typography variant="subtitle2" className={classes.link}>{followingInfo.name}</Typography>
@@ -166,17 +166,13 @@ class UserFollowInfo extends React.Component {
                 </Grid>
 
                 <Grid item className={classes.item3}>
-                  {followingStatus.status == 'True' && (myUsername != followingInfo.User.username) &&
+                  {followingStatus.status == 'True' && (myUsername != followingInfo.username) &&
                   <Button disableRipple className={classes.followingButton} variant="contained" fullWidth={false} onClick={handleButton}>
                     <b>Following</b>
                   </Button>}
-                  {(myUsername != followingInfo.User.username) && followingStatus.status == 'False' &&
+                  {(myUsername != followingInfo.username) && followingStatus.status == 'False' &&
                   <Button disableRipple className={classes.followButton} variant="contained" fullWidth={false} onClick={handleFollow}>
                     <b>Follow</b>
-                  </Button>}
-                  {(myUsername == followingInfo.User.username) &&
-                  <Button disableRipple className={classes.followButton} variant="contained" fullWidth={false} onClick={handlePageChange}>
-                    <b>Profile</b>
                   </Button>}
                 </Grid>             
               </Grid>

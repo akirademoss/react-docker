@@ -57,7 +57,7 @@ export function getMyFollowerCount(state = initialState2, action) {
       };
     case followConstants.FOLLOWER_COUNT_SUCCESS:
       return {
-        myfollowerCountLoaded: true,
+        myFollowerCountLoaded: true,
         myFollowerCount: action.myFollowerCount
       };
     case followConstants.FOLLOWER_COUNT_FAILURE:
@@ -77,7 +77,7 @@ export function getMyFollowingCount(state = initialState3, action) {
       };
     case followConstants.FOLLOWING_COUNT_SUCCESS:
       return {
-        myfollowingCountLoaded: true,
+        myFollowingCountLoaded: true,
         myFollowingCount: action.myFollowingCount
       };
     case followConstants.FOLLOWING_COUNT_FAILURE:

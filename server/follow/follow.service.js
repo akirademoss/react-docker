@@ -10,7 +10,9 @@ module.exports = {
     follow,
     unfollow,
     getFollowers,
+    getMyFollowers,
     getFollowing,
+    getMyFollowing,
     getFollowingStatusEUM,
     getFollowingStatusIUM,
     getMyFollowersCount,
@@ -84,53 +86,38 @@ async function getFollowed(followerId, followedId) {
     return follow;
 }
 
-async function getFollowers(id) {
-    const followerInfo = await db.Profile.findAll({
-        raw: true,
-        nest: true,
-        attributes: ['name', 'previewImg', 'previewImgKey'],
-        include: [{
-            model: db.User,
-            required: true,
-            attributes: ['id', 'username'],
-            include: [{
-                model: db.Follow,
-                where: {
-                    followed: id
-                },
-                as: 'follower',
-                attributes: [],
-                required: true
-            }]
-        }],
-    })
-    console.log(followerInfo)
-    return followerInfo;
+async function getFollowers(id, myId) {
+    const [results, metadata] = await db.sequelize.query("SELECT profile.name, profile.previewImg, profile.previewImgKey, user.username, user.id FROM Profiles profile INNER JOIN Follows follow ON follow.followed = :id INNER JOIN Users user ON user.id = profile.userId AND follow.follower = user.id ORDER BY CASE WHEN profile.userId = :myId THEN 0 ELSE 1 END", {replacements: {id, myId}});
+    console.log(results)
+    console.log(metadata)
+    
+    return results;
+
 }
 
-async function getFollowing(id) {
-    const followerInfo = await db.Profile.findAll({
-        raw: true,
-        nest: true,
-        attributes: ['name', 'previewImg', 'previewImgKey'],
-        include: [{
-            model: db.User,
-            required: true,
-            attributes: ['id', 'username'],
-            include: [{
-                model: db.Follow,
-                where: {
-                    follower: id
-                },
-                as: 'followed',
-                attributes: [],
-                required: true
-            }]
-        }],
-    })
-    console.log(followerInfo)
+async function getMyFollowers(id) {
+    const [results, metadata] = await db.sequelize.query("SELECT profile.name, profile.previewImg, profile.previewImgKey, user.username, user.id FROM Profiles profile INNER JOIN Follows follow ON follow.followed = :id INNER JOIN Users user ON user.id = profile.userId AND follow.follower = user.id", {replacements: {id}});
+    console.log(results)
+    console.log(metadata)
     
-return followerInfo;
+    return results;
+
+}
+
+async function getFollowing(id, myId) {
+    const [results, metadata] = await db.sequelize.query("SELECT profile.name, profile.previewImg, profile.previewImgKey, user.username, user.id FROM Profiles profile INNER JOIN Follows follow ON follow.follower = :id INNER JOIN Users user ON user.id = profile.userId AND follow.followed = user.id ORDER BY CASE WHEN profile.userId = :myId THEN 0 ELSE 1 END", {replacements: {id, myId}});
+    console.log(results)
+    console.log(metadata)
+    
+    return results;
+}
+
+async function getMyFollowing(id) {   
+    const [results, metadata] = await db.sequelize.query("SELECT profile.name, profile.previewImg, profile.previewImgKey, user.username, user.id FROM Profiles profile INNER JOIN Follows follow ON follow.follower = :id INNER JOIN Users user ON user.id = profile.userId AND follow.followed = user.id", {replacements: {id}});
+    console.log(results)
+    console.log(metadata)
+    
+    return results;
 }
 
 

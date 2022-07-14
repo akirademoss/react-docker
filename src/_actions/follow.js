@@ -32,7 +32,7 @@ function followUser(id, token, followedId, username){
     
       follow => {
         dispatch(success(follow));
-        window.location.reload();
+        window.location.href = window.location.href
         //history.push('/' + username + '/user');
       },
       error => {
@@ -47,7 +47,7 @@ function followUser(id, token, followedId, username){
   function failure(error) { return { type: followConstants.FOLLOW_FAILURE, error } }
 }
 
-function unfollow(id, token, followedId, username){
+  function unfollow(id, token, followedId, username){
     return dispatch =>{
       dispatch(request(username));
   
@@ -56,7 +56,8 @@ function unfollow(id, token, followedId, username){
       
         unfollow => {
           dispatch(success(unfollow));
-          window.location.reload();
+          window.location.href = window.location.href
+          
         },
         error => {
           dispatch(failure(error.toString()));
@@ -79,7 +80,7 @@ function unfollow(id, token, followedId, username){
       
         removeFollower => {
           dispatch(success(removeFollower));
-          window.location.reload();
+          window.location.href = window.location.href
         },
         error => {
           dispatch(failure(error.toString()));

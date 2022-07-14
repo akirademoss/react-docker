@@ -128,13 +128,19 @@ const styles = darkTheme => ({
     header: {
         alignText: 'center',
     },
-
-
+    centerDiv2: {
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: 'row',
+        marginTop: '0px',
+        marginBottom: '15px',
+    },
 })
 
 class FollowModal extends React.Component {
     render() {
-        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followInfo, handleShow, handlePageChange, followText, buttonText } = this.props;
+        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followInfo, handleShow, 
+            handlePageChange, followText, buttonText, followCount } = this.props;
         return (
 
             <div>
@@ -175,6 +181,14 @@ class FollowModal extends React.Component {
                                     </div>
                                 ))}
                         </List>
+                        {followCount == 0 && followText == "Following" &&
+                        <div className={classes.centerDiv2}>
+                                <Typography variant="h7"> Not Following Yet</Typography>
+                        </div>}
+                        {followCount == 0 && followText == "Followers" &&
+                        <div className={classes.centerDiv2}>
+                                <Typography variant="h7"> No Followers Yet</Typography>
+                        </div>}
                     </div>
                 </Modal>
             </div>

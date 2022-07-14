@@ -64,32 +64,35 @@ function removeFollower(req, res, next) {
 
 function getMyFollowers(req, res, next) {
     const id = req.params.id;
-    followService.getFollowers(id)
+    followService.getMyFollowers(id)
     .then(followers => res.json(followers))
     .catch(next);
 }
 
 function getMyFollowing(req, res, next){
     const id = req.params.id;
-    followService.getFollowing(id)
+    followService.getMyFollowing(id)
     .then(following => res.json(following))
     .catch(next);
 }
 
 function getUserFollowers(req, res, next) {
     const id = req.body.followedId;
+    const myId = req.params.id;
     console.log(id)
+    console.log(myId)
     console.log("ENTERING USERFOLLOWER")
-    followService.getFollowers(id)
+    followService.getFollowers(id, myId)
     .then(followers => res.json(followers))
     .catch(next);
 }
 
 function getUserFollowing(req, res, next){
     const id = req.body.followedId;
+    const myId = req.params.id;
     console.log(id)
     console.log("ENTERING USERFOLLOWING")
-    followService.getFollowing(id)
+    followService.getFollowing(id, myId)
     .then(following => res.json(following))
     .catch(next);
 }

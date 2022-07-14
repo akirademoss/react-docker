@@ -361,28 +361,28 @@ class UserProfilePage extends React.Component {
     }
 
     handleFollowerPageChange = (e, i) => {
-        const username = this.props.userFollowerInfo[i].User.username;
+        const username = this.props.userFollowerInfo[i].username;
         e.persist();
         console.log(e);
         console.log(i);
-        console.log(this.props.userFollowerInfo[i].User.username);
+        console.log(this.props.userFollowerInfo[i].username);
         history.push('/' + username + '/user');
     };
 
     handlePageChange = (e, i) => {
-        const username = this.props.userFollowingInfo[i].User.username;
+        const username = this.props.userFollowingInfo[i].username;
         e.persist();
         console.log(e);
         console.log(i);
-        console.log(this.props.userFollowingInfo[i].User.username);
+        console.log(this.props.userFollowingInfo[i].username);
         history.push('/' + username + '/user');
     };
 
     handleShowFollowingList = (e, i) => {
         console.log("testing handleShowFollowingList")
-        const username = this.props.userFollowingInfo[i].User.username;
+        const username = this.props.userFollowingInfo[i].username;
         const previewImg = this.props.userFollowingInfo[i].previewImg;
-        const id = this.props.userFollowingInfo[i].User.id;
+        const id = this.props.userFollowingInfo[i].id;
         e.persist();
         console.log(e);
         console.log(i);
@@ -397,9 +397,9 @@ class UserProfilePage extends React.Component {
 
     handleShowFollowersList = (e, i) => {
         console.log("testing handleShowFollowersList")
-        const username = this.props.userFollowerInfo[i].User.username;
+        const username = this.props.userFollowerInfo[i].username;
         const previewImg = this.props.userFollowerInfo[i].previewImg;
-        const id = this.props.userFollowerInfo[i].User.id;
+        const id = this.props.userFollowerInfo[i].id;
         e.persist();
         console.log(e);
         console.log(i);
@@ -413,7 +413,7 @@ class UserProfilePage extends React.Component {
     }
 
     handleFollowFollower = (e, i) => {
-        const id = this.props.userFollowerInfo[i].User.id;
+        const id = this.props.userFollowerInfo[i].id;
         e.persist();
         console.log(e);
         console.log(i);
@@ -421,7 +421,7 @@ class UserProfilePage extends React.Component {
     }
 
     handleFollowFollowing = (e, i) => {
-        const id = this.props.userFollowingInfo[i].User.id;
+        const id = this.props.userFollowingInfo[i].id;
         e.persist();
         console.log(e);
         console.log(i);
@@ -466,7 +466,7 @@ class UserProfilePage extends React.Component {
     }
 
     userFollowingStatus  = async (e, i) => {
-        const dispatch = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userFollowingInfo[i].User.username)
+        const dispatch = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userFollowingInfo[i].username)
     }
 
     userFollowCount = async (e) => {
@@ -476,8 +476,9 @@ class UserProfilePage extends React.Component {
 
     //Each time page refreshes we call this function 
     async componentDidMount() {
+
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 250); });
+        await new Promise(resolve => { setTimeout(resolve, 200); });
         this.followingStatus();
         this.userFollowCount();
         //note: this is here to reduce glitchiness
@@ -618,17 +619,7 @@ class UserProfilePage extends React.Component {
                         }
                         {tab === 1 &&
                             <div className={classes.centerDiv}>
-                                <Typography variant="h4"> No Newsfeed Posts</Typography>
-                            </div>
-                        }
-                        {tab === 2 &&
-                            <div className={classes.centerDiv}>
                                 <Typography variant="h4">No Playlists Yet</Typography>
-                            </div>
-                        }
-                        {tab === 3 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4">No Saved Posts Yet</Typography>
                             </div>
                         }
                     </div>
@@ -669,6 +660,7 @@ class UserProfilePage extends React.Component {
                         followText={"Followers"}
                         handleFollow={this.handleFollowFollower}
                         myUsername={this.props.user.username}
+                        followCount={this.props.userFollowerCount.count}
                     />
 
                     {/*Shows Following*/}
@@ -687,6 +679,7 @@ class UserProfilePage extends React.Component {
                         followText={"Following"}
                         handleFollow={this.handleFollowFollowing}
                         myUsername={this.props.user.username}
+                        followCount={this.props.userFollowingCount.count}
                     />
                 </div>
             </ThemeProvider>
