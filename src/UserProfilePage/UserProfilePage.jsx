@@ -417,6 +417,7 @@ class UserProfilePage extends React.Component {
         e.persist();
         console.log(e);
         console.log(i);
+        console.log(id)
         const dispatch = this.props.followUser(this.props.user.id, this.props.user.accessToken, id, this.props.username);
     }
 

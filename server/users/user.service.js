@@ -11,7 +11,8 @@ module.exports = {
     update,
     delete: _delete,
     newAccessToken,
-    getUserDetails
+    getUserDetails,
+    searchUsers,
 };
 
 //note do not do this in production, but this is easier to demo
@@ -165,4 +166,12 @@ function omitHash(user) {
 async function getUserDetails(username){
     const user = await db.User.scope('withHash').findOne({ where: { username }, attributes: ['id', 'username'] });
     return user;
+}
+
+async function searchUsers(name){
+    const search_name = name + '%'
+    const [results, metadata] = await db.sequelize.query("SELECT profile.name, profile.previewImg, profile.previewImgKey, user.username, user.id FROM Profiles profile INNER JOIN Users user ON user.id=profile.userId WHERE profile.name LIKE :search_name OR user.username LIKE :search_name", {replacements: {search_name}});
+    console.log(results)
+    console.log(metadata)
+    return results;
 }

@@ -122,7 +122,7 @@ async function getMyFollowing(id) {
 
 
 async function getFollowingStatusEUM(id, myId) {
-    const [results, metadata] = await db.sequelize.query("SELECT user.follower, IF(i.followed, 'True', 'False') AS status FROM Follows user LEFT JOIN Follows i ON (i.followed = user.follower AND i.follower= :myId) WHERE user.followed= :id", {replacements: {myId, id}});
+    const [results, metadata] = await db.sequelize.query("SELECT user.follower, IF(i.followed, 'True', 'False') AS status FROM Follows user LEFT JOIN Follows i ON (i.followed = user.follower AND i.follower= :myId) WHERE user.followed= :id ORDER BY CASE WHEN user.follower = :myId THEN 0 ELSE 1 END", {replacements: {myId, id}});
     console.log(results)
     console.log(metadata)
 
@@ -132,7 +132,7 @@ async function getFollowingStatusEUM(id, myId) {
 
 async function getFollowingStatusIUM(id, myId) {
     //TODO rewrite this to work for user's following list
-    const [results, metadata] = await db.sequelize.query("SELECT user.followed, IF(i.followed, 'True', 'False') AS status FROM Follows user LEFT JOIN Follows i ON (i.followed = user.followed AND i.follower= :myId) WHERE user.follower= :id", {replacements: {myId, id}});
+    const [results, metadata] = await db.sequelize.query("SELECT user.followed, IF(i.followed, 'True', 'False') AS status FROM Follows user LEFT JOIN Follows i ON (i.followed = user.followed AND i.follower= :myId) WHERE user.follower= :id ORDER BY CASE WHEN user.followed = :myId THEN 0 ELSE 1 END", {replacements: {myId, id}});
     console.log(results)
     console.log(metadata)
     

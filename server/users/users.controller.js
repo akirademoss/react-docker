@@ -20,7 +20,8 @@ router.get('/:id', authorize(), getById);
 router.get('/:id/refresh-token', authorize(), getRefreshTokens);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
-router.post('/getUserDetails', getUserDetails)
+router.post('/getUserDetails', getUserDetails);
+router.post('/search', searchUsers);
 
 module.exports = router;
 
@@ -147,4 +148,11 @@ function getUserDetails(req, res, next) {
     userService.getUserDetails(req.body.username)
         .then(userDetails => res.json(userDetails))
         .catch(next);
+}
+
+function searchUsers(req, res, next){
+    const name = req.body.name;
+    userService.searchUsers(name)
+    .then(results => res.json(results))
+    .catch(next);
 }
