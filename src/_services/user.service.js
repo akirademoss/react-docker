@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:4000";
 
 class UserService {
-  getUserDetails(username) {
+  async getUserDetails(username) {
 
       return axios
         .post(API_URL + "/users/getuserdetails", { username })
@@ -14,6 +14,18 @@ class UserService {
           return response.data;
         });
   }
+
+  async userSearch(name) {
+
+    return axios
+      .post(API_URL + "/users/search", { name })
+      .then((response) => {
+        if (response.data) {
+          localStorage.setItem("userSearchResults", JSON.stringify(response.data));
+        }
+        return response.data;
+      });
+}
   
 }
 

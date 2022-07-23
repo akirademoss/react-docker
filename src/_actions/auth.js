@@ -10,6 +10,7 @@ export const userActions = {
   logout,
   register,
   getUserDetails,
+  userSearch,
 };
 
 
@@ -101,6 +102,30 @@ function getUserDetails(username){
   function success(userDetails) { return { type: userConstants.USER_DETAILS_SUCCESS, userDetails } }
   function failure(error) { return { type: userConstants.USER_DETAILS_FAILURE, error } }
 }
+
+function userSearch(name){
+  return dispatch =>{
+    dispatch(request(name));
+
+    UserService.userSearch(name)
+    .then(
+    
+      userSearch => {
+        dispatch(success(userSearch));
+      },
+      error => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+
+  function request(userSearch) { return { type: userConstants.USER_SEARCH_REQUEST, userSearch } }
+  function success(userSearch) { return { type: userConstants.USER_SEARCH_SUCCESS, userSearch } }
+  function failure(error) { return { type: userConstants.USER_SEARCH_FAILURE, error } }
+}
+
+
 
 function logout() {
   return dispatch =>{

@@ -43,6 +43,11 @@ import ProfilePic from "../_components/ProfilePic";
 import FollowModal from "../_components/FollowModal";
 import UserFollowModal from "../_components/UserFollowModal";
 import DelFollowModal from "../_components/DelFollowModal";
+import CustomToolbarMobile from "../_components/CustomToolbarMobile";
+
+//debounce import
+import debounce from 'lodash.debounce';
+import { isMobile, browserName } from "react-device-detect";
 
 
 // CSS styling
@@ -216,6 +221,7 @@ class UserProfilePage extends React.Component {
 
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
     }
 
     handleTextClear = () => {
@@ -225,7 +231,21 @@ class UserProfilePage extends React.Component {
     handleTextChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
+        this.throttleHandleChange(value)
     };
+
+    throttleHandleChange = async (value) => {
+        console.log("ENTERING THROTTLE FUNCTION")
+        const dispatch = await this.props.userSearch(value);
+    }
+
+    keyPress = async (e) => {
+        if (e.keyCode == 13) {
+            console.log(e.target.value)
+            const dispatch = await this.props.userSearch(e.target.value)
+            this.setState({ showResult: true });
+        }
+    }
 
     handleChange = (event, checked) => {
         this.setState({ auth: checked });
@@ -392,7 +412,7 @@ class UserProfilePage extends React.Component {
         this.setState({ unfollowPreviewImg: previewImg })
         this.setState({ unfollowUsername: username })
         this.setState({ showUnfollowList: true })
-        this.setState({ unfollowId: id})
+        this.setState({ unfollowId: id })
     }
 
     handleShowFollowersList = (e, i) => {
@@ -409,7 +429,7 @@ class UserProfilePage extends React.Component {
         this.setState({ unfollowPreviewImg: previewImg })
         this.setState({ unfollowUsername: username })
         this.setState({ showUnfollowList: true })
-        this.setState({ unfollowId: id})
+        this.setState({ unfollowId: id })
     }
 
     handleFollowFollower = (e, i) => {
@@ -433,7 +453,7 @@ class UserProfilePage extends React.Component {
     getProfile = async (e) => {
         console.log("GETTING PROFILE INFO")
         console.log("LOGGING USERNAME")
-        
+
         //if we aren viewing a user's profile, view will be of their profile
         //add code to query if we are following user here
         if (isEqual(this.props.username, this.props.user.username)) {
@@ -466,7 +486,7 @@ class UserProfilePage extends React.Component {
 
     }
 
-    userFollowingStatus  = async (e, i) => {
+    userFollowingStatus = async (e, i) => {
         const dispatch = await this.props.getFollowingStatus(this.props.user.id, this.props.user.accessToken, this.props.userFollowingInfo[i].username)
     }
 
@@ -479,7 +499,12 @@ class UserProfilePage extends React.Component {
     async componentDidMount() {
 
         this.getProfile();
-        await new Promise(resolve => { setTimeout(resolve, 200); });
+        if (isMobile) {
+            await new Promise(resolve => { setTimeout(resolve, 1400); });
+        }
+        else {
+            await new Promise(resolve => { setTimeout(resolve, 200); });
+        }
         this.followingStatus();
         this.userFollowCount();
         //note: this is here to reduce glitchiness
@@ -488,11 +513,11 @@ class UserProfilePage extends React.Component {
     }
 
     componentDidUpdate() {
-       // console.log("component did update")
+        // console.log("component did update")
     }
 
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showUnfollowList, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername,} = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showUnfollowList, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, } = this.state;
         const { classes } = this.props;
         const { loadingProfile } = this.props;
         const { loadingUserProfile } = this.props;
@@ -507,24 +532,44 @@ class UserProfilePage extends React.Component {
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <div className={classes.grow}>
-
-                    <CustomToolbar
-                        user={this.props.user}
-                        profile={this.props.profile}
-                        loadingProfile={loadingProfile}
-                        handleMenu={this.handleMenu}
-                        handleClose={this.handleClose}
-                        handleViewProfile={this.handleViewProfile}
-                        handleEditProfile={this.handleEditProfile}
-                        handleLogout={this.handleLogout}
-                        messagesOpen={messagesOpen}
-                        anchorEl={anchorEl}
-                        notificationsOpen={notificationsOpen}
-                        profileOpen={profileOpen}
-                        handleTextChange={this.handleTextChange}
-                        searchText={this.state.text}
-                        handleTextClear={this.handleTextClear}
-                    />
+                    {!isMobile &&
+                        <CustomToolbar
+                            user={this.props.user}
+                            profile={this.props.profile}
+                            loadingProfile={loadingProfile}
+                            handleMenu={this.handleMenu}
+                            handleClose={this.handleClose}
+                            handleViewProfile={this.handleViewProfile}
+                            handleEditProfile={this.handleEditProfile}
+                            handleLogout={this.handleLogout}
+                            messagesOpen={messagesOpen}
+                            anchorEl={anchorEl}
+                            notificationsOpen={notificationsOpen}
+                            profileOpen={profileOpen}
+                            handleTextChange={this.handleTextChange}
+                            searchText={this.state.text}
+                            handleTextClear={this.handleTextClear}
+                            keyPress={this.keyPress}
+                        />}
+                    {isMobile &&
+                        <CustomToolbarMobile
+                            user={this.props.user}
+                            profile={this.props.profile}
+                            loadingProfile={loadingProfile}
+                            handleMenu={this.handleMenu}
+                            handleClose={this.handleClose}
+                            handleViewProfile={this.handleViewProfile}
+                            handleEditProfile={this.handleEditProfile}
+                            handleLogout={this.handleLogout}
+                            messagesOpen={messagesOpen}
+                            anchorEl={anchorEl}
+                            notificationsOpen={notificationsOpen}
+                            profileOpen={profileOpen}
+                            handleTextChange={this.handleTextChange}
+                            searchText={this.state.text}
+                            handleTextClear={this.handleTextClear}
+                            keyPress={this.keyPress}
+                        />}
 
                     {/* User Profile Here */}
                     <div className={classes.profileContainer}>
@@ -547,11 +592,11 @@ class UserProfilePage extends React.Component {
                                                     {this.props.username}
                                                 </Typography>
                                             </Grid>
-                                                <Grid item>
-                                                    <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
-                                                        <b>Message</b>
-                                                    </Button>
-                                                </Grid>
+                                            <Grid item>
+                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                    <b>Message</b>
+                                                </Button>
+                                            </Grid>
                                             {!loadingFollowStatus && (this.props.follow.isFollowing == 'False') && (this.state.followStatusLoaded == true) &&
                                                 <Grid item>
                                                     <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
@@ -562,7 +607,7 @@ class UserProfilePage extends React.Component {
                                                 <Grid item>
                                                     <div className={classes.followingBoarder}>
                                                         <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
-                                                            {<PeopleAltIcon className={classes.pplAlt}/>}
+                                                            {<PeopleAltIcon className={classes.pplAlt} />}
                                                         </IconButton>
                                                     </div>
                                                 </Grid>}
@@ -579,14 +624,14 @@ class UserProfilePage extends React.Component {
                                             </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowers}>
-                                                    
+
                                                     {!loadingUserFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>}
                                                     &nbsp;followers
                                                 </Button>
                                             </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowing}>
-                     
+
                                                     {!loadingUserFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
                                                     &nbsp;following
                                                 </Button>
@@ -601,7 +646,7 @@ class UserProfilePage extends React.Component {
                                 </Grid>
                             </Grid>
 
-                        {/* Profile Posts, & Playlists here [TODO: provide functionality on backend]*/}
+                            {/* Profile Posts, & Playlists here [TODO: provide functionality on backend]*/}
                         </div>
                         <Tabs
                             value={tab}
@@ -711,7 +756,7 @@ function mapStateToProps(state) {
         loadingFollowingInfo, followingInfoLoaded, followerInfo, loadingFollowerInfo,
         followerInfoLoaded, userFollowingInfo, loadingUserFollowingInfo, userFollowingInfoLoaded,
         userFollowerInfo, loadingUserFollowerInfo, userFollowerInfoLoaded, followingStatusEUM,
-        loadingFollowingStatusEUM, followingStatusEUMLoaded, followingStatusIUM, loadingFollowingStatusIUM, 
+        loadingFollowingStatusEUM, followingStatusEUMLoaded, followingStatusIUM, loadingFollowingStatusIUM,
         followingStatusIUMLoaded
     };
 }
@@ -734,6 +779,7 @@ const actionCreators = {
     getUserDetails: userActions.getUserDetails,
     getFollowingStatusEUM: followActions.getFollowingStatusEUM,
     getFollowingStatusIUM: followActions.getFollowingStatusIUM,
+    userSearch: userActions.userSearch,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(UserProfilePage));

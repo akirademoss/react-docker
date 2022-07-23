@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:4000";
 
 class AuthService {
-  authenticate(username, password) {
+  async authenticate(username, password) {
 
       return axios
         .post(API_URL + "/users/authenticate", { username, password })

@@ -21,14 +21,14 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import ClearIcon from "@material-ui/icons/Clear";
 import { ThemeProvider } from "@material-ui/styles";
-import { isMobile, browserName } from "react-device-detect";
+
 
 
 const darkTheme = createMuiTheme({
     overrides: {
         MuiMenu: {
             paper: {
-                margin: 10,
+                margin: 0,
                 borderBottom: '1px solid grey',
                 borderTop: '1px solid grey',
                 borderLeft: '1px solid grey',
@@ -36,17 +36,12 @@ const darkTheme = createMuiTheme({
                 borderColor: fade('#ffffff', 0.5),
             }
         }, 
-        MuiInputBase: { 
-
-            endAdornment: {
-                color: '#ffffff',
-
-            },
-            primary: '#000000',
-            adornedEnd: {
-                color: '#ffffff',
-            },
-        }     
+        MuiInputAdornment:{
+            root: {
+                paddingLeft: 0,
+                paddingRight: 0,
+            }
+        }
     },
     palette: {
         type: 'dark',
@@ -92,12 +87,18 @@ const darkTheme = createMuiTheme({
         marginRight: 0,
         marginLeft: -12,
         marginTop: 0,
+        
         width: '100%',
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
+    },
+    logo: {
+        margin: "auto",
+        width: "75px",
+      
     },
     grow: {
         flexGrow: 1,
@@ -106,7 +107,7 @@ const darkTheme = createMuiTheme({
         display: 'flex',
         flexDirection: 'row',
         alighnItems: 'center',
-        width: '25%',
+        width: '100%',
     },
     search: {
         position: 'relative',
@@ -119,9 +120,11 @@ const darkTheme = createMuiTheme({
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
-        marginRight: darkTheme.spacing(2),
-        marginLeft: 0,
+        marginRight: darkTheme.spacing(1),
+        marginLeft: -5,
         width: '100%',
+        height: 30,
+        fontSize: '10px',
     },
     searchIcon: {
         padding: darkTheme.spacing(0, 2),
@@ -131,12 +134,14 @@ const darkTheme = createMuiTheme({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        marginLeft: -15,
     },
     inputInput: {
         padding: darkTheme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
+        paddingLeft: '18px',
         width: '100%',
+        fontSize: '10px',
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -146,6 +151,8 @@ const darkTheme = createMuiTheme({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
+        width: "28px",
+        
     },
     avatarSm: {
         color: darkTheme.palette.common.white,
@@ -154,9 +161,9 @@ const darkTheme = createMuiTheme({
         "&:hover": {
             background: 'transparent',
         },
-        width: "26px",
-        height: "26px",
-        borderRadius: 100
+        width: "20px",
+        height: "20px",
+        borderRadius: 100,
     },
     menuItem: {
         background: 'transparent',
@@ -169,6 +176,10 @@ const darkTheme = createMuiTheme({
     },
     icon: {
         color: darkTheme.palette.common.white,
+        fontSize: "15px",
+        paddingLeft: 0,
+        paddingRight: 0, 
+
     },
     skeleton: {
         //backgroundColor: '#a5a5a5',
@@ -187,13 +198,20 @@ const darkTheme = createMuiTheme({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
+        width: 0,
     },
     clear: {
-        fontSize: '18px',
+        fontSize: '15px',
+    },
+    adornment: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        width: 0,
+        marginLeft: -10,
     }
   })
 
-  class CustomToolbar extends React.Component {
+  class CustomToolbarMobile extends React.Component {
     render() {
       const { classes, user, profile, loadingProfile, handleMenu, handleClose, handleViewProfile, 
         handleEditProfile, handleLogout, messagesOpen, anchorEl, notificationsOpen, profileOpen,
@@ -202,11 +220,12 @@ const darkTheme = createMuiTheme({
         const endAdornment = () => {
             if (searchText) {
               return (
-                <InputAdornment position="end">
+                <InputAdornment position="end" >
                   <IconButton 
                     disableRipple
                     onClick={handleTextClear}
                     className={classes.clearIcon}
+                    className={classes.adornment}
                   >
                     <ClearIcon className={classes.clear} />
                   </IconButton>
@@ -226,7 +245,7 @@ const darkTheme = createMuiTheme({
                         <Button disableRipple className={classes.homeButton}
                             onClick={() => history.push('/' + user.username + '/home')}
                         >
-                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo} />
                         </Button>
                     </div>
 
@@ -362,4 +381,4 @@ const darkTheme = createMuiTheme({
         }
     }
     
-export default (withStyles(styles, { withTheme: true })(CustomToolbar));;
+export default (withStyles(styles, { withTheme: true })(CustomToolbarMobile));;

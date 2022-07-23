@@ -18,6 +18,11 @@ import { history } from '../_helpers';
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
 import CustomToolbar from "../_components/CustomToolbar";
+import CustomToolbarMobile from "../_components/CustomToolbarMobile";
+
+//debounce import
+import debounce from 'lodash.debounce';
+import { isMobile, browserName } from "react-device-detect";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -86,7 +91,8 @@ const styles = darkTheme => ({
     height: '70%',
   },
   paper: {
-    marginTop: 250,
+    marginTop: 200,
+    minWidth: 150,
     display: "flex",
     justifyContent: "center",
     flexDirection: 'row',
@@ -121,17 +127,32 @@ class HomePrivate extends React.Component {
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
 
-  }
-
-  handleTextClear = () => {
-    this.setState({ text: "" });
   }
 
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
+    this.throttleHandleChange(value)
   };
+
+  throttleHandleChange = async (value) =>{
+    console.log("ENTERING THROTTLE FUNCTION")
+    const dispatch = await this.props.userSearch(value);
+  }
+
+  keyPress = async (e) => {
+    if(e.keyCode==13){
+        console.log(e.target.value)
+        const dispatch = await this.props.userSearch(e.target.value)
+        this.setState({ showResult:true });
+    }
+  }
+
+  handleTextClear = () => {
+    this.setState({ text: "" });
+  }
 
   handleChange = (event, checked) => {
     this.setState({ auth: checked });
@@ -211,6 +232,7 @@ class HomePrivate extends React.Component {
         <CssBaseline />
         <div className={classes.background}>
           <div className={classes.grow}>
+            {!isMobile &&
             <CustomToolbar
               user={this.props.user}
               profile={this.props.profile}
@@ -227,7 +249,28 @@ class HomePrivate extends React.Component {
               handleTextChange={this.handleTextChange}
               searchText={this.state.text}
               handleTextClear={this.handleTextClear}
-            />
+              keyPress={this.keyPress}
+            />}
+            {isMobile &&
+            <CustomToolbarMobile
+              user={this.props.user}
+              profile={this.props.profile}
+              loadingProfile={loadingProfile}
+              handleMenu={this.handleMenu}
+              handleClose={this.handleClose}
+              handleViewProfile={this.handleViewProfile}
+              handleEditProfile={this.handleEditProfile}
+              handleLogout={this.handleLogout}
+              messagesOpen={messagesOpen}
+              anchorEl={anchorEl}
+              notificationsOpen={notificationsOpen}
+              profileOpen={profileOpen}
+              handleTextChange={this.handleTextChange}
+              searchText={this.state.text}
+              handleTextClear={this.handleTextClear}
+              keyPress={this.keyPress}
+            />}
+            
             <div className={classes.centerDivCol}>
               <div className={classes.centerDiv}>
                 <div className={classes.paper}>
@@ -262,7 +305,8 @@ function mapStateToProps(state) {
 
 const actionCreators = {
   logout: userActions.logout,
-  getInfo: profileActions.getInfo
+  getInfo: profileActions.getInfo,
+  userSearch: userActions.userSearch,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(HomePrivate));

@@ -31,6 +31,11 @@ import CustomToolbar from "../_components/CustomToolbar";
 import ProfilePic from "../_components/ProfilePic";
 import ChangePicModal from "../_components/ChangePicModal";
 import UploadPicModal from "../_components/UploadPicModal";
+import CustomToolbarMobile from "../_components/CustomToolbarMobile";
+
+//debounce import
+import debounce from 'lodash.debounce';
+import { isMobile, browserName } from "react-device-detect";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -163,8 +168,28 @@ class EditProfile extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
   }
 
+  handleTextChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+    this.throttleHandleChange(value)
+  };
+
+  throttleHandleChange = async (value) =>{
+    console.log("ENTERING THROTTLE FUNCTION")
+    const dispatch = await this.props.userSearch(value);
+  }
+
+  keyPress = async (e) => {
+    if(e.keyCode==13){
+        console.log(e.target.value)
+        const dispatch = await this.props.userSearch(e.target.value)
+        this.setState({ showResult:true });
+    }
+  }
   handleTextClear = () => {
     this.setState({ text: "" });
   }
@@ -353,7 +378,7 @@ class EditProfile extends React.Component {
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <div className={classes.grow}>
-
+        {!isMobile &&
           <CustomToolbar
             user={this.props.user}
             profile={this.props.profile}
@@ -367,10 +392,30 @@ class EditProfile extends React.Component {
             anchorEl={anchorEl}
             notificationsOpen={notificationsOpen}
             profileOpen={profileOpen}
-            handleTextChange={this.handleChange}
             searchText={this.state.text}
             handleTextClear={this.handleTextClear}
-          />
+            handleTextChange={this.handleTextChange}
+            keyPress={this.keyPress}
+          />}
+        {isMobile &&
+          <CustomToolbarMobile
+            user={this.props.user}
+            profile={this.props.profile}
+            loadingProfile={loadingProfile}
+            handleMenu={this.handleMenu}
+            handleClose={this.handleClose}
+            handleViewProfile={this.handleViewProfile}
+            handleEditProfile={this.handleEditProfile}
+            handleLogout={this.handleLogout}
+            messagesOpen={messagesOpen}
+            anchorEl={anchorEl}
+            notificationsOpen={notificationsOpen}
+            profileOpen={profileOpen}
+            handleTextChange={this.handleTextChange}
+            searchText={this.state.text}
+            handleTextClear={this.handleTextClear}
+            keyPress={this.keyPress}
+          />}
         </div>
 
         <div className={classes.formholder}>
@@ -567,6 +612,7 @@ const actionCreators = {
   getInfo: profileActions.getInfo,
   uploadAvatar: profileActions.uploadAvatar,
   removeAvatar: profileActions.removeAvatar,
+  userSearch: userActions.userSearch,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(EditProfile));

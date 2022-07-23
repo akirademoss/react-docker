@@ -47,7 +47,12 @@ import ChangePicModal from "../_components/ChangePicModal";
 import UploadPicModal from "../_components/UploadPicModal";
 import FollowModal from "../_components/FollowModal";
 import DelFollowModal from "../_components/DelFollowModal";
+import SearchResultModal from "../_components/SearchResultModal";
+import CustomToolbarMobile from "../_components/CustomToolbarMobile";
 
+//debounce import
+import debounce from 'lodash.debounce';
+import { isMobile, browserName } from "react-device-detect";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -192,6 +197,7 @@ class ProfilePage extends React.Component {
             croppedAreaPixels: null,
             croppedImage: null,
             show: false,
+            showResult: false,
             showImageCrop: false,
             showUnfollow: false,
             showRemove: false,
@@ -207,18 +213,41 @@ class ProfilePage extends React.Component {
             removeUsername: null,
             text: '',
         };
-        this.handleTextChange = this.handleTextChange.bind(this);
+
         this.handleLogout = this.handleLogout.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
+        this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
     }
+
 
     handleTextClear = () => {
         this.setState({ text: "" });
     }
 
+
+
     handleTextChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
+        this.throttleHandleChange(value)
     };
+
+    throttleHandleChange = async (value) => {
+        console.log("ENTERING THROTTLE FUNCTION")
+        const dispatch = await this.props.userSearch(value);
+    }
+
+    keyPress = async (e) => {
+        if (e.keyCode == 13) {
+            console.log(e.target.value)
+            const dispatch = await this.props.userSearch(e.target.value)
+            this.setState({ showResult: true });
+        }
+    }
+
+    handleCloseSearchResult = () => {
+        this.setState({ showResult: false });
+    }
 
     //Each time page refreshes we call this function 
     async componentDidMount() {
@@ -459,7 +488,7 @@ class ProfilePage extends React.Component {
         this.setState({ unfollowPreviewImg: previewImg })
         this.setState({ unfollowUsername: username })
         this.setState({ showUnfollow: true })
-        this.setState({ unfollowId: id})
+        this.setState({ unfollowId: id })
     }
 
     handleShowRemove = (e, i) => {
@@ -473,7 +502,7 @@ class ProfilePage extends React.Component {
         console.log(username);
         console.log(previewImg);
         console.log("showRemove status: ", this.state.showRemove)
-        this.setState({removeId: id})
+        this.setState({ removeId: id })
         this.setState({ removePreviewImg: previewImg })
         this.setState({ removeUsername: username })
         this.setState({ showRemove: true })
@@ -512,30 +541,54 @@ class ProfilePage extends React.Component {
         const { loadingMyFollowerCount, loadingMyFollowingCount, myFollowerCountLoaded, myFollowingCountLoaded } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo } = this.props;
         const { followingInfoLoaded, followerInfoLoaded } = this.props;
-        
+
 
         return (
 
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <div className={classes.grow}>
-
-                    <CustomToolbar
-                        user={this.props.user}
-                        profile={this.props.profile}
-                        loadingProfile={loadingProfile}
-                        handleMenu={this.handleMenu}
-                        handleClose={this.handleClose}
-                        handleViewProfile={this.handleViewProfile}
-                        handleEditProfile={this.handleEditProfile}
-                        handleLogout={this.handleLogout}
-                        messagesOpen={messagesOpen}
-                        anchorEl={anchorEl}
-                        notificationsOpen={notificationsOpen}
-                        profileOpen={profileOpen}
-                        handleTextChange={this.handleTextChange}
-                        searchText={this.state.text}
-                        handleTextClear={this.handleTextClear}
+                    {!isMobile &&
+                        <CustomToolbar
+                            user={this.props.user}
+                            profile={this.props.profile}
+                            loadingProfile={loadingProfile}
+                            handleMenu={this.handleMenu}
+                            handleClose={this.handleClose}
+                            handleViewProfile={this.handleViewProfile}
+                            handleEditProfile={this.handleEditProfile}
+                            handleLogout={this.handleLogout}
+                            messagesOpen={messagesOpen}
+                            anchorEl={anchorEl}
+                            notificationsOpen={notificationsOpen}
+                            profileOpen={profileOpen}
+                            handleTextChange={this.handleTextChange}
+                            searchText={this.state.text}
+                            handleTextClear={this.handleTextClear}
+                            keyPress={this.keyPress}
+                        />}
+                    {isMobile &&
+                        <CustomToolbarMobile
+                            user={this.props.user}
+                            profile={this.props.profile}
+                            loadingProfile={loadingProfile}
+                            handleMenu={this.handleMenu}
+                            handleClose={this.handleClose}
+                            handleViewProfile={this.handleViewProfile}
+                            handleEditProfile={this.handleEditProfile}
+                            handleLogout={this.handleLogout}
+                            messagesOpen={messagesOpen}
+                            anchorEl={anchorEl}
+                            notificationsOpen={notificationsOpen}
+                            profileOpen={profileOpen}
+                            handleTextChange={this.handleTextChange}
+                            searchText={this.state.text}
+                            handleTextClear={this.handleTextClear}
+                            keyPress={this.keyPress}
+                        />}
+                    <SearchResultModal
+                        show={this.state.showResult}
+                        handleCloseModal={this.handleCloseSearchResult}
                     />
 
                     {/* Profile Here */}
@@ -597,7 +650,7 @@ class ProfilePage extends React.Component {
                                 </Grid>
                             </Grid>
 
-                        {/* Profile Posts, Newsfeed, Playlist, and Saved here [TODO: provide functionality on backend]*/}
+                            {/* Profile Posts, Newsfeed, Playlist, and Saved here [TODO: provide functionality on backend]*/}
                         </div>
                         <Tabs
                             value={tab}
@@ -676,7 +729,7 @@ class ProfilePage extends React.Component {
                     />
 
                     {/*Shows Followers*/}
-                   
+
                     <FollowModal
                         show={showFollowers}
                         handleCloseModal={this.handleCloseFollowersModal}
@@ -717,7 +770,7 @@ function mapStateToProps(state) {
     const { userProfile } = state.getUserProfile;
     const { follow, loadingFollowStatus } = state.getFollowStatus;
     const { myFollowerCount, loadingMyFollowerCount, myFollowerCountLoaded } = state.getMyFollowerCount;
-    const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded} = state.getMyFollowingCount;
+    const { myFollowingCount, loadingMyFollowingCount, myFollowingCountLoaded } = state.getMyFollowingCount;
     const { followingInfo, loadingFollowingInfo, followingInfoLoaded } = state.getFollowingInfo;
     const { followerInfo, loadingFollowerInfo, followerInfoLoaded } = state.getFollowerInfo;
     return {
@@ -742,6 +795,7 @@ const actionCreators = {
     getFollowingCount: followActions.getFollowingCount,
     getFollowerInfo: followActions.getFollowerInfo,
     getFollowingInfo: followActions.getFollowingInfo,
+    userSearch: userActions.userSearch,
 };
 
 export default connect(mapStateToProps, actionCreators)(withStyles(styles, { withTheme: true })(ProfilePage));

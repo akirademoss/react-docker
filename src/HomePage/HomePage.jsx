@@ -27,6 +27,13 @@ import { history } from '../_helpers';
 
 import { userActions } from '../_actions/auth';
 
+import PublicCustomToolbar from "../_components/PublicCustomToolbar";
+import PublicCustomToolbarMobile from "../_components/PublicCustomToolbarMobile";
+
+//debounce import
+import debounce from 'lodash.debounce';
+import { isMobile, browserName } from "react-device-detect";
+
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -159,7 +166,8 @@ const styles = darkTheme => ({
     height: '70%',
   },
   paper: {
-    marginTop: 250,
+    marginTop: 200,
+    minWidth: 150,
     display: "flex",
     justifyContent: "center",
     flexDirection: 'row',
@@ -180,9 +188,9 @@ const styles = darkTheme => ({
     color: darkTheme.palette.common.white,
     background: 'transparent',
     "&:hover": {
-        background: 'transparent',
-        backgroundColor: 'transparent',
-        cursor: 'default',
+      background: 'transparent',
+      backgroundColor: 'transparent',
+      cursor: 'default',
     },
   },
   clear: {
@@ -199,6 +207,7 @@ class HomePage extends React.Component {
     };
 
     this.handleTextChange = this.handleTextChange.bind(this);
+    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
   }
 
   handleTextClear = () => {
@@ -208,6 +217,20 @@ class HomePage extends React.Component {
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
+    this.throttleHandleChange(value)
+  }
+
+  throttleHandleChange = async (value) => {
+    console.log("ENTERING THROTTLE FUNCTION")
+    const dispatch = await this.props.userSearch(value);
+  }
+
+  keyPress = async (e) => {
+    if (e.keyCode == 13) {
+      console.log(e.target.value)
+      const dispatch = await this.props.userSearch(e.target.value)
+      this.setState({ showResult: true });
+    }
   }
 
   componentDidMount() {
@@ -225,7 +248,7 @@ class HomePage extends React.Component {
       if (this.state.text) {
         return (
           <InputAdornment position="end">
-            <IconButton 
+            <IconButton
               disableRipple
               onClick={this.handleTextClear}
               className={classes.clearIcon}
@@ -237,49 +260,29 @@ class HomePage extends React.Component {
       }
 
       return "";
-     
+
     }
     return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <div className={classes.background}>
 
-          <Toolbar className={classes.navBar}>
-            <div className={classes.homeButton}>
-              <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
-            </div>
-            <section className={classes.searchAlign}>
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  fullWidth={true}
-                  type="text"
-                  placeholder="Search…"
-                  name="text"
-                  onChange={this.handleTextChange}
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  value={this.state.text}
-                  endAdornment={endAdornment()}
-                />
-              </div>
-            </section>
-            <section className={classes.rightToolbar}>
-              <Button
-                color="primary"
-                type="submit"
-                variant="contained"
-                onClick={() => history.push('/login')}
-                className={classes.createAccountButton}
-              >
-                Sign In
-                    </Button>
-            </section>
-          </Toolbar>
+          {!isMobile &&
+            <PublicCustomToolbar
+              handleTextChange={this.handleTextChange}
+              searchText={this.state.text}
+              handleTextClear={this.handleTextClear}
+              keyPress={this.keyPress}
+            />}
+
+          {isMobile &&
+            <PublicCustomToolbarMobile 
+              handleTextChange={this.handleTextChange}
+              searchText={this.state.text}
+              handleTextClear={this.handleTextClear}
+              keyPress={this.keyPress}
+            />}
+
           <div className={classes.centerDivCol}>
             <div className={classes.centerDiv}>
               <div className={classes.paper}>
@@ -315,6 +318,7 @@ function mapStateToProps(state) {
 }
 
 const actionCreators = {
+  userSearch: userActions.userSearch,
   //getUsers: userActions.getAll,
   //deleteUser: userActions.delete
 }

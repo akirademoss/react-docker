@@ -69,8 +69,7 @@ iconButtonAvatar: {
       backgroundColor: 'transparent',
       cursor: 'default',
   },
-  width: "50px",
-  height: "50px",
+  height: "48px",
 },
 followGridList: {
     alignItems: 'left',
@@ -147,9 +146,9 @@ class FollowInfo extends React.Component {
                     <Grid item> 
                       <Link variant="subtitle2" className={classes.link} onClick={handlePageChange}><b>{followingInfo.username}</b> </Link>
                     </Grid>
-                    {followingInfo.name && <Grid item>
+                    <Grid item>
                       <Typography variant="subtitle2" className={classes.link}>{followingInfo.name}</Typography>
-                    </Grid>}
+                    </Grid>
                   </Grid>
                 </Grid>
 
