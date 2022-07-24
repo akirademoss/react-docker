@@ -1,32 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from "@material-ui/styles";
-import IconButton from "@material-ui/core/IconButton";
-import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
 
-//responsive UI
-import Hidden from '@material-ui/core/Hidden';
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
-import blue from '@material-ui/core/colors/blue';
-
-//menu stuff
-import Settings from "@material-ui/icons/Settings";
-import GridOn from "@material-ui/icons/GridOn";
-import BookmarkBorder from "@material-ui/icons/BookmarkBorder";
-import FeaturedPlayList from "@material-ui/icons/FeaturedPlayList";
-import VideoLibrary from "@material-ui/icons/VideoLibrary";
 
 //router and page imports
 import { history } from '../_helpers';
@@ -37,18 +20,26 @@ import { followActions } from '../_actions/follow';
 //cropper tool helper inputs
 import { getOrientation } from 'get-orientation/browser'
 import { getCroppedImg, getRotatedImage } from './canvasUtils'
-import { styled } from '@material-ui/core/styles';
 import isEqual from 'lodash.isequal';
 
 //import custom component
 import CustomToolbar from "../_components/CustomToolbar";
-import ProfilePic from "../_components/ProfilePic";
-import ChangePicModal from "../_components/ChangePicModal";
-import UploadPicModal from "../_components/UploadPicModal";
-import FollowModal from "../_components/FollowModal";
-import DelFollowModal from "../_components/DelFollowModal";
-import SearchResultModal from "../_components/SearchResultModal";
 import CustomToolbarMobile from "../_components/CustomToolbarMobile";
+import Profile from "../_components/Profile";
+import ProfileTabs from "../_components/ProfileTabs";
+import ProfileMobile from "../_components/ProfileMobile";
+import ProfileTabsMobile from "../_components/ProfileTabsMobile";
+import ChangePicModal from "../_components/ChangePicModal";
+import ChangePicModalMobile from "../_components/ChangePicModalMobile";
+import UploadPicModal from "../_components/UploadPicModal";
+import UploadPicModalMobile from "../_components/UploadPicModalMobile";
+import FollowModal from "../_components/FollowModal";
+import FollowModalMobile from "../_components/FollowModalMobile";
+import DelFollowModal from "../_components/DelFollowModal";
+import DelFollowModalMobile from "../_components/DelFollowModalMobile";
+import SearchResultModal from "../_components/SearchResultModal";
+
+
 
 //debounce import
 import debounce from 'lodash.debounce';
@@ -104,64 +95,8 @@ const styles = darkTheme => ({
     grow: {
         flexGrow: 1,
     },
-    profileContainer: {
-        maxWidth: 935,
-        margin: "auto",
-        padding: "60px 10px 0",
-    },
-    profile: {
-        marginTop: 20,
-        minWidth: 430,
-        marginBottom: '44px'
-    },
-    editButton: {
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-        },
-        borderRadius: 5,
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
-        textTransform: 'none',
-    },
-    iconButtonTransparent: {
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-            backgroundColor: 'transparent',
-            cursor: 'default',
-        },
-    },
-    textButton: {
-        textTransform: 'none',
-        fontSize: '17px',
-        "&:hover": {
-            background: 'transparent',
-            backgroundColor: 'transparent',
-            cursor: 'default',
-        },
-    },
-    linkText: {
-        color: blue[700],
-    },
-    centerDiv: {
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: 'row',
-        marginTop: '50px',
-    },
-    profileFormat: {
-        marginBottom: '20px',
-    }
 });
 
-const Input = styled('input')({
-    display: 'none',
-});
 
 //Profile image edit rotation helpers
 const ORIENTATION_TO_ANGLE = {
@@ -591,108 +526,77 @@ class ProfilePage extends React.Component {
                         handleCloseModal={this.handleCloseSearchResult}
                     />
 
-                    {/* Profile Here */}
-                    <div className={classes.profileContainer}>
-                        {/* Profile Info Here */}
-                        <div mb="44px" className={classes.profile}>
-                            <Grid container>
-                                <Grid item xs={4}>
-                                    <ProfilePic
-                                        profile={this.props.profile}
-                                        loadingProfile={loadingProfile}
-                                        viewingMyProfile={viewingMyProfile}
-                                        handleShow={this.handleShow}
-                                    />
-                                </Grid>
-                                <Grid item xs={8}>
-                                    <div className={classes.profileFormat}>
-                                        <Grid container alignItems="center" spacing={2}>
-                                            <Grid item>
-                                                <Typography component="h1" variant="h4">
-                                                    {this.props.username}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={this.handleEditProfile}>
-                                                    <b>Edit Profile</b>
-                                                </Button>
-                                                <IconButton disableRipple className={classes.iconButtonTransparent}>
-                                                    {<Settings />}
-                                                </IconButton>
-                                            </Grid>
-                                        </Grid>
-                                    </div>
-                                    <div className={classes.profileFormat}>
-                                        <Grid container spacing={1}>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} >
-                                                    <b>0</b>
-                                                    &nbsp;posts
-                                                </Button>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowers}>
-                                                    {!loadingMyFollowerCount && <b>{this.props.myFollowerCount.count} </b>}
-                                                    &nbsp;followers
-                                                </Button>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowing}>
-                                                    {!loadingMyFollowingCount && <b>{this.props.myFollowingCount.count} </b>}
-                                                    &nbsp;following
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </div>
-                                    <Typography variant="subtitle1" bold> <b>{this.props.profile.name}</b></Typography>
-                                    <Typography variant="subtitle1">{this.props.profile.bio}</Typography>
-                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.profile.link} target="_blank" rel="noreferrer noopener">{this.props.profile.link}</a></b>
-                                </Grid>
-                            </Grid>
+                    {!isMobile &&
+                    <Profile
+                        profile={this.props.profile}
+                        loadingProfile={loadingProfile}
+                        viewingMyProfile={viewingMyProfile}
+                        handleShow={this.handleShow}
+                        username={this.props.username}
+                        handleEditProfile={this.handleEditProfile}
+                        handleShowFollowers={this.handleShowFollowers}
+                        loadingMyFollowerCount={loadingMyFollowerCount}
+                        myFollowerCount={this.props.myFollowerCount.count}
+                        handleShowFollowing={this.handleShowFollowing}
+                        loadingMyFollowingCount={loadingMyFollowingCount}
+                        myFollowingCount={this.props.myFollowingCount.count}
+                        name={this.props.profile.name}
+                        bio={this.props.profile.bio}
+                        link={this.props.profile.link}
+                        tab={tab}
+                        handleTabChange={this.handleTabChange}
+                    />}
 
-                            {/* Profile Posts, Newsfeed, Playlist, and Saved here [TODO: provide functionality on backend]*/}
-                        </div>
-                        <Tabs
-                            value={tab}
-                            centered
-                            onChange={this.handleTabChange}
-                            indicatorColor="primary"
-                        >
-                            <Tab disableRipple label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
-                            <Tab disableRipple label={<Hidden smDown>Newsfeed</Hidden>} icon={<GridOn />} />
-                            <Tab disableRipple label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
-                            <Tab disableRipple label={<Hidden smDown>Saved</Hidden>} icon={<BookmarkBorder />} />
-                        </Tabs>
-                        <Divider style={{ background: 'grey' }} />
-                        {tab === 0 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4"> No Posts Yet</Typography>
-                            </div>
-                        }
-                        {tab === 1 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4"> No Newsfeed Posts</Typography>
-                            </div>
-                        }
-                        {tab === 2 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4">No Playlists Yet</Typography>
-                            </div>
-                        }
-                        {tab === 3 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4">No Saved Posts Yet</Typography>
-                            </div>
-                        }
-                    </div>
+                    {isMobile &&
+                    <ProfileMobile
+                        profile={this.props.profile}
+                        loadingProfile={loadingProfile}
+                        viewingMyProfile={viewingMyProfile}
+                        handleShow={this.handleShow}
+                        username={this.props.username}
+                        handleEditProfile={this.handleEditProfile}
+                        handleShowFollowers={this.handleShowFollowers}
+                        loadingMyFollowerCount={loadingMyFollowerCount}
+                        myFollowerCount={this.props.myFollowerCount.count}
+                        handleShowFollowing={this.handleShowFollowing}
+                        loadingMyFollowingCount={loadingMyFollowingCount}
+                        myFollowingCount={this.props.myFollowingCount.count}
+                        name={this.props.profile.name}
+                        bio={this.props.profile.bio}
+                        link={this.props.profile.link}
+                        tab={tab}
+                        handleTabChange={this.handleTabChange}
+                    />}
+                     
+                     {!isMobile &&
+                     <ProfileTabs
+                        tab={tab}
+                        handleTabChange={this.handleTabChange}
+                     />}
 
+                    {isMobile &&
+                     <ProfileTabsMobile
+                        tab={tab}
+                        handleTabChange={this.handleTabChange}
+                     />}
+
+                    {!isMobile &&
                     <ChangePicModal
                         show={show}
                         handleCloseModal={this.handleCloseModal}
                         onFileChange={this.onFileChange}
                         handleRemove={this.handleRemove}
-                    />
+                    />}
 
+                    {isMobile &&
+                    <ChangePicModalMobile
+                        show={show}
+                        handleCloseModal={this.handleCloseModal}
+                        onFileChange={this.onFileChange}
+                        handleRemove={this.handleRemove}
+                    />}
+
+                    {!isMobile &&
                     <UploadPicModal
                         showImageCrop={showImageCrop}
                         handleCloseImageModal={this.handleCloseImageModal}
@@ -706,30 +610,25 @@ class ProfilePage extends React.Component {
                         setZoom={this.setZoom}
                         showCroppedImage={this.showCroppedImage}
                         handleCloseImageModal={this.handleCloseImageModal}
-                    />
-
-                    {/* Unfollow Modal */}
-                    <DelFollowModal
-                        show={showUnfollow}
-                        handleCloseModal={this.handleCloseUnfollowModal}
-                        previewImg={unfollowPreviewImg}
-                        username={unfollowUsername}
-                        handleAction={this.handleUnfollow}
-                        text={"Unfollow"}
-                    />
-
-                    {/* Remove Folower Modal */}
-                    <DelFollowModal
-                        show={showRemove}
-                        handleCloseModal={this.handleCloseRemoveModal}
-                        previewImg={removePreviewImg}
-                        username={removeUsername}
-                        handleAction={this.handleRemoveFollower}
-                        text={"Remove"}
-                    />
+                    />}
+                    {isMobile &&
+                    <UploadPicModalMobile
+                        showImageCrop={showImageCrop}
+                        handleCloseImageModal={this.handleCloseImageModal}
+                        imageSrc={imageSrc}
+                        crop={crop}
+                        rotation={rotation}
+                        zoom={zoom}
+                        setCrop={this.setCrop}
+                        setRotation={this.setRotation}
+                        onCropComplete={this.onCropComplete}
+                        setZoom={this.setZoom}
+                        showCroppedImage={this.showCroppedImage}
+                        handleCloseImageModal={this.handleCloseImageModal}
+                    />}
 
                     {/*Shows Followers*/}
-
+                    {!isMobile &&
                     <FollowModal
                         show={showFollowers}
                         handleCloseModal={this.handleCloseFollowersModal}
@@ -741,9 +640,24 @@ class ProfilePage extends React.Component {
                         buttonText={"Remove"}
                         followText={"Followers"}
                         followCount={this.props.myFollowerCount.count}
-                    />
+                    />}
+
+                    {isMobile &&
+                    <FollowModalMobile
+                        show={showFollowers}
+                        handleCloseModal={this.handleCloseFollowersModal}
+                        infoLoaded={followerInfoLoaded}
+                        loadingInfo={loadingFollowerInfo}
+                        followInfo={this.props.followerInfo}
+                        handleShow={this.handleShowRemove}
+                        handlePageChange={this.handleFollowerPageChange}
+                        buttonText={"Remove"}
+                        followText={"Followers"}
+                        followCount={this.props.myFollowerCount.count}
+                    />}
 
                     {/*Shows Following*/}
+                    {!isMobile &&
                     <FollowModal
                         show={showFollowing}
                         handleCloseModal={this.handleCloseFollowingModal}
@@ -755,7 +669,63 @@ class ProfilePage extends React.Component {
                         buttonText={"Following"}
                         followText={"Following"}
                         followCount={this.props.myFollowingCount.count}
-                    />
+                    />}
+
+                    {isMobile &&
+                    <FollowModalMobile
+                        show={showFollowing}
+                        handleCloseModal={this.handleCloseFollowingModal}
+                        infoLoaded={followingInfoLoaded}
+                        loadingInfo={loadingFollowingInfo}
+                        followInfo={this.props.followingInfo}
+                        handleShow={this.handleShowUnfollowing}
+                        handlePageChange={this.handlePageChange}
+                        buttonText={"Following"}
+                        followText={"Following"}
+                        followCount={this.props.myFollowingCount.count}
+                    />}
+
+                    {/* Unfollow Modal */}
+                    {!isMobile &&
+                    <DelFollowModal
+                        show={showUnfollow}
+                        handleCloseModal={this.handleCloseUnfollowModal}
+                        previewImg={unfollowPreviewImg}
+                        username={unfollowUsername}
+                        handleAction={this.handleUnfollow}
+                        text={"Unfollow"}
+                    />}
+                    
+                    {isMobile &&
+                    <DelFollowModalMobile
+                        show={showUnfollow}
+                        handleCloseModal={this.handleCloseUnfollowModal}
+                        previewImg={unfollowPreviewImg}
+                        username={unfollowUsername}
+                        handleAction={this.handleUnfollow}
+                        text={"Unfollow"}
+                    />}
+
+                    {/* Remove Folower Modal */}
+                    {!isMobile &&
+                    <DelFollowModal
+                        show={showRemove}
+                        handleCloseModal={this.handleCloseRemoveModal}
+                        previewImg={removePreviewImg}
+                        username={removeUsername}
+                        handleAction={this.handleRemoveFollower}
+                        text={"Remove"}
+                    />}
+
+                    {isMobile &&
+                    <DelFollowModalMobile
+                        show={showRemove}
+                        handleCloseModal={this.handleCloseRemoveModal}
+                        previewImg={removePreviewImg}
+                        username={removeUsername}
+                        handleAction={this.handleRemoveFollower}
+                        text={"Remove"}
+                    />}
                 </div>
             </ThemeProvider>
         );

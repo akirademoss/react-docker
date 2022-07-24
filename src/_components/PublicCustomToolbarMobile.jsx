@@ -24,18 +24,10 @@ import { ThemeProvider } from "@material-ui/styles";
 
 
 
+
+
 const darkTheme = createMuiTheme({
     overrides: {
-        MuiMenu: {
-            paper: {
-                margin: 10,
-                borderBottom: '1px solid grey',
-                borderTop: '1px solid grey',
-                borderLeft: '1px solid grey',
-                borderRight: '1px solid grey',
-                borderColor: fade('#ffffff', 0.5),
-            }
-        },
         MuiInputBase: {
 
             endAdornment: {
@@ -80,24 +72,51 @@ const darkTheme = createMuiTheme({
 
 
 const styles = darkTheme => ({
+    iconButtonTransparent: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
+        width: "28px",
+        
+    },
+    avatarSm: {
+        color: darkTheme.palette.common.white,
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        width: "20px",
+        height: "20px",
+        borderRadius: 100,
+    },
     navBar: {
         boxShadow: 'none',
-        minHeight: 5,
+        minHeight: 44,
         height: 'auto',
         backgroundColor: fade(grey[500], 0.4),
         position: 'fixed',
-        width: '100%'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+
     },
     homeButton: {
         marginRight: 0,
         marginLeft: -12,
-        marginTop: 0,
         width: '100%',
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
+    },
+    logo: {
+        width: 75,
     },
     grow: {
         flexGrow: 1,
@@ -106,7 +125,7 @@ const styles = darkTheme => ({
         display: 'flex',
         flexDirection: 'row',
         alighnItems: 'center',
-        width: '25%',
+        width: '100%',
     },
     search: {
         position: 'relative',
@@ -119,9 +138,11 @@ const styles = darkTheme => ({
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
-        marginRight: darkTheme.spacing(2),
-        marginLeft: 0,
+        marginRight: darkTheme.spacing(1),
+        marginLeft: -5,
         width: '100%',
+        height: 30,
+        fontSize: '10px',
     },
     searchIcon: {
         padding: darkTheme.spacing(0, 2),
@@ -131,12 +152,14 @@ const styles = darkTheme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        marginLeft: -15,
     },
     inputInput: {
         padding: darkTheme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
+        paddingLeft: '18px',
         width: '100%',
+        fontSize: '10px',
     },
     inputRoot: {
         color: 'inherit',
@@ -151,18 +174,27 @@ const styles = darkTheme => ({
         },
     },
     signInButton: {
-        margin: darkTheme.spacing(3, 0, 0),
-        width: 290,
+   
+        width: 250,
+        height: 10,
     },
     createAccountButton: {
-        margin: darkTheme.spacing(0, 0, 0),
-        width: 110,
+      
+        width: 70,
+        fontSize: '10px',
     },
+    rightToolbar: {
+        marginLeft: "auto",
+        marginRight: -10,
+      },
     icon: {
         color: darkTheme.palette.common.white,
+        fontSize: "15px",
+        paddingLeft: 0,
+        paddingRight: 0, 
     },
     clearIcon: {
-
+        
         color: darkTheme.palette.common.white,
         background: 'transparent',
         "&:hover": {
@@ -170,10 +202,17 @@ const styles = darkTheme => ({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
+        width: 0,
     },
     clear: {
-        fontSize: '18px',
-    }
+        fontSize: '15px',
+    },
+    adornment: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        width: 0,
+        marginLeft: -10,
+    },
 })
 
 class PublicCustomToolbarMobile extends React.Component {
@@ -188,6 +227,7 @@ class PublicCustomToolbarMobile extends React.Component {
                             disableRipple
                             onClick={handleTextClear}
                             className={classes.clearIcon}
+                            className={classes.adornment}
                         >
                             <ClearIcon className={classes.clear} />
                         </IconButton>
@@ -203,13 +243,17 @@ class PublicCustomToolbarMobile extends React.Component {
             <div>
                 <ThemeProvider theme={darkTheme}>
                     <Toolbar className={classes.navBar}>
-                        <div className={classes.homeButton}>
-                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
+                        <div>
+                        <Button disableRipple className={classes.homeButton}
+                            onClick={() => history.push('/')}
+                        >
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo}/>
+                        </Button>
                         </div>
                         <section className={classes.searchAlign}>
                             <div className={classes.search}>
                                 <div className={classes.searchIcon}>
-                                    <SearchIcon />
+                                    <SearchIcon className={classes.icon}/>
                                 </div>
                                 <InputBase
                                     fullWidth={true}
@@ -218,7 +262,6 @@ class PublicCustomToolbarMobile extends React.Component {
                                     name="text"
                                     onChange={handleTextChange}
                                     classes={{
-                                        root: classes.inputRoot,
                                         input: classes.inputInput,
                                     }}
                                     value={searchText}
@@ -227,8 +270,10 @@ class PublicCustomToolbarMobile extends React.Component {
                                 />
                             </div>
                         </section>
+
                         <section className={classes.rightToolbar}>
                             <Button
+                                disableRipple
                                 color="primary"
                                 type="submit"
                                 variant="contained"

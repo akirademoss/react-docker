@@ -73,7 +73,6 @@ const styles = darkTheme => ({
         minHeight: 5,
         position: 'static',
         width: '100%',
-        
     },
     rightToolbar: {
         marginLeft: "auto",
@@ -96,37 +95,37 @@ const styles = darkTheme => ({
     },
 })
 
-class LoginToolbar extends React.Component {
+class RegisterToolbar extends React.Component {
     render() {
         const { classes } = this.props;
 
         return (
             <div>
                 <ThemeProvider theme={darkTheme}>
-                        <Toolbar className={classes.navBar}>
-                            <Button disableRipple className={classes.homeButton}
-                                onClick={() => history.push('/')}
+                    <Toolbar className={classes.navBar}>
+                        <Button disableRipple className={classes.homeButton}
+                            onClick={() => history.push('/')}
+                        >
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} />
+                        </Button>
+                        <section className={classes.rightToolbar}>
+                            <Button
+                                disableRipple
+                                type="submit"
+                                variant="contained"
+                                color="secondary"
+                                className={classes.createAccountButton}
+                                onClick={() => history.push('/login')}
                             >
-                                <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} />
+                                Sign In
                             </Button>
-                            <section className={classes.rightToolbar}>
-                                <Button
-                                    disableRipple
-                                    type="submit"
-                                    variant="contained"
-                                    color="secondary"
-                                    className={classes.createAccountButton}
-                                    onClick={() => history.push('/register')}
-                                >
-                                    Create Account
-                                </Button>
-                            </section>
-                        </Toolbar>
-                    
+                        </section>
+                    </Toolbar>
+
                 </ThemeProvider>
             </div>
         );
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(LoginToolbar));;
+export default (withStyles(styles, { withTheme: true })(RegisterToolbar));;

@@ -52,7 +52,7 @@ const darkTheme = createMuiTheme({
             main: '#000000',
         },
         background: {
-            paper: fade('#000000', 0.5),
+            paper: fade('#000000', 1),
             default: '#000000',
         },
         neutral: {
@@ -81,7 +81,10 @@ const darkTheme = createMuiTheme({
         height: 'auto',
         backgroundColor: fade(grey[500], 0.4),
         position: 'fixed',
-        width: '100%'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        
     },
     homeButton: {
         marginRight: 0,
@@ -208,7 +211,7 @@ const darkTheme = createMuiTheme({
         paddingRight: 0,
         width: 0,
         marginLeft: -10,
-    }
+    },
   })
 
   class CustomToolbarMobile extends React.Component {
@@ -248,8 +251,6 @@ const darkTheme = createMuiTheme({
                             <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo} />
                         </Button>
                     </div>
-
-                    <div className={classes.grow} />
 
                     <section className={classes.searchAlign}>
                         <div className={classes.search}>

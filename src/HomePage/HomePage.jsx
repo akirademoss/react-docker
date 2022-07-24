@@ -1,18 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from "@material-ui/core/Toolbar";
-import SearchIcon from '@material-ui/icons/Search';
 import { ThemeProvider } from "@material-ui/styles";
-import InputBase from '@material-ui/core/InputBase';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import InputAdornment from "@material-ui/core/InputAdornment";
-import ClearIcon from "@material-ui/icons/Clear";
-import IconButton from "@material-ui/core/IconButton";
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -24,7 +16,6 @@ import grey from '@material-ui/core/colors/grey';
 //router and page imports
 //import history from '../history';
 import { history } from '../_helpers';
-
 import { userActions } from '../_actions/auth';
 
 import PublicCustomToolbar from "../_components/PublicCustomToolbar";
@@ -76,83 +67,8 @@ const styles = darkTheme => ({
     minHeight: '100vh',
     backgroundAttachment: 'fixed',
   },
-  navBar: {
-    boxShadow: 'none',
-    minHeight: 5,
-    height: 'auto',
-    backgroundColor: fade(grey[500], 0.4),
-    position: 'fixed',
-    width: '100%',
-  },
-  rightToolbar: {
-    marginLeft: "auto",
-    marginRight: -12,
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  homeButton: {
-    marginRight: 0,
-    marginLeft: -12,
-    marginTop: 0,
-    width: '100%',
-    background: 'transparent',
-  },
-  createAccountButton: {
-    margin: darkTheme.spacing(0, 0, 0),
-    width: 110,
-  },
-  searchAlign: {
-    display: 'flex',
-    flexDirection: 'row',
-    alighnItems: 'center',
-    width: '50%',
-  },
-  search: {
-    position: 'relative',
-    borderRadius: darkTheme.shape.borderRadius,
-    backgroundColor: fade(darkTheme.palette.common.black, 0.5),
-    '&:hover': {
-      backgroundColor: fade(darkTheme.palette.common.black, 0.05),
-    },
-    borderBottom: '1px solid white',
-    borderTop: '1px solid white',
-    borderLeft: '1px solid white',
-    borderRight: '1px solid white',
-    marginRight: darkTheme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-  },
-  searchIcon: {
-    padding: darkTheme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: darkTheme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
-    transition: darkTheme.transitions.create('width'),
-    width: '100%',
-  },
   grow: {
     flexGrow: 1,
-  },
-  sectionDesktop: {
-    display: 'none',
-    [darkTheme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  signInButton: {
-    margin: darkTheme.spacing(3, 0, 0),
-    width: 290,
   },
   centerDiv: {
     display: "flex",
@@ -175,6 +91,16 @@ const styles = darkTheme => ({
     borderRadius: darkTheme.shape.borderRadius,
     backgroundColor: fade(darkTheme.palette.common.black, 0.6),
   },
+  paper2: {
+    marginTop: 130,
+    minWidth: 150,
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: 'row',
+    width: '30%',
+    borderRadius: darkTheme.shape.borderRadius,
+    backgroundColor: fade(darkTheme.palette.common.black, 0.6),
+  },
   gridContainer: {
     marginBottom: 0,
     alignItems: 'center',
@@ -184,18 +110,6 @@ const styles = darkTheme => ({
   text: {
     color: grey[500],
   },
-  clearIcon: {
-    color: darkTheme.palette.common.white,
-    background: 'transparent',
-    "&:hover": {
-      background: 'transparent',
-      backgroundColor: 'transparent',
-      cursor: 'default',
-    },
-  },
-  clear: {
-    fontSize: '18px',
-  }
 });
 
 class HomePage extends React.Component {
@@ -243,69 +157,64 @@ class HomePage extends React.Component {
   render() {
 
     const { classes } = this.props;
-
-    const endAdornment = () => {
-      if (this.state.text) {
-        return (
-          <InputAdornment position="end">
-            <IconButton
-              disableRipple
-              onClick={this.handleTextClear}
-              className={classes.clearIcon}
-            >
-              <ClearIcon className={classes.clear} />
-            </IconButton>
-          </InputAdornment>
-        );
-      }
-
-      return "";
-
-    }
     return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <div className={classes.background}>
+          <div className={classes.grow}>
 
-          {!isMobile &&
-            <PublicCustomToolbar
-              handleTextChange={this.handleTextChange}
-              searchText={this.state.text}
-              handleTextClear={this.handleTextClear}
-              keyPress={this.keyPress}
-            />}
+            {!isMobile &&
+              <PublicCustomToolbar
+                handleTextChange={this.handleTextChange}
+                searchText={this.state.text}
+                handleTextClear={this.handleTextClear}
+                keyPress={this.keyPress}
+              />}
 
-          {isMobile &&
-            <PublicCustomToolbarMobile 
-              handleTextChange={this.handleTextChange}
-              searchText={this.state.text}
-              handleTextClear={this.handleTextClear}
-              keyPress={this.keyPress}
-            />}
+            {isMobile &&
+              <PublicCustomToolbarMobile
+                handleTextChange={this.handleTextChange}
+                searchText={this.state.text}
+                handleTextClear={this.handleTextClear}
+                keyPress={this.keyPress}
+              />}
 
-          <div className={classes.centerDivCol}>
-            <div className={classes.centerDiv}>
-              <div className={classes.paper}>
-                <Grid container spacing={2} className={classes.gridContainer}>
-                  <Grid item>
-                    <Typography component="h1" variant="h4" align="center" >
-                      <b>Video Platform Coming Soon!</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item className={classes.centerDiv}>
-                    <Typography component="h1" variant="h6" align="center" className={classes.text}>
-                      <b>Create an Account, Update your Profile, and Find Friends!</b>
-                    </Typography>
-                  </Grid>
-                </Grid>
+            <div className={classes.centerDivCol}>
+              <div className={classes.centerDiv}>
+                {!isMobile &&
+                  <div className={classes.paper}>
+                    <Grid container spacing={2} className={classes.gridContainer}>
+                      <Grid item>
+                        <Typography component="h1" variant="h4" align="center" >
+                          <b>Video Platform Coming Soon!</b>
+                        </Typography>
+                      </Grid>
+                      <Grid item className={classes.centerDiv}>
+                        <Typography component="h1" variant="h6" align="center" className={classes.text}>
+                          <b>Create an Account, Update your Profile, and Find Friends!</b>
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </div>}
+                {isMobile &&
+                  <div className={classes.paper2}>
+                    <Grid container spacing={2} className={classes.gridContainer}>
+                      <Grid item>
+                        <Typography component="h1" variant="h4" align="center" >
+                          <b>Video Platform Coming Soon!</b>
+                        </Typography>
+                      </Grid>
+                      <Grid item className={classes.centerDiv}>
+                        <Typography component="h1" variant="h6" align="center" className={classes.text}>
+                          <b>Create an Account, Update your Profile, and Find Friends!</b>
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </div>}
               </div>
             </div>
           </div>
         </div>
-
-
-
-
       </ThemeProvider>
     );
   }

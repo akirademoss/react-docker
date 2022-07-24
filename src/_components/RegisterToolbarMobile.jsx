@@ -73,7 +73,6 @@ const styles = darkTheme => ({
         minHeight: 5,
         position: 'static',
         width: '100%',
-        
     },
     rightToolbar: {
         marginLeft: "auto",
@@ -82,51 +81,57 @@ const styles = darkTheme => ({
     homeButton: {
         marginLeft: -12,
         marginTop: 0,
-        width: 400,
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
     },
+    logo: {
+        margin: "auto",
+        width: "130px",
+    },
     createAccountButton: {
         margin: darkTheme.spacing(0, 0, 0),
         width: 170,
-        color: darkTheme.palette.secondary
+        color: darkTheme.palette.secondary,
+        width: "80px",
+        fontSize: '10px',
+        marginRight: 10,
     },
 })
 
-class LoginToolbar extends React.Component {
+class RegisterToolbarMobile extends React.Component {
     render() {
         const { classes } = this.props;
 
         return (
             <div>
                 <ThemeProvider theme={darkTheme}>
-                        <Toolbar className={classes.navBar}>
-                            <Button disableRipple className={classes.homeButton}
-                                onClick={() => history.push('/')}
+                    <Toolbar className={classes.navBar}>
+                        <Button disableRipple className={classes.homeButton}
+                            onClick={() => history.push('/')}
+                        >
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} className={classes.logo}/>
+                        </Button>
+                        <section className={classes.rightToolbar}>
+                            <Button
+                                disableRipple
+                                type="submit"
+                                variant="contained"
+                                color="secondary"
+                                className={classes.createAccountButton}
+                                onClick={() => history.push('/login')}
                             >
-                                <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} />
+                                Sign In
                             </Button>
-                            <section className={classes.rightToolbar}>
-                                <Button
-                                    disableRipple
-                                    type="submit"
-                                    variant="contained"
-                                    color="secondary"
-                                    className={classes.createAccountButton}
-                                    onClick={() => history.push('/register')}
-                                >
-                                    Create Account
-                                </Button>
-                            </section>
-                        </Toolbar>
-                    
+                        </section>
+                    </Toolbar>
+
                 </ThemeProvider>
             </div>
         );
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(LoginToolbar));;
+export default (withStyles(styles, { withTheme: true })(RegisterToolbarMobile));;

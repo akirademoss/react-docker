@@ -100,6 +100,16 @@ const styles = darkTheme => ({
     borderRadius: darkTheme.shape.borderRadius,
     backgroundColor: fade(darkTheme.palette.common.black, 0.6),
   },
+  paper2: {
+    marginTop: 130,
+    minWidth: 150,
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: 'row',
+    width: '30%',
+    borderRadius: darkTheme.shape.borderRadius,
+    backgroundColor: fade(darkTheme.palette.common.black, 0.6),
+  },
   gridContainer: {
     marginBottom: 0,
     alignItems: 'center',
@@ -273,6 +283,7 @@ class HomePrivate extends React.Component {
             
             <div className={classes.centerDivCol}>
               <div className={classes.centerDiv}>
+                {!isMobile &&
                 <div className={classes.paper}>
                   <Grid container spacing={2} className={classes.gridContainer}>
                     <Grid item>
@@ -286,7 +297,22 @@ class HomePrivate extends React.Component {
                       </Typography>
                     </Grid>
                   </Grid>
-                </div>
+                </div>}
+                {isMobile &&
+                <div className={classes.paper2}>
+                  <Grid container spacing={2} className={classes.gridContainer}>
+                    <Grid item>
+                      <Typography component="h1" variant="h4" align="center" >
+                        <b>Video Platform Coming Soon!</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item className={classes.centerDiv}>
+                      <Typography component="h1" variant="h6" align="center" className={classes.text}>
+                        <b>Create an Account, Update your Profile, and Find Friends!</b>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </div>}
               </div>
             </div>
           </div>

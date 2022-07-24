@@ -101,7 +101,7 @@ const styles = theme => ({
     },
     //Form Elements
     form: {
-        width: 450, // Fix IE 11 issue.
+        width: 270, // Fix IE 11 issue.
         height: '100%',
         marginTop: darkTheme.spacing(3),
         display: 'flex',
@@ -110,8 +110,9 @@ const styles = theme => ({
         alignItems: 'center',
     },
     text: {
-        width: 290,
-        marginLeft: 0
+        width: 220,
+        marginLeft: 0,
+        
     },
     link: {
         textDecoration: 'none',
@@ -119,13 +120,15 @@ const styles = theme => ({
     },
     signInButton: {
         margin: darkTheme.spacing(3, 0, 0),
-        width: 290,
+        width: 220,
         color: darkTheme.palette.secondary,
+        fontSize: '10px',
     },
     icon: {
         display: 'flex',
         flexDirection: 'row',
         alighnItems: 'center',
+        fontSize: '18px',
     },
     divider: {
         marginTop: darkTheme.spacing(0),
@@ -152,13 +155,13 @@ const styles = theme => ({
     },
     instaButton: {
         margin: darkTheme.spacing(0, 0, 0),
-        width: 290,
+        width: 220,
         textTransform: 'none',
         flexShrink: 'auto',
     },
     fbButton: {
-        margin: darkTheme.spacing(3, 0, 0),
-        width: 290,
+        margin: darkTheme.spacing(1, 0, 0),
+        width: 220,
         textTransform: 'none',
         flexShrink: 'auto',
     },
@@ -169,9 +172,25 @@ const styles = theme => ({
         alignItems: 'center',
 
     },
+    loginText:{
+        fontSize: '12px',
+    },
+    type: {
+        height: '15px',
+        fontSize: '12px',
+    },
+    progress: {
+        fontSize: '18px'
+    },
+    needHelp: {
+        marginTop: 10,
+        fontSize: '12px',
+        textDecoration: 'none',
+        color: fade(darkTheme.palette.common.white, 0.85)
+    }
 })
 
-class LoginForm extends React.Component {
+class LoginFormMobile extends React.Component {
     render() {
         const { classes, handleChange, handleSubmit, username, errorsUsername, usernameError, password, errorsPassword, passwordError, loggingIn } = this.props;
 
@@ -179,23 +198,24 @@ class LoginForm extends React.Component {
             <div className={classes.layout}>
                 <ThemeProvider theme={darkTheme}>
                     <form className={classes.form} onSubmit={handleSubmit}>
-                        <Box m={3} />
-                        <Typography component="h1" variant="h4" align="center">
+                        <Box m={1} />
+                        <Typography component="h1" variant="h6" align="center">
                             Sign In
                         </Typography>
 
-                        <Box m={1} />
-
+                       
+                       
 
 
                         <TextField
                             color="primary"
-                            variant="filled"
                             margin="normal"
+                            variant="filled"
                             id="username"
                             label="Username"
                             name="username"
                             type="username"
+                            size="small"
                             value={username}
                             autoComplete="username"
                             helperText={errorsUsername}
@@ -214,11 +234,12 @@ class LoginForm extends React.Component {
                         <TextField
                             color="primary"
                             variant="filled"
-                            margin="normal"
+                            margin="dense"
                             id="password"
                             name="password"
                             label="Password"
                             type="password"
+                            size="small"
                             value={password}
                             autoComplete="current-password"
                             helperText={errorsPassword}
@@ -231,7 +252,7 @@ class LoginForm extends React.Component {
                             }}
                         />
 
-                        <Box m={1} />
+                       
 
 
 
@@ -243,19 +264,20 @@ class LoginForm extends React.Component {
                         >
                             Sign In
                         </Button>
+                        <Box m={1} />
                         {loggingIn &&
-                            <CircularProgress color="secondary" />
+                            <CircularProgress color="secondary" size="1rem" className={classes.progress}/>
                         }
-
+                        <Box m={1} />
                         <Grid container direction="row" alignItems="center" justify="center">
                             <Grid item xs={6} >
                                 <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary" />}
-                                    label={<Typography component="h1" variant="caption" align="center">Remember me</Typography>}
+                                    control={<Checkbox value="remember" color="primary" className={classes.type} />}
+                                    label={<Typography component="h1" variant="caption" align="center" className={classes.type}>Remember me</Typography>}
                                 />
                             </Grid>
                             <Grid item>
-                                <Link to="/register" href="#" variant="caption" className={classes.link} >
+                                <Link to="/register" href="#" variant="caption" className={classes.needHelp} >
                                     Need help?
                         </Link>
                             </Grid>
@@ -279,7 +301,7 @@ class LoginForm extends React.Component {
                                         <InstaIcon />
                                     </SvgIcon>
                                 </Grid>
-                                <Grid item2="true">
+                                <Grid item2="true" className={classes.loginText}>
                                     {"Log in with Instagram"}
                                 </Grid>
                             </Grid>
@@ -288,23 +310,24 @@ class LoginForm extends React.Component {
                         <Button
                             type="submit"
                             variant="contained"
+                            
                             className={classes.fbButton}
                         >
                             <Grid container direction="row" alignItems="center" justify="center">
                                 <Grid item xs={2}>
                                     <SvgIcon className={classes.icon}>
-                                        <FacebookIcon />
+                                        <FacebookIcon className={classes.iconsz}/>
                                     </SvgIcon>
                                 </Grid>
-                                <Grid item2="true">
+                                <Grid item2="true" className={classes.loginText}>
                                     {"Log in with Facebook"}
                                 </Grid>
                             </Grid>
                         </Button>
 
-                        <Box m={4} />
+                        <Box m={2} />
                     </form>
-                    <Box m={3} />
+                    <Box m={1} />
                     <Typography variant="body2" color="textSecondary" align="center">
                         {'Copyright © '}
                         <Link to="/#" color="inherit" href="https://material-ui.com/" className={classes.link}>
@@ -319,4 +342,4 @@ class LoginForm extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(LoginForm));;
+export default (withStyles(styles, { withTheme: true })(LoginFormMobile));;

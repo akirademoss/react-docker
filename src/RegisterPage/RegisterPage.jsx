@@ -30,6 +30,13 @@ import orange from '@material-ui/core/colors/orange';
 import { history } from '../_helpers';
 import { userActions } from '../_actions/auth';
 
+import RegisterToolbar from "../_components/RegisterToolbar";
+import RegisterForm from "../_components/RegisterForm";
+import RegisterToolbarMobile from "../_components/RegisterToolbarMobile";
+import RegisterFormMobile from "../_components/RegisterFormMobile";
+
+import { isMobile, browserName } from "react-device-detect";
+
 // CSS styling 
 const darkTheme = createMuiTheme({
     palette: {
@@ -68,109 +75,9 @@ const darkTheme = createMuiTheme({
       backgroundAttachment: 'fixed',
     },
     layout: {
-      marginTop: theme.spacing(0),
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
     }, 
-    //Part of Top Nav Bar  
-    navBar: {
-      background: 'transparent', 
-      boxShadow: 'none',
-      minHeight: 5,
-    },
-    rightToolbar: {
-      marginLeft: "auto",
-      marginRight: -12,
-    },
-    homeButton: {
-      marginRight: 0,
-      marginLeft: -12,
-      marginTop: 0,
-      width: 400, 
-      background: 'transparent',
-      "&:hover": {
-        background: 'transparent', 
-      }
-    },
-    createAccountButton: {
-      margin: theme.spacing(0, 0, 0),
-      width: 170,
-    }, 
-  //Form Elements
-    form: {
-      width: 450, // Fix IE 11 issue.
-      height: '100%',
-      marginTop: theme.spacing(3),
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: fade(darkTheme.palette.common.black, 0.85),
-      alignItems: 'center',
-    },
-    text: {
-      width: 290,
-      marginLeft: 0 
-    },
-    link: {
-        textDecoration: 'none',
-        color: fade(darkTheme.palette.common.white, 0.85)
-    },
-    signInButton: {
-      margin: theme.spacing(3, 0, 0),
-      width: 290,
-    },
-    icon: {
-      display: 'flex', 
-      flexDirection: 'row', 
-      alighnItems: 'center',
-    },
-    divider: {
-      marginTop: theme.spacing(0),
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      width:  '100%',
-      height: '100%',
-    },
-    border: {
-      borderBottom: '2px solid gray',
-      width: '100%',
-      marginRight: 20,
-      marginLeft: 20,
-    },
-    content: {
-      paddingTop: theme.spacing(0.5),
-      paddingBottom: theme.spacing(0.5),
-      paddingRight: theme.spacing(3),
-      paddingLeft: theme.spacing(3),
-      fontWeight: 500,
-      fontSize: 22,
-      color: "lightgray",
-    },  
-    instaButton: {
-      margin: theme.spacing(0, 0, 0),
-      width: 290,
-      textTransform: 'none',
-      flexShrink: 'auto',
-    }, 
-    fbButton: {
-      margin: theme.spacing(3, 0, 0),
-      width: 290,
-      textTransform: 'none',
-      flexShrink: 'auto',
-    },
-  //Bottom Nav Bar
-    bottomNavBar: {
-      boxShadow: 'none',
-      background: 'transparent',
-      bottom: 0,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      width: '100%',
-      position: 'fixed',
-      //backgroundColor: fade(darkTheme.palette.secondary.main, 0.85),
-    },
   });
 
 class RegisterPage extends React.Component {
@@ -255,159 +162,39 @@ class RegisterPage extends React.Component {
             <div className={classes.layout}>
             <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <AppBar position="static" className={classes.navBar}>
-              <Toolbar>
-                <Button className={classes.homeButton}
-                 onClick={() => history.push('/')}
-                >
-                  <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'}/>
-                </Button>
-                <section className={classes.rightToolbar}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="secondary"
-                      className={classes.createAccountButton}
-                      onClick={() => history.push('/login')}
-                    >
-                      Sign In
-                    </Button>
-                </section>
-              </Toolbar>
-            </AppBar>  
+            {!isMobile &&
+            <RegisterToolbar/>}
+            {isMobile &&
+            <RegisterToolbarMobile/>}
 
-      <form className={classes.form} onSubmit={this.handleSubmit}>
-	  {/* Basic Sign In Components */}
-          <Box m={3}/>
-          <Typography component="h1" variant="h4" align="center">
-            Create Account
-          </Typography>
-          {/* Custom spacing */}
-          <Box m={1}/>
-          <TextField
-            color="primary"
-            variant="filled"
-            margin="normal"
-            id="username"
-            label="Username"
-            name="username"
-            type="username"
-            value={username}
-            autoComplete="username"
-            helperText={errors["username"]}
-            autoFocus
-            className={classes.text}
-            onChange={this.handleChange}
-            error={usernameError}
-            FormHelperTextProps={{
-                className: classes.text
-            }}
-          />
-          <TextField
-            color="primary"
-            variant="filled"
-            margin="normal"
-            id="email"
-            label="Email Address"
-            name="email"
-            type="email"
-            value={email}
-            autoComplete="email"
-            helperText={errors["email"]}
-            autoFocus
-            className={classes.text}
-            onChange={this.handleChange}
-            error={emailError}
-            FormHelperTextProps={{
-                className: classes.text
-            }}
-          />
-          <TextField
-            color="primary"
-            variant="filled"
-            margin="normal"
-            id="password"
-            label="Password"
-            name="password"
-            type="password"
-            value={password}
-            autoComplete="current-password"
-            helperText={errors["password"]}
-            autoFocus
-            className={classes.text}
-            onChange={this.handleChange}
-            error={passwordError}
-            FormHelperTextProps={{
-                className: classes.text
-            }}
-          />
-          {/* Custom spacing */}
-          <Box m={1}/>
-            <Button
-              type="submit"
-              variant="contained"
-              color="secondary"
-              className={classes.signInButton}
-            >
-              Sign Up
-            </Button>
-
-          <Box m={2}/>
-	  {/* In-line text divider*/}
-          <div className={classes.divider}>
-            <div className={classes.border} style={{marginLeft: 30}}/>
-              <Typography component="h1" variant="body1" align="center" >{"OR"}</Typography>
-            <div className={classes.border} style={{marginRight: 30}}/>
-          </div>
-          <Box m={2}/>
-
-	  {/* OpenID Connect Login Instagram */}
-          <Button
-            type="submit"
-            variant="contained"
-            className={classes.instaButton}
-          >
-            <Grid container  direction="row" alignItems="center" justify="center">
-              <Grid item xs={2}>
-                <SvgIcon  className={classes.icon}>
-                  <InstaIcon/>
-                </SvgIcon>
-              </Grid>
-              <Grid item2="true">
-                {"Log in with Instagram"}
-              </Grid>
-            </Grid>
-          </Button>
-          
-          {/* OpenID Connect Login Facebook */}
-          <Button
-            type="submit"
-            variant="contained"
-            className={classes.fbButton}
-          >
-            <Grid container  direction="row" alignItems="center" justify="center">
-              <Grid item xs={2}>
-                <SvgIcon className={classes.icon}>
-                  <FacebookIcon/>
-                </SvgIcon>
-              </Grid>
-              <Grid item2="true">
-                {"Log in with Facebook"}
-              </Grid>
-            </Grid>
-          </Button>
-          {/* Custom spacing */}
-          <Box m={4}/>
-        </form>
-        <Box m={3}/>
-        <Typography variant="body2" color="textSecondary" align="center">
-          {'Copyright © '}
-          <Link to="/#" color="inherit" href="https://material-ui.com/" className={classes.link}>
-            Too Legit To Submit, Inc
-          </Link>{' '}
-          {new Date().getFullYear()}
-          {'.'}
-        </Typography>
+            {!isMobile &&
+            <RegisterForm 
+                handleSubmit={this.handleSubmit}
+                username={username}
+                errorsUsername={errors["username"]}
+                handleChange={this.handleChange}
+                usernameError={usernameError}
+                email={email}
+                errorsEmail={errors["email"]}
+                emailError={emailError}
+                password={password}
+                errorsPassword={errors["password"]}
+                passwordError={passwordError}
+              />}
+            {isMobile &&
+            <RegisterFormMobile
+                handleSubmit={this.handleSubmit}
+                username={username}
+                errorsUsername={errors["username"]}
+                handleChange={this.handleChange}
+                usernameError={usernameError}
+                email={email}
+                errorsEmail={errors["email"]}
+                emailError={emailError}
+                password={password}
+                errorsPassword={errors["password"]}
+                passwordError={passwordError}
+              />}
             </ThemeProvider>
             </div>
             </div>

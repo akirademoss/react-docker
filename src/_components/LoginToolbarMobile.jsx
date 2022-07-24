@@ -82,21 +82,27 @@ const styles = darkTheme => ({
     homeButton: {
         marginLeft: -12,
         marginTop: 0,
-        width: 400,
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
     },
+    logo: {
+        margin: "auto",
+        width: "130px",
+    },
     createAccountButton: {
-        margin: darkTheme.spacing(0, 0, 0),
-        width: 170,
-        color: darkTheme.palette.secondary
+      
+        color: darkTheme.palette.secondary,
+        width: "80px",
+        fontSize: '10px',
+        marginRight: 10,
+       
     },
 })
 
-class LoginToolbar extends React.Component {
+class LoginToolbarMobile extends React.Component {
     render() {
         const { classes } = this.props;
 
@@ -107,7 +113,7 @@ class LoginToolbar extends React.Component {
                             <Button disableRipple className={classes.homeButton}
                                 onClick={() => history.push('/')}
                             >
-                                <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} />
+                                <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} className={classes.logo}/>
                             </Button>
                             <section className={classes.rightToolbar}>
                                 <Button
@@ -129,4 +135,4 @@ class LoginToolbar extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(LoginToolbar));;
+export default (withStyles(styles, { withTheme: true })(LoginToolbarMobile));;

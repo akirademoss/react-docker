@@ -21,7 +21,7 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import ClearIcon from "@material-ui/icons/Clear";
 import { ThemeProvider } from "@material-ui/styles";
-import { isMobile, browserName } from "react-device-detect";
+
 
 
 const darkTheme = createMuiTheme({
