@@ -74,17 +74,14 @@ const styles = darkTheme => ({
         maxWidth: 400,
         margin: "auto",
         padding: "60px 10px 0",
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
     },
     profile: {
         marginTop: 20,
-       
+        minWidth: 250,
         marginBottom: '44px',
-      
-    
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: 'column',
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
@@ -102,7 +99,7 @@ const styles = darkTheme => ({
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
         textTransform: 'none',
-        fontSize: '10px',
+        fontSize: '12px',
     },
     iconButtonTransparent: {
         background: 'transparent',
