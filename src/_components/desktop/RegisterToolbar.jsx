@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 
-import { history } from '../_helpers';
+import { history } from '../../_helpers';
 import { ThemeProvider } from "@material-ui/styles";
 
 const darkTheme = createMuiTheme({
@@ -81,27 +81,21 @@ const styles = darkTheme => ({
     homeButton: {
         marginLeft: -12,
         marginTop: 0,
+        width: 400,
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
     },
-    logo: {
-        margin: "auto",
-        width: "130px",
-    },
     createAccountButton: {
         margin: darkTheme.spacing(0, 0, 0),
         width: 170,
-        color: darkTheme.palette.secondary,
-        width: "80px",
-        fontSize: '10px',
-        marginRight: 10,
+        color: darkTheme.palette.secondary
     },
 })
 
-class RegisterToolbarMobile extends React.Component {
+class RegisterToolbar extends React.Component {
     render() {
         const { classes } = this.props;
 
@@ -112,7 +106,7 @@ class RegisterToolbarMobile extends React.Component {
                         <Button disableRipple className={classes.homeButton}
                             onClick={() => history.push('/')}
                         >
-                            <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} className={classes.logo}/>
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox7-400.png'} />
                         </Button>
                         <section className={classes.rightToolbar}>
                             <Button
@@ -134,4 +128,4 @@ class RegisterToolbarMobile extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(RegisterToolbarMobile));;
+export default (withStyles(styles, { withTheme: true })(RegisterToolbar));;

@@ -11,7 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import List from "@material-ui/core/List";
 import CloseIcon from '@material-ui/icons/Close';
 
-import UserFollowInfo from "../_components/UserFollowInfo";
+import UserFollowInfoMobile from "./UserFollowInfoMobile";
 
 
 const darkTheme = createMuiTheme({
@@ -140,7 +140,7 @@ const styles = darkTheme => ({
 
 })
 
-class UserFollowModal extends React.Component {
+class UserFollowModalMobile extends React.Component {
     render() {
         const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followingStatusLoaded, 
             loadingFollowingStatus, followInfo, followingStatus, handleShow, handlePageChange, 
@@ -181,7 +181,7 @@ class UserFollowModal extends React.Component {
                             {infoLoaded && !loadingInfo && followingStatusLoaded && !loadingFollowingStatus &&
                                 followInfo.map((followingInfo, i) => (
                                     <div key={i}>
-                                        <UserFollowInfo followingInfo={followInfo[i]} followingStatus={followingStatus[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} handleFollow={(e) => handleFollow(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} myUsername={myUsername}/>
+                                        <UserFollowInfoMobile followingInfo={followInfo[i]} followingStatus={followingStatus[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} handleFollow={(e) => handleFollow(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} myUsername={myUsername}/>
                                     </div>
                                 ))}
                         </List>
@@ -200,4 +200,4 @@ class UserFollowModal extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(UserFollowModal));;
+export default (withStyles(styles, { withTheme: true })(UserFollowModalMobile));;

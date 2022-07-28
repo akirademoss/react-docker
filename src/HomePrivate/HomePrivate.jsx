@@ -17,8 +17,8 @@ import Grid from '@material-ui/core/Grid';
 import { history } from '../_helpers';
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
-import CustomToolbar from "../_components/CustomToolbar";
-import CustomToolbarMobile from "../_components/CustomToolbarMobile";
+import CustomToolbar from "../_components/desktop/CustomToolbar";
+import CustomToolbarMobile from "../_components/mobile/CustomToolbarMobile";
 
 //debounce import
 import debounce from 'lodash.debounce';

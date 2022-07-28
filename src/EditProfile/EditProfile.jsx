@@ -2,13 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 //MUI component imports
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from "@material-ui/styles";
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -27,11 +22,14 @@ import { getOrientation } from 'get-orientation/browser'
 import { getCroppedImg, getRotatedImage } from '../ProfilePage/canvasUtils'
 
 //custom component imports
-import CustomToolbar from "../_components/CustomToolbar";
-import ProfilePic from "../_components/ProfilePic";
-import ChangePicModal from "../_components/ChangePicModal";
-import UploadPicModal from "../_components/UploadPicModal";
-import CustomToolbarMobile from "../_components/CustomToolbarMobile";
+import CustomToolbar from "../_components/desktop/CustomToolbar";
+import CustomToolbarMobile from "../_components/mobile/CustomToolbarMobile";
+import ChangePicModal from "../_components/desktop/ChangePicModal";
+import ChangePicModalMobile from "../_components/mobile/ChangePicModalMobile";
+import UploadPicModal from "../_components/desktop/UploadPicModal";
+import UploadPicModalMobile from "../_components/mobile/UploadPicModalMobile";
+import EditProfileForm from "../_components/desktop/EditProfileForm";
+import EditProfileFormMobile from "../_components/mobile/EditProfileFormMobile";
 
 //debounce import
 import debounce from 'lodash.debounce';
@@ -178,16 +176,16 @@ class EditProfile extends React.Component {
     this.throttleHandleChange(value)
   };
 
-  throttleHandleChange = async (value) =>{
+  throttleHandleChange = async (value) => {
     console.log("ENTERING THROTTLE FUNCTION")
     const dispatch = await this.props.userSearch(value);
   }
 
   keyPress = async (e) => {
-    if(e.keyCode==13){
-        console.log(e.target.value)
-        const dispatch = await this.props.userSearch(e.target.value)
-        this.setState({ showResult:true });
+    if (e.keyCode == 13) {
+      console.log(e.target.value)
+      const dispatch = await this.props.userSearch(e.target.value)
+      this.setState({ showResult: true });
     }
   }
   handleTextClear = () => {
@@ -377,223 +375,121 @@ class EditProfile extends React.Component {
     return (
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
-        <div className={classes.grow}>
+
         {!isMobile &&
-          <CustomToolbar
-            user={this.props.user}
-            profile={this.props.profile}
-            loadingProfile={loadingProfile}
-            handleMenu={this.handleMenu}
-            handleClose={this.handleClose}
-            handleViewProfile={this.handleViewProfile}
-            handleEditProfile={this.handleEditProfile}
-            handleLogout={this.handleLogout}
-            messagesOpen={messagesOpen}
-            anchorEl={anchorEl}
-            notificationsOpen={notificationsOpen}
-            profileOpen={profileOpen}
-            searchText={this.state.text}
-            handleTextClear={this.handleTextClear}
-            handleTextChange={this.handleTextChange}
-            keyPress={this.keyPress}
-          />}
+          <div>
+            <CustomToolbar
+              user={this.props.user}
+              profile={this.props.profile}
+              loadingProfile={loadingProfile}
+              handleMenu={this.handleMenu}
+              handleClose={this.handleClose}
+              handleViewProfile={this.handleViewProfile}
+              handleEditProfile={this.handleEditProfile}
+              handleLogout={this.handleLogout}
+              messagesOpen={messagesOpen}
+              anchorEl={anchorEl}
+              notificationsOpen={notificationsOpen}
+              profileOpen={profileOpen}
+              searchText={this.state.text}
+              handleTextClear={this.handleTextClear}
+              handleTextChange={this.handleTextChange}
+              keyPress={this.keyPress}
+            />
+
+            <EditProfileForm
+              handleSubmit={this.handleSubmit}
+              profile={this.props.profile}
+              loadingProfile={loadingProfile}
+              handleShow={this.handleShow}
+              username={this.props.user.username}
+              handleSubmit={this.handleSubmit}
+              name={name}
+              bio={bio}
+              link={link}
+            />
+
+            <div className={classes.formholder}>
+              <ChangePicModal
+                show={show}
+                handleCloseModal={this.handleCloseModal}
+                onFileChange={this.onFileChange}
+                handleRemove={this.handleRemove}
+              />
+
+              <UploadPicModal
+                showImageCrop={showImageCrop}
+                handleCloseImageModal={this.handleCloseImageModal}
+                imageSrc={imageSrc}
+                crop={crop}
+                rotation={rotation}
+                zoom={zoom}
+                setCrop={this.setCrop}
+                setRotation={this.setRotation}
+                onCropComplete={this.onCropComplete}
+                setZoom={this.setZoom}
+                showCroppedImage={this.showCroppedImage}
+                handleCloseImageModal={this.handleCloseImageModal}
+              />
+            </div>
+          </div>}
+
         {isMobile &&
-          <CustomToolbarMobile
-            user={this.props.user}
-            profile={this.props.profile}
-            loadingProfile={loadingProfile}
-            handleMenu={this.handleMenu}
-            handleClose={this.handleClose}
-            handleViewProfile={this.handleViewProfile}
-            handleEditProfile={this.handleEditProfile}
-            handleLogout={this.handleLogout}
-            messagesOpen={messagesOpen}
-            anchorEl={anchorEl}
-            notificationsOpen={notificationsOpen}
-            profileOpen={profileOpen}
-            handleTextChange={this.handleTextChange}
-            searchText={this.state.text}
-            handleTextClear={this.handleTextClear}
-            keyPress={this.keyPress}
-          />}
-        </div>
+          <div>
+            <CustomToolbarMobile
+              user={this.props.user}
+              profile={this.props.profile}
+              loadingProfile={loadingProfile}
+              handleMenu={this.handleMenu}
+              handleClose={this.handleClose}
+              handleViewProfile={this.handleViewProfile}
+              handleEditProfile={this.handleEditProfile}
+              handleLogout={this.handleLogout}
+              messagesOpen={messagesOpen}
+              anchorEl={anchorEl}
+              notificationsOpen={notificationsOpen}
+              profileOpen={profileOpen}
+              handleTextChange={this.handleTextChange}
+              searchText={this.state.text}
+              handleTextClear={this.handleTextClear}
+              keyPress={this.keyPress}
+            />
+            <EditProfileFormMobile
+              handleSubmit={this.handleSubmit}
+              profile={this.props.profile}
+              loadingProfile={loadingProfile}
+              handleShow={this.handleShow}
+              username={this.props.user.username}
+              handleSubmit={this.handleSubmit}
+              name={name}
+              bio={bio}
+              link={link}
+            />
 
-        <div className={classes.formholder}>
-          <Box m={4} />
-          <form className={classes.form} onSubmit={this.handleSubmit}>
-            <Box m={3} />
-            <Grid container spacing={4} direction="row" alignItems="center" justify="center">
-              <Grid item >
-                <ProfilePic
-                  profile={this.props.profile}
-                  loadingProfile={loadingProfile}
-                  viewingMyProfile={true}
-                  handleShow={this.handleShow}
-                />
-              </Grid>
-              <Grid item>
-                <Box m={3} />
-                <Typography component="h1" variant="h4">
-                  {this.props.user.username}
-                </Typography>
-                <a className={classes.link} onClick={this.handleShow}>
-                  <Typography component="h1" variant="subtitle1">
-                    <b>Change Profile Photo</b>
-                  </Typography>
-                </a>
-              </Grid>
-            </Grid>
+            <div className={classes.formholder}>
+              <ChangePicModalMobile
+                show={show}
+                handleCloseModal={this.handleCloseModal}
+                onFileChange={this.onFileChange}
+                handleRemove={this.handleRemove}
+              />
 
-            <Box m={3} />
-
-            <Grid container spacing={2} direction="column" alignItems="center" justify="center" className={classes.grow}>
-              <Grid item>
-                <Grid container spacing={2} direction="row" alignItems="top" justify="center">
-                  <Grid item >
-                    <Typography component="h1" variant="h6" style={{ marginTop: 30 }}>
-                      <b>Name</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      color="primary"
-                      variant="outlined"
-                      margin="normal"
-                      id="name"
-                      name="name"
-                      type="name"
-                      value={name}
-                      autoComplete="name"
-                      autoFocus
-                      className={classes.text}
-                      onChange={this.handleChange}
-                      FormHelperTextProps={{
-                        className: classes.text
-                      }}
-                    />
-                    <Grid item>
-                      <Typography component="h1" variant="caption" className={classes.text} color="secondary">
-                        Help people discover your account by using the name you're known by: either your full name, nickname, or business name.
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item>
-                <Grid container spacing={2} direction="row" alignItems="center" justify="center">
-                  <Grid item >
-                    <Typography component="h1" variant="h6" style={{ marginLeft: 20 }}>
-                      <b>Bio </b>
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      color="primary"
-                      variant="outlined"
-                      margin="normal"
-                      id="bio"
-                      name="bio"
-                      type="bio"
-                      value={bio}
-                      autoComplete="bio"
-                      autoFocus
-                      multiline
-                      rows={4}
-                      className={classes.text}
-                      onChange={this.handleChange}
-                      FormHelperTextProps={{
-                        className: classes.text
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item>
-                <Grid container spacing={2} direction="row" alignItems="center" justify="center">
-                  <Grid item >
-                    <Typography component="h1" variant="h6" style={{ marginTop: 60 }}>
-                      <b>Link</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Grid container spacing={0} direction="column" alignItems="center" justify="center">
-                      <Grid item>
-                        <Typography component="h1" variant="subtitle2" className={classes.text} color="secondary">
-                          <b>Personal Information</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography component="h1" variant="caption" className={classes.text} color="secondary">
-                          Add a link to your personal or professional website
-                    </Typography>
-                      </Grid>
-                      <Grid item >
-                        <TextField
-                          color="primary"
-                          variant="outlined"
-                          margin="normal"
-                          id="link"
-                          name="link"
-                          type="link"
-                          value={link}
-                          autoComplete="link"
-                          autoFocus
-                          className={classes.text}
-                          onChange={this.handleChange}
-                          FormHelperTextProps={{
-                            className: classes.text
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className={classes.submitButton}
-                >
-                  Submit
-            </Button>
-              </Grid>
-            </Grid>
-            <Box m={5} />
-          </form>
-
-          <Box m={2} />
-          <Typography variant="body2" color="secondary" align="center">
-            Copyright © Too Legit To Submit, Inc 2022
-          </Typography>
-
-          <ChangePicModal
-            show={show}
-            handleCloseModal={this.handleCloseModal}
-            onFileChange={this.onFileChange}
-            handleRemove={this.handleRemove}
-          />
-
-          <UploadPicModal
-            showImageCrop={showImageCrop}
-            handleCloseImageModal={this.handleCloseImageModal}
-            imageSrc={imageSrc}
-            crop={crop}
-            rotation={rotation}
-            zoom={zoom}
-            setCrop={this.setCrop}
-            setRotation={this.setRotation}
-            onCropComplete={this.onCropComplete}
-            setZoom={this.setZoom}
-            showCroppedImage={this.showCroppedImage}
-            handleCloseImageModal={this.handleCloseImageModal}
-          />
-        </div>
-
-
+              <UploadPicModalMobile
+                showImageCrop={showImageCrop}
+                handleCloseImageModal={this.handleCloseImageModal}
+                imageSrc={imageSrc}
+                crop={crop}
+                rotation={rotation}
+                zoom={zoom}
+                setCrop={this.setCrop}
+                setRotation={this.setRotation}
+                onCropComplete={this.onCropComplete}
+                setZoom={this.setZoom}
+                showCroppedImage={this.showCroppedImage}
+                handleCloseImageModal={this.handleCloseImageModal}
+              />
+            </div>
+          </div>}
       </ThemeProvider>
     );
   }

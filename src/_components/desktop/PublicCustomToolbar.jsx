@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from '@material-ui/icons/Search';
-import { history } from '../_helpers';
+import { history } from '../../_helpers';
 import InputBase from '@material-ui/core/InputBase';
 import Input from '@material-ui/core/Input';
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -24,10 +24,18 @@ import { ThemeProvider } from "@material-ui/styles";
 
 
 
-
-
 const darkTheme = createMuiTheme({
     overrides: {
+        MuiMenu: {
+            paper: {
+                margin: 10,
+                borderBottom: '1px solid grey',
+                borderTop: '1px solid grey',
+                borderLeft: '1px solid grey',
+                borderRight: '1px solid grey',
+                borderColor: fade('#ffffff', 0.5),
+            }
+        },
         MuiInputBase: {
 
             endAdornment: {
@@ -72,51 +80,24 @@ const darkTheme = createMuiTheme({
 
 
 const styles = darkTheme => ({
-    iconButtonTransparent: {
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-            backgroundColor: 'transparent',
-            cursor: 'default',
-        },
-        width: "28px",
-        
-    },
-    avatarSm: {
-        color: darkTheme.palette.common.white,
-        background: 'transparent',
-        background: 'transparent',
-        "&:hover": {
-            background: 'transparent',
-        },
-        width: "20px",
-        height: "20px",
-        borderRadius: 100,
-    },
     navBar: {
         boxShadow: 'none',
-        minHeight: 44,
+        minHeight: 5,
         height: 'auto',
         backgroundColor: fade(grey[500], 0.4),
         position: 'fixed',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-
+        width: '100%'
     },
     homeButton: {
         marginRight: 0,
         marginLeft: -12,
+        marginTop: 0,
         width: '100%',
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
-    },
-    logo: {
-        width: 75,
     },
     grow: {
         flexGrow: 1,
@@ -125,7 +106,7 @@ const styles = darkTheme => ({
         display: 'flex',
         flexDirection: 'row',
         alighnItems: 'center',
-        width: '100%',
+        width: '25%',
     },
     search: {
         position: 'relative',
@@ -138,11 +119,9 @@ const styles = darkTheme => ({
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
-        marginRight: darkTheme.spacing(1),
-        marginLeft: -5,
+        marginRight: darkTheme.spacing(2),
+        marginLeft: 0,
         width: '100%',
-        height: 30,
-        fontSize: '10px',
     },
     searchIcon: {
         padding: darkTheme.spacing(0, 2),
@@ -152,14 +131,12 @@ const styles = darkTheme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: -15,
     },
     inputInput: {
         padding: darkTheme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        paddingLeft: '18px',
+        paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
         width: '100%',
-        fontSize: '10px',
     },
     inputRoot: {
         color: 'inherit',
@@ -174,27 +151,18 @@ const styles = darkTheme => ({
         },
     },
     signInButton: {
-   
-        width: 250,
-        height: 10,
+        margin: darkTheme.spacing(3, 0, 0),
+        width: 290,
     },
     createAccountButton: {
-      
-        width: 70,
-        fontSize: '10px',
+        margin: darkTheme.spacing(0, 0, 0),
+        width: 110,
     },
-    rightToolbar: {
-        marginLeft: "auto",
-        marginRight: -10,
-      },
     icon: {
         color: darkTheme.palette.common.white,
-        fontSize: "15px",
-        paddingLeft: 0,
-        paddingRight: 0, 
     },
     clearIcon: {
-        
+
         color: darkTheme.palette.common.white,
         background: 'transparent',
         "&:hover": {
@@ -202,20 +170,13 @@ const styles = darkTheme => ({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
-        width: 0,
     },
     clear: {
-        fontSize: '15px',
-    },
-    adornment: {
-        paddingLeft: 0,
-        paddingRight: 0,
-        width: 0,
-        marginLeft: -10,
-    },
+        fontSize: '18px',
+    }
 })
 
-class PublicCustomToolbarMobile extends React.Component {
+class PublicCustomToolbar extends React.Component {
     render() {
         const { classes, handleTextChange, searchText, handleTextClear, keyPress } = this.props;
 
@@ -227,7 +188,6 @@ class PublicCustomToolbarMobile extends React.Component {
                             disableRipple
                             onClick={handleTextClear}
                             className={classes.clearIcon}
-                            className={classes.adornment}
                         >
                             <ClearIcon className={classes.clear} />
                         </IconButton>
@@ -243,17 +203,13 @@ class PublicCustomToolbarMobile extends React.Component {
             <div>
                 <ThemeProvider theme={darkTheme}>
                     <Toolbar className={classes.navBar}>
-                        <div>
-                        <Button disableRipple className={classes.homeButton}
-                            onClick={() => history.push('/')}
-                        >
-                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo}/>
-                        </Button>
+                        <div className={classes.homeButton}>
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
                         </div>
                         <section className={classes.searchAlign}>
                             <div className={classes.search}>
                                 <div className={classes.searchIcon}>
-                                    <SearchIcon className={classes.icon}/>
+                                    <SearchIcon />
                                 </div>
                                 <InputBase
                                     fullWidth={true}
@@ -262,6 +218,7 @@ class PublicCustomToolbarMobile extends React.Component {
                                     name="text"
                                     onChange={handleTextChange}
                                     classes={{
+                                        root: classes.inputRoot,
                                         input: classes.inputInput,
                                     }}
                                     value={searchText}
@@ -270,10 +227,8 @@ class PublicCustomToolbarMobile extends React.Component {
                                 />
                             </div>
                         </section>
-
                         <section className={classes.rightToolbar}>
                             <Button
-                                disableRipple
                                 color="primary"
                                 type="submit"
                                 variant="contained"
@@ -290,4 +245,4 @@ class PublicCustomToolbarMobile extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(PublicCustomToolbarMobile));;
+export default (withStyles(styles, { withTheme: true })(PublicCustomToolbar));;

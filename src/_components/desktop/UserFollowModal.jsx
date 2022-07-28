@@ -11,7 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import List from "@material-ui/core/List";
 import CloseIcon from '@material-ui/icons/Close';
 
-import FollowInfo from "../_components/FollowInfo";
+import UserFollowInfo from "./UserFollowInfo";
 
 
 const darkTheme = createMuiTheme({
@@ -98,6 +98,7 @@ const styles = darkTheme => ({
         },
         borderRadius: darkTheme.shape.borderRadius,
         justifyContent: 'center',
+
     },
     hl: {
         height: 1,
@@ -135,12 +136,15 @@ const styles = darkTheme => ({
         marginTop: '0px',
         marginBottom: '15px',
     },
+
+
 })
 
-class FollowModal extends React.Component {
+class UserFollowModal extends React.Component {
     render() {
-        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followInfo, handleShow, 
-            handlePageChange, followText, buttonText, followCount } = this.props;
+        const { classes, show, handleCloseModal, infoLoaded, loadingInfo, followingStatusLoaded, 
+            loadingFollowingStatus, followInfo, followingStatus, handleShow, handlePageChange, 
+            followText, buttonText, handleFollow, myUsername, followCount} = this.props;
         return (
 
             <div>
@@ -174,10 +178,10 @@ class FollowModal extends React.Component {
                         </Grid>
                         <hr className={classes.hl}></hr>
                         <List className={classes.list}>
-                            {infoLoaded && !loadingInfo &&
+                            {infoLoaded && !loadingInfo && followingStatusLoaded && !loadingFollowingStatus &&
                                 followInfo.map((followingInfo, i) => (
                                     <div key={i}>
-                                        <FollowInfo followingInfo={followInfo[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} />
+                                        <UserFollowInfo followingInfo={followInfo[i]} followingStatus={followingStatus[i]} handleButton={(e) => handleShow(e, i)} handlePageChange={(e) => handlePageChange(e, i)} handleFollow={(e) => handleFollow(e, i)} buttonText={buttonText} loadingInfo={loadingInfo} myUsername={myUsername}/>
                                     </div>
                                 ))}
                         </List>
@@ -196,4 +200,4 @@ class FollowModal extends React.Component {
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(FollowModal));;
+export default (withStyles(styles, { withTheme: true })(UserFollowModal));;

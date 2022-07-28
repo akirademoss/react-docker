@@ -14,10 +14,10 @@ import red from '@material-ui/core/colors/red';
 import orange from '@material-ui/core/colors/orange';
 
 
-import LoginToolbar from "../_components/LoginToolbar";
-import LoginForm from "../_components/LoginForm";
-import LoginToolbarMobile from "../_components/LoginToolbarMobile";
-import LoginFormMobile from "../_components/LoginFormMobile";
+import LoginToolbar from "../_components/desktop/LoginToolbar";
+import LoginForm from "../_components/desktop/LoginForm";
+import LoginToolbarMobile from "../_components/mobile/LoginToolbarMobile";
+import LoginFormMobile from "../_components/mobile/LoginFormMobile";
 
 import { isMobile, browserName } from "react-device-detect";
 

@@ -17,7 +17,7 @@ import blue from '@material-ui/core/colors/blue';
 import Settings from "@material-ui/icons/Settings";
 
 //component import
-import ProfilePic from "./ProfilePic";
+import ProfilePic from "../ProfilePic";
 
 // CSS styling
 const darkTheme = createMuiTheme({

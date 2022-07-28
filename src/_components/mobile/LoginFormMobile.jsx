@@ -75,7 +75,7 @@ const darkTheme = createMuiTheme({
     },
     MuiAppBar: {
         color: 'secondary',
-    }
+    },
 });
 
 

@@ -18,8 +18,8 @@ import grey from '@material-ui/core/colors/grey';
 import { history } from '../_helpers';
 import { userActions } from '../_actions/auth';
 
-import PublicCustomToolbar from "../_components/PublicCustomToolbar";
-import PublicCustomToolbarMobile from "../_components/PublicCustomToolbarMobile";
+import PublicCustomToolbar from "../_components/desktop/PublicCustomToolbar";
+import PublicCustomToolbarMobile from "../_components/mobile/PublicCustomToolbarMobile";
 
 //debounce import
 import debounce from 'lodash.debounce';

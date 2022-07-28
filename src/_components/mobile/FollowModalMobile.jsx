@@ -11,7 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import List from "@material-ui/core/List";
 import CloseIcon from '@material-ui/icons/Close';
 
-import FollowInfoMobile from "../_components/FollowInfoMobile";
+import FollowInfoMobile from "./FollowInfoMobile";
 
 
 const darkTheme = createMuiTheme({

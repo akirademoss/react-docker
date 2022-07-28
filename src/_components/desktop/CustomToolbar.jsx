@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from '@material-ui/icons/Search';
-import { history } from '../_helpers';
+import { history } from '../../_helpers';
 import InputBase from '@material-ui/core/InputBase';
 import Input from '@material-ui/core/Input';
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -28,7 +28,7 @@ const darkTheme = createMuiTheme({
     overrides: {
         MuiMenu: {
             paper: {
-                margin: 0,
+                margin: 10,
                 borderBottom: '1px solid grey',
                 borderTop: '1px solid grey',
                 borderLeft: '1px solid grey',
@@ -36,12 +36,17 @@ const darkTheme = createMuiTheme({
                 borderColor: fade('#ffffff', 0.5),
             }
         }, 
-        MuiInputAdornment:{
-            root: {
-                paddingLeft: 0,
-                paddingRight: 0,
-            }
-        }
+        MuiInputBase: { 
+
+            endAdornment: {
+                color: '#ffffff',
+
+            },
+            primary: '#000000',
+            adornedEnd: {
+                color: '#ffffff',
+            },
+        }     
     },
     palette: {
         type: 'dark',
@@ -52,7 +57,7 @@ const darkTheme = createMuiTheme({
             main: '#000000',
         },
         background: {
-            paper: fade('#000000', 1),
+            paper: fade('#000000', 0.5),
             default: '#000000',
         },
         neutral: {
@@ -81,27 +86,18 @@ const darkTheme = createMuiTheme({
         height: 'auto',
         backgroundColor: fade(grey[500], 0.4),
         position: 'fixed',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        
+        width: '100%'
     },
     homeButton: {
         marginRight: 0,
         marginLeft: -12,
         marginTop: 0,
-        
         width: '100%',
         background: 'transparent',
         background: 'transparent',
         "&:hover": {
             background: 'transparent',
         },
-    },
-    logo: {
-        margin: "auto",
-        width: "75px",
-      
     },
     grow: {
         flexGrow: 1,
@@ -110,7 +106,7 @@ const darkTheme = createMuiTheme({
         display: 'flex',
         flexDirection: 'row',
         alighnItems: 'center',
-        width: '100%',
+        width: '25%',
     },
     search: {
         position: 'relative',
@@ -123,11 +119,9 @@ const darkTheme = createMuiTheme({
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
-        marginRight: darkTheme.spacing(1),
-        marginLeft: -5,
+        marginRight: darkTheme.spacing(2),
+        marginLeft: 0,
         width: '100%',
-        height: 30,
-        fontSize: '10px',
     },
     searchIcon: {
         padding: darkTheme.spacing(0, 2),
@@ -137,14 +131,12 @@ const darkTheme = createMuiTheme({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: -15,
     },
     inputInput: {
         padding: darkTheme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
-        paddingLeft: '18px',
+        paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
         width: '100%',
-        fontSize: '10px',
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -154,8 +146,6 @@ const darkTheme = createMuiTheme({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
-        width: "28px",
-        
     },
     avatarSm: {
         color: darkTheme.palette.common.white,
@@ -164,9 +154,9 @@ const darkTheme = createMuiTheme({
         "&:hover": {
             background: 'transparent',
         },
-        width: "20px",
-        height: "20px",
-        borderRadius: 100,
+        width: "26px",
+        height: "26px",
+        borderRadius: 100
     },
     menuItem: {
         background: 'transparent',
@@ -179,10 +169,6 @@ const darkTheme = createMuiTheme({
     },
     icon: {
         color: darkTheme.palette.common.white,
-        fontSize: "15px",
-        paddingLeft: 0,
-        paddingRight: 0, 
-
     },
     skeleton: {
         //backgroundColor: '#a5a5a5',
@@ -201,20 +187,13 @@ const darkTheme = createMuiTheme({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
-        width: 0,
     },
     clear: {
-        fontSize: '15px',
-    },
-    adornment: {
-        paddingLeft: 0,
-        paddingRight: 0,
-        width: 0,
-        marginLeft: -10,
-    },
+        fontSize: '18px',
+    }
   })
 
-  class CustomToolbarMobile extends React.Component {
+  class CustomToolbar extends React.Component {
     render() {
       const { classes, user, profile, loadingProfile, handleMenu, handleClose, handleViewProfile, 
         handleEditProfile, handleLogout, messagesOpen, anchorEl, notificationsOpen, profileOpen,
@@ -223,12 +202,11 @@ const darkTheme = createMuiTheme({
         const endAdornment = () => {
             if (searchText) {
               return (
-                <InputAdornment position="end" >
+                <InputAdornment position="end">
                   <IconButton 
                     disableRipple
                     onClick={handleTextClear}
                     className={classes.clearIcon}
-                    className={classes.adornment}
                   >
                     <ClearIcon className={classes.clear} />
                   </IconButton>
@@ -248,9 +226,11 @@ const darkTheme = createMuiTheme({
                         <Button disableRipple className={classes.homeButton}
                             onClick={() => history.push('/' + user.username + '/home')}
                         >
-                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo} />
+                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} />
                         </Button>
                     </div>
+
+                    <div className={classes.grow} />
 
                     <section className={classes.searchAlign}>
                         <div className={classes.search}>
@@ -382,4 +362,4 @@ const darkTheme = createMuiTheme({
         }
     }
     
-export default (withStyles(styles, { withTheme: true })(CustomToolbarMobile));;
+export default (withStyles(styles, { withTheme: true })(CustomToolbar));;

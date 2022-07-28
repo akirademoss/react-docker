@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 
-import { history } from '../_helpers';
+import { history } from '../../_helpers';
 import { ThemeProvider } from "@material-ui/styles";
 
 const darkTheme = createMuiTheme({

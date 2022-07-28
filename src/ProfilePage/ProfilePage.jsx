@@ -23,20 +23,20 @@ import { getCroppedImg, getRotatedImage } from './canvasUtils'
 import isEqual from 'lodash.isequal';
 
 //import custom component
-import CustomToolbar from "../_components/CustomToolbar";
-import CustomToolbarMobile from "../_components/CustomToolbarMobile";
-import Profile from "../_components/Profile";
-import ProfileTabs from "../_components/ProfileTabs";
-import ProfileMobile from "../_components/ProfileMobile";
-import ProfileTabsMobile from "../_components/ProfileTabsMobile";
-import ChangePicModal from "../_components/ChangePicModal";
-import ChangePicModalMobile from "../_components/ChangePicModalMobile";
-import UploadPicModal from "../_components/UploadPicModal";
-import UploadPicModalMobile from "../_components/UploadPicModalMobile";
-import FollowModal from "../_components/FollowModal";
-import FollowModalMobile from "../_components/FollowModalMobile";
-import DelFollowModal from "../_components/DelFollowModal";
-import DelFollowModalMobile from "../_components/DelFollowModalMobile";
+import CustomToolbar from "../_components/desktop/CustomToolbar";
+import CustomToolbarMobile from "../_components/mobile/CustomToolbarMobile";
+import Profile from "../_components/desktop/Profile";
+import ProfileTabs from "../_components/desktop/ProfileTabs";
+import ProfileMobile from "../_components/mobile/ProfileMobile";
+import ProfileTabsMobile from "../_components/mobile/ProfileTabsMobile";
+import ChangePicModal from "../_components/desktop/ChangePicModal";
+import ChangePicModalMobile from "../_components/mobile/ChangePicModalMobile";
+import UploadPicModal from "../_components/desktop/UploadPicModal";
+import UploadPicModalMobile from "../_components/mobile/UploadPicModalMobile";
+import FollowModal from "../_components/desktop/FollowModal";
+import FollowModalMobile from "../_components/mobile/FollowModalMobile";
+import DelFollowModal from "../_components/desktop/DelFollowModal";
+import DelFollowModalMobile from "../_components/mobile/DelFollowModalMobile";
 import SearchResultModal from "../_components/SearchResultModal";
 
 

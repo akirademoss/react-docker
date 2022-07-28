@@ -5,6 +5,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import IconButton from "@material-ui/core/IconButton";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -17,7 +18,7 @@ import blue from '@material-ui/core/colors/blue';
 import Settings from "@material-ui/icons/Settings";
 
 //component import
-import ProfilePic from "./ProfilePic";
+import ProfilePic from "../ProfilePic";
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -78,7 +79,7 @@ const styles = darkTheme => ({
     profile: {
         marginTop: 20,
         minWidth: 430,
-        marginBottom: '44px'
+        marginBottom: "44px",
     },
     editButton: {
         background: 'transparent',
@@ -92,6 +93,39 @@ const styles = darkTheme => ({
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
         textTransform: 'none',
+    },
+    followButton: {
+        backgroundColor: blue[700],
+        color: darkTheme.palette.common.white,
+        '&:hover': {
+            backgroundColor: blue[800],
+        },
+    },
+    followingButton: {
+        textTransform: 'none',
+        borderRadius: 5,
+        fontSize: '11px',
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+    },
+    pplAlt: {
+        fontSize: '20px',
+    },
+    followingBoarder: {
+        borderBottom: '1px solid white',
+        borderTop: '1px solid white',
+        borderLeft: '1px solid white',
+        borderRight: '1px solid white',
+        textTransform: 'none',
+        borderRadius: 5,
+        fontSize: '11px',
+        maxHeight: 38,
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'row',
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -114,31 +148,38 @@ const styles = darkTheme => ({
     linkText: {
         color: blue[700],
     },
+    centerDiv: {
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: 'row',
+        marginTop: '50px',
+    },
     profileFormat: {
         marginBottom: '20px',
     }
 })
 
-class ProfileMobile extends React.Component {
+class UserProfile extends React.Component {
     render() {
-        const { classes, profile, loadingProfile, viewingMyProfile, handleShow, username,
-            handleEditProfile, handleShowFollowers, loadingMyFollowerCount,
-            myFollowerCount, handleShowFollowing, loadingMyFollowingCount,
-            myFollowingCount, name, bio, link, tab, handleTabChange } = this.props;
+        const { classes, userProfile, loadingUserProfile, handleShow, username,
+            loadingFollowStatus, isFollowing, followStatusLoaded, follow, handleShowUnfollow, 
+            handleShowFollowers, loadingUserFollowerCount, userFollowerCount, handleShowFollowing, 
+            loadingUserFollowingCount, userFollowingCount, name, bio, link, } = this.props;
 
         return (
             <div>
                 <ThemeProvider theme={darkTheme}>
-                    {/* Profile Here */}
+                    {/* User Profile Here */}
+                    {(followStatusLoaded == true) &&
                     <div className={classes.profileContainer}>
-                        {/* Profile Info Here */}
-                        <div mb="44px" className={classes.profile}>
+                        {/* User Profile Info Here */}
+                        <div className={classes.profile}>
                             <Grid container>
                                 <Grid item xs={4}>
                                     <ProfilePic
-                                        profile={profile}
-                                        loadingProfile={loadingProfile}
-                                        viewingMyProfile={viewingMyProfile}
+                                        profile={userProfile}
+                                        loadingProfile={loadingUserProfile}
+                                        viewingMyProfile={false}
                                         handleShow={handleShow}
                                     />
                                 </Grid>
@@ -151,13 +192,25 @@ class ProfileMobile extends React.Component {
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
-                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={handleEditProfile}>
-                                                    <b>Edit Profile</b>
+                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                    <b>Message</b>
                                                 </Button>
-                                                <IconButton disableRipple className={classes.iconButtonTransparent}>
-                                                    {<Settings />}
-                                                </IconButton>
                                             </Grid>
+                                            {!loadingFollowStatus && (isFollowing == 'False') && (followStatusLoaded == true) &&
+                                                <Grid item>
+                                                    <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={follow}>
+                                                        Follow
+                                                </Button>
+                                                </Grid>}
+                                            {!loadingFollowStatus && (isFollowing == 'True') && (followStatusLoaded == true) &&
+                                                <Grid item>
+                                                    <div className={classes.followingBoarder}>
+                                                        <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={handleShowUnfollow}>
+                                                            {<PeopleAltIcon className={classes.pplAlt} />}
+                                                        </IconButton>
+                                                    </div>
+                                                </Grid>}
+
                                         </Grid>
                                     </div>
                                     <div className={classes.profileFormat}>
@@ -170,29 +223,33 @@ class ProfileMobile extends React.Component {
                                             </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={handleShowFollowers}>
-                                                    {!loadingMyFollowerCount && <b>{myFollowerCount} </b>}
+
+                                                    {!loadingUserFollowerCount && (followStatusLoaded == true) && <b>{userFollowerCount} </b>}
                                                     &nbsp;followers
                                                 </Button>
                                             </Grid>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} onClick={handleShowFollowing}>
-                                                    {!loadingMyFollowingCount && <b>{myFollowingCount} </b>}
+
+                                                    {!loadingUserFollowingCount && (followStatusLoaded == true) && <b>{userFollowingCount} </b>}
                                                     &nbsp;following
                                                 </Button>
                                             </Grid>
                                         </Grid>
                                     </div>
-                                    <Typography variant="subtitle1" bold> <b>{name}</b></Typography>
+                                    <Typography variant="subtitle1" bold>
+                                        <b>{name}</b>
+                                    </Typography>
                                     <Typography variant="subtitle1">{bio}</Typography>
                                     <b><a className={classes.linkText} variant="subtitle1" href={"https://" + link} target="_blank" rel="noreferrer noopener">{link}</a></b>
                                 </Grid>
                             </Grid>
                         </div>
-                    </div>
+                    </div>}
                 </ThemeProvider>
             </div>
         );
     }
 }
 
-export default (withStyles(styles, { withTheme: true })(ProfileMobile));;
+export default (withStyles(styles, { withTheme: true })(UserProfile));;

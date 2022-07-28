@@ -1,16 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from "@material-ui/styles";
-import IconButton from "@material-ui/core/IconButton";
-import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -19,32 +11,26 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
 
-
-//menu stuff
-import FeaturedPlayList from "@material-ui/icons/FeaturedPlayList";
-import VideoLibrary from "@material-ui/icons/VideoLibrary";
-
-
 //router and page imports
 import { history } from '../_helpers';
 import { userActions } from '../_actions/auth';
 import { profileActions } from '../_actions/profile';
 import { followActions } from '../_actions/follow';
 
-//responsive UI
-import Hidden from '@material-ui/core/Hidden';
-
 //cropper tool helper inputs
 import isEqual from 'lodash.isequal';
 
 //import custom component
-import CustomToolbar from "../_components/CustomToolbar";
-import ProfilePic from "../_components/ProfilePic";
-import FollowModal from "../_components/FollowModal";
-import UserFollowModal from "../_components/UserFollowModal";
-import DelFollowModal from "../_components/DelFollowModal";
-import CustomToolbarMobile from "../_components/CustomToolbarMobile";
-
+import CustomToolbar from "../_components/desktop/CustomToolbar";
+import CustomToolbarMobile from "../_components/mobile/CustomToolbarMobile";
+import UserProfile from "../_components/desktop/UserProfile";
+import UserProfileTabs from "../_components/desktop/UserProfileTabs";
+import UserProfileMobile from "../_components/mobile/UserProfileMobile";
+import UserProfileTabsMobile from "../_components/mobile/UserProfileTabsMobile";
+import UserFollowModal from "../_components/desktop/UserFollowModal";
+import UserFollowModalMobile from "../_components/mobile/UserFollowModalMobile";
+import DelFollowModal from "../_components/desktop/DelFollowModal";
+import DelFollowModalMobile from "../_components/mobile/DelFollowModalMobile";
 //debounce import
 import debounce from 'lodash.debounce';
 import { isMobile, browserName } from "react-device-detect";
@@ -500,7 +486,7 @@ class UserProfilePage extends React.Component {
 
         this.getProfile();
         if (isMobile) {
-            await new Promise(resolve => { setTimeout(resolve, 1400); });
+            await new Promise(resolve => { setTimeout(resolve, 2400); });
         }
         else {
             await new Promise(resolve => { setTimeout(resolve, 200); });
@@ -551,7 +537,7 @@ class UserProfilePage extends React.Component {
                             handleTextClear={this.handleTextClear}
                             keyPress={this.keyPress}
                         />}
-                    {isMobile &&
+                        {isMobile &&
                         <CustomToolbarMobile
                             user={this.props.user}
                             profile={this.props.profile}
@@ -571,106 +557,66 @@ class UserProfilePage extends React.Component {
                             keyPress={this.keyPress}
                         />}
 
-                    {/* User Profile Here */}
-                    <div className={classes.profileContainer}>
-                        {/* User Profile Info Here */}
-                        <div className={classes.profile}>
-                            <Grid container>
-                                <Grid item xs={4}>
-                                    <ProfilePic
-                                        profile={this.props.userProfile}
-                                        loadingProfile={loadingUserProfile}
-                                        viewingMyProfile={false}
-                                        handleShow={this.handleShow}
-                                    />
-                                </Grid>
-                                <Grid item xs={8}>
-                                    <div className={classes.profileFormat}>
-                                        <Grid container alignItems="center" spacing={2}>
-                                            <Grid item>
-                                                <Typography component="h1" variant="h4">
-                                                    {this.props.username}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
-                                                    <b>Message</b>
-                                                </Button>
-                                            </Grid>
-                                            {!loadingFollowStatus && (this.props.follow.isFollowing == 'False') && (this.state.followStatusLoaded == true) &&
-                                                <Grid item>
-                                                    <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={this.follow}>
-                                                        Follow
-                                                </Button>
-                                                </Grid>}
-                                            {!loadingFollowStatus && (this.props.follow.isFollowing == 'True') && (this.state.followStatusLoaded == true) &&
-                                                <Grid item>
-                                                    <div className={classes.followingBoarder}>
-                                                        <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={this.handleShowUnfollow}>
-                                                            {<PeopleAltIcon className={classes.pplAlt} />}
-                                                        </IconButton>
-                                                    </div>
-                                                </Grid>}
+                    {!isMobile && this.props.follow != undefined && 
+                    <UserProfile
+                        userProfile={this.props.userProfile}
+                        loadingUserProfile={loadingUserProfile}
+                        handleShow={this.handleShow}
+                        username={this.props.username}
+                        loadingFollowStatus={loadingFollowStatus}
+                        isFollowing={this.props.follow.isFollowing}
+                        followStatusLoaded={this.state.followStatusLoaded}
+                        follow={this.follow}
+                        handleShowUnfollow={this.handleShowUnfollow}
+                        handleShowFollowers={this.handleShowFollowers}
+                        loadingUserFollowerCount={loadingUserFollowerCount}
+                        userFollowerCount={this.props.userFollowerCount.count}
+                        handleShowFollowing={this.handleShowFollowing}
+                        loadingUserFollowingCount={loadingUserFollowingCount}
+                        userFollowingCount={this.props.userFollowingCount.count}
+                        name={this.props.userProfile.name}
+                        bio={this.props.userProfile.bio}
+                        link={this.props.userProfile.link}
+                    />}
 
-                                        </Grid>
-                                    </div>
-                                    <div className={classes.profileFormat}>
-                                        <Grid container spacing={1}>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} >
-                                                    <b>0</b>
-                                                    &nbsp;posts
-                                                </Button>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowers}>
+                    {isMobile && this.props.follow != undefined && 
+                    <UserProfileMobile
+                        userProfile={this.props.userProfile}
+                        loadingUserProfile={loadingUserProfile}
+                        handleShow={this.handleShow}
+                        username={this.props.username}
+                        loadingFollowStatus={loadingFollowStatus}
+                        isFollowing={this.props.follow.isFollowing}
+                        followStatusLoaded={this.state.followStatusLoaded}
+                        follow={this.follow}
+                        handleShowUnfollow={this.handleShowUnfollow}
+                        handleShowFollowers={this.handleShowFollowers}
+                        loadingUserFollowerCount={loadingUserFollowerCount}
+                        userFollowerCount={this.props.userFollowerCount.count}
+                        handleShowFollowing={this.handleShowFollowing}
+                        loadingUserFollowingCount={loadingUserFollowingCount}
+                        userFollowingCount={this.props.userFollowingCount.count}
+                        name={this.props.userProfile.name}
+                        bio={this.props.userProfile.bio}
+                        link={this.props.userProfile.link}
+                    />}
+                     
+                     {!isMobile && this.props.follow != undefined && 
+                     <UserProfileTabs
+                        tab={tab}
+                        handleTabChange={this.handleTabChange}
+                        followStatusLoaded={this.state.followStatusLoaded}
+                     />}
 
-                                                    {!loadingUserFollowerCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowerCount.count} </b>}
-                                                    &nbsp;followers
-                                                </Button>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={this.handleShowFollowing}>
-
-                                                    {!loadingUserFollowingCount && (this.state.followStatusLoaded == true) && <b>{this.props.userFollowingCount.count} </b>}
-                                                    &nbsp;following
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </div>
-                                    <Typography variant="subtitle1" bold>
-                                        <b>{this.props.userProfile.name}</b>
-                                    </Typography>
-                                    <Typography variant="subtitle1">{this.props.userProfile.bio}</Typography>
-                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + this.props.userProfile.link} target="_blank" rel="noreferrer noopener">{this.props.userProfile.link}</a></b>
-                                </Grid>
-                            </Grid>
-
-                            {/* Profile Posts, & Playlists here [TODO: provide functionality on backend]*/}
-                        </div>
-                        <Tabs
-                            value={tab}
-                            centered
-                            onChange={this.handleTabChange}
-                            indicatorColor="primary"
-                        >
-                            <Tab disableRipple label={<Hidden smDown>Videos</Hidden>} icon={<VideoLibrary />} />
-                            <Tab disableRipple label={<Hidden smDown>Playlists</Hidden>} icon={<FeaturedPlayList />} />
-                        </Tabs>
-                        <Divider style={{ background: 'grey' }} />
-                        {tab === 0 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4"> No Posts Yet</Typography>
-                            </div>
-                        }
-                        {tab === 1 &&
-                            <div className={classes.centerDiv}>
-                                <Typography variant="h4">No Playlists Yet</Typography>
-                            </div>
-                        }
-                    </div>
+                    {isMobile && this.props.follow != undefined && 
+                     <UserProfileTabsMobile
+                        tab={tab}
+                        handleTabChange={this.handleTabChange}
+                        followStatusLoaded={this.state.followStatusLoaded}
+                     />}
 
                     {/* Unfollow Modal */}
+                    {!isMobile &&
                     <DelFollowModal
                         show={showUnfollow}
                         handleCloseModal={this.handleCloseUnfollowModal}
@@ -678,9 +624,20 @@ class UserProfilePage extends React.Component {
                         username={unfollowUsername}
                         handleAction={this.handleUnfollow}
                         text={"Unfollow"}
-                    />
+                    />}
+
+                    {isMobile &&
+                    <DelFollowModalMobile
+                        show={showUnfollow}
+                        handleCloseModal={this.handleCloseUnfollowModal}
+                        previewImg={unfollowPreviewImg}
+                        username={unfollowUsername}
+                        handleAction={this.handleUnfollow}
+                        text={"Unfollow"}
+                    />}
 
                     {/* Unfollow from List Modal */}
+                    {!isMobile &&
                     <DelFollowModal
                         show={showUnfollowList}
                         handleCloseModal={this.handleCloseUnfollowListModal}
@@ -688,9 +645,20 @@ class UserProfilePage extends React.Component {
                         username={unfollowUsername}
                         handleAction={this.handleUnfollowList}
                         text={"Unfollow"}
-                    />
+                    />}
+
+                    {isMobile &&
+                    <DelFollowModalMobile
+                        show={showUnfollowList}
+                        handleCloseModal={this.handleCloseUnfollowListModal}
+                        previewImg={unfollowPreviewImg}
+                        username={unfollowUsername}
+                        handleAction={this.handleUnfollowList}
+                        text={"Unfollow"}
+                    />}
 
                     {/*Shows Followers*/}
+                    {!isMobile &&
                     <UserFollowModal
                         show={showFollowers}
                         handleCloseModal={this.handleCloseFollowersModal}
@@ -707,9 +675,29 @@ class UserProfilePage extends React.Component {
                         handleFollow={this.handleFollowFollower}
                         myUsername={this.props.user.username}
                         followCount={this.props.userFollowerCount.count}
-                    />
+                    />}
+
+                    {isMobile &&
+                    <UserFollowModalMobile
+                        show={showFollowers}
+                        handleCloseModal={this.handleCloseFollowersModal}
+                        infoLoaded={userFollowerInfoLoaded}
+                        loadingInfo={loadingUserFollowerInfo}
+                        followingStatusLoaded={followingStatusEUMLoaded}
+                        loadingFollowingStatus={loadingFollowingStatusEUM}
+                        followInfo={this.props.userFollowerInfo}
+                        followingStatus={this.props.followingStatusEUM}
+                        handleShow={this.handleShowFollowersList}
+                        handlePageChange={this.handleFollowerPageChange}
+                        buttonText={"Remove"}
+                        followText={"Followers"}
+                        handleFollow={this.handleFollowFollower}
+                        myUsername={this.props.user.username}
+                        followCount={this.props.userFollowerCount.count}
+                    />}
 
                     {/*Shows Following*/}
+                    {!isMobile &&
                     <UserFollowModal
                         show={showFollowing}
                         handleCloseModal={this.handleCloseFollowingModal}
@@ -726,7 +714,26 @@ class UserProfilePage extends React.Component {
                         handleFollow={this.handleFollowFollowing}
                         myUsername={this.props.user.username}
                         followCount={this.props.userFollowingCount.count}
-                    />
+                    />}
+
+                    {isMobile &&
+                    <UserFollowModalMobile
+                        show={showFollowing}
+                        handleCloseModal={this.handleCloseFollowingModal}
+                        infoLoaded={userFollowingInfoLoaded}
+                        loadingInfo={loadingUserFollowingInfo}
+                        followingStatusLoaded={followingStatusIUMLoaded}
+                        loadingFollowingStatus={loadingFollowingStatusIUM}
+                        followInfo={this.props.userFollowingInfo}
+                        followingStatus={this.props.followingStatusIUM}
+                        handleShow={this.handleShowFollowingList}
+                        handlePageChange={this.handlePageChange}
+                        buttonText={"Following"}
+                        followText={"Following"}
+                        handleFollow={this.handleFollowFollowing}
+                        myUsername={this.props.user.username}
+                        followCount={this.props.userFollowingCount.count}
+                    />}
                 </div>
             </ThemeProvider>
         );

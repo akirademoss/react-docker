@@ -30,10 +30,10 @@ import orange from '@material-ui/core/colors/orange';
 import { history } from '../_helpers';
 import { userActions } from '../_actions/auth';
 
-import RegisterToolbar from "../_components/RegisterToolbar";
-import RegisterForm from "../_components/RegisterForm";
-import RegisterToolbarMobile from "../_components/RegisterToolbarMobile";
-import RegisterFormMobile from "../_components/RegisterFormMobile";
+import RegisterToolbar from "../_components/desktop/RegisterToolbar";
+import RegisterForm from "../_components/desktop/RegisterForm";
+import RegisterToolbarMobile from "../_components/mobile/RegisterToolbarMobile";
+import RegisterFormMobile from "../_components/mobile/RegisterFormMobile";
 
 import { isMobile, browserName } from "react-device-detect";
 
