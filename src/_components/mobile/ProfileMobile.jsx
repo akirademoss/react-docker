@@ -71,10 +71,9 @@ const styles = darkTheme => ({
         flexGrow: 1,
     },
     profileContainer: {
-        maxWidth: 935,
+        maxWidth: 400,
         margin: "auto",
         padding: "60px 10px 0",
-
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
@@ -82,17 +81,14 @@ const styles = darkTheme => ({
     },
     profile: {
         marginTop: 20,
-        minWidth: 250,
+       
         marginBottom: '44px',
+      
+    
         borderBottom: '1px solid white',
         borderTop: '1px solid white',
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
-    },
-    gridContainer: {
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: 'column',
     },
     editButton: {
         background: 'transparent',
@@ -106,7 +102,7 @@ const styles = darkTheme => ({
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
         textTransform: 'none',
-        fontSize: '12px',
+        fontSize: '10px',
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -135,7 +131,6 @@ const styles = darkTheme => ({
     },
     profileFormat2: {
         marginBottom: '5px',
-        marginLeft: -20,
     },
     centerDivCol: {
         display: "flex",
@@ -147,7 +142,10 @@ const styles = darkTheme => ({
         display: "flex",
         justifyContent: "center",
         flexDirection: 'row',
-    },
+      },
+    gridMargin: {
+       
+    }
 })
 
 class ProfileMobile extends React.Component {
@@ -164,13 +162,15 @@ class ProfileMobile extends React.Component {
                     <div className={classes.profileContainer}>
                         {/* Profile Info Here */}
                         <div mb="44px" className={classes.profile}>
-                            <Grid container direction="column" alignItems="center" justifyContent="center">
-                                <Grid item xs={0} >
+                        
+                            <Grid container className={classes.gridMargin} >
+                                <Grid item xs={0}>
                                     <ProfilePicMobile
                                         profile={profile}
                                         loadingProfile={loadingProfile}
                                         viewingMyProfile={viewingMyProfile}
                                         handleShow={handleShow}
+                                        className={classes.profileFormat}
                                     />
                                 </Grid>
                                 <Grid item xs={8}>
@@ -193,10 +193,10 @@ class ProfileMobile extends React.Component {
                                     </div>
                                 </Grid>
                             </Grid>
-                            <Grid container direction="column" alignItems="center" justifyContent="center">
-
+                            <Grid>
+                                <Grid>
                                     <div className={classes.profileFormat2}>
-                                        <Grid container spacing={1} >
+                                        <Grid container spacing={1}>
                                             <Grid item>
                                                 <Button disableRipple variant="text" className={classes.textButton} >
                                                     <b>0</b>
@@ -217,12 +217,10 @@ class ProfileMobile extends React.Component {
                                             </Grid>
                                         </Grid>
                                     </div>
-                                    <Grid direction="column" alignItems="center" justifyContent="space-between">
                                     <Typography variant="subtitle1" bold> <b>{name}</b></Typography>
                                     <Typography variant="subtitle1">{bio}</Typography>
                                     <b><a className={classes.linkText} variant="subtitle1" href={"https://" + link} target="_blank" rel="noreferrer noopener">{link}</a></b>
-                                    </Grid>
-                              
+                                </Grid>
                             </Grid>
                         </div>
                     </div>

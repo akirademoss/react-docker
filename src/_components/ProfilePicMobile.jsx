@@ -70,8 +70,8 @@ const styles = darkTheme => ({
             background: 'transparent',
         },
         margin: "auto",
-        width: "150px",
-        height: "150px",
+        width: "75px",
+        height: "75px",
         borderRadius: 100,
     },
     avatarMd: {
@@ -88,8 +88,8 @@ const styles = darkTheme => ({
     skeleton: {
         color: darkTheme.palette.common.white,
         backgroundColor: grey[700],
-        width: "150px",
-        height: "150px",
+        width: "75px",
+        height: "75px",
     },
     skeletonMd: {
         color: darkTheme.palette.common.white,
