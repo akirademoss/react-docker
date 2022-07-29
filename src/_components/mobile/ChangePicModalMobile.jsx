@@ -54,7 +54,7 @@ const styles = darkTheme => ({
         [darkTheme.breakpoints.up('sm')]: {
         },
         minheight: 200,
-        minWidth: 400,
+        width: 300,
         position: 'absolute',
         backgroundColor: grey[700],
         alignItems: 'center',
@@ -71,8 +71,8 @@ const styles = darkTheme => ({
         borderRadius: darkTheme.shape.borderRadius,
     },
     modalButton: {
-        width: '95%',
-        minWidth: 380,
+        width: 280,
+      
         textTransform: 'none',
         fontSize: '16px',
         backgroundColor: red[700],
@@ -87,22 +87,22 @@ const styles = darkTheme => ({
         margin: 0
     },
     modalButtonRemove: {
-        width: '95%',
+        width: 280,
         backgroundColor: blue[700],
         '&:hover': {
             backgroundColor: blue[800],
         },
-        minWidth: 380,
+        
         textTransform: 'none',
         fontSize: '16px',
     },
     modalButtonCancel: {
-        width: '95%',
+        width: 280,
         backgroundColor: grey[500],
         '&:hover': {
             backgroundColor: grey[600],
         },
-        minWidth: 380,
+       
         textTransform: 'none',
         fontSize: '16px',
     },

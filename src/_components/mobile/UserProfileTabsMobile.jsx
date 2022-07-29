@@ -104,12 +104,12 @@ class UserProfileTabsMobile extends React.Component {
                     <Divider style={{ background: 'grey' }} />
                     {tab === 0 &&
                         <div className={classes.centerDiv}>
-                            <Typography variant="h4"> No Posts Yet</Typography>
+                            <Typography variant="h5"> No Posts Yet</Typography>
                         </div>
                     }
                     {tab === 1 &&
                         <div className={classes.centerDiv}>
-                            <Typography variant="h4">No Playlists Yet</Typography>
+                            <Typography variant="h5">No Playlists Yet</Typography>
                         </div>
                     }
                     </div>}

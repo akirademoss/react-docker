@@ -88,8 +88,8 @@ const styles = darkTheme => ({
     skeleton: {
         color: darkTheme.palette.common.white,
         backgroundColor: grey[700],
-        width: "75px",
-        height: "75px",
+        width: "100px",
+        height: "100px",
     },
     skeletonMd: {
         color: darkTheme.palette.common.white,

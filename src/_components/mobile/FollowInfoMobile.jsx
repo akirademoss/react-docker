@@ -101,7 +101,7 @@ followingButton: {
 },
 item3: {
   position: 'absolute',
-  marginLeft: 240,
+  marginLeft: 185,
 },
 link: {
   color: darkTheme.palette.common.white,

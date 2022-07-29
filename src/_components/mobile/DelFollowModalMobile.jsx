@@ -58,7 +58,7 @@ const styles = darkTheme => ({
         [darkTheme.breakpoints.up('sm')]: {
         },
         minheight: 200,
-        minWidth: 400,
+        width: 300,
         position: 'absolute',
         backgroundColor: grey[700],
         alignItems: 'center',
@@ -87,7 +87,7 @@ const styles = darkTheme => ({
     },
     modalButton: {
         width: '95%',
-        minWidth: 380,
+        maxWidth: 280,
         textTransform: 'none',
         fontSize: '16px',
     },
@@ -97,7 +97,7 @@ const styles = darkTheme => ({
         '&:hover': {
             backgroundColor: grey[600],
         },
-        minWidth: 380,
+        maxWidth: 280,
         textTransform: 'none',
         fontSize: '16px',
     },

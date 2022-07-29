@@ -71,21 +71,16 @@ const styles = darkTheme => ({
         flexGrow: 1,
     },
     profileContainer: {
-        maxWidth: 400,
+        maxWidth: 320,
         margin: "auto",
-        padding: "60px 10px 0",
+        padding: "40px 10px 0",
     },
     profile: {
         marginTop: 20,
         minWidth: 250,
-        marginBottom: '44px',
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: 'column',
-        borderBottom: '1px solid white',
-        borderTop: '1px solid white',
-        borderLeft: '1px solid white',
-        borderRight: '1px solid white',
+        marginBottom: '20px',
+
+
     },
     editButton: {
         background: 'transparent',
@@ -100,6 +95,8 @@ const styles = darkTheme => ({
         borderRight: '1px solid white',
         textTransform: 'none',
         fontSize: '12px',
+        marginLeft: 50,
+
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -112,7 +109,7 @@ const styles = darkTheme => ({
     },
     textButton: {
         textTransform: 'none',
-        fontSize: '14px',
+        fontSize: '16px',
         "&:hover": {
             background: 'transparent',
             backgroundColor: 'transparent',
@@ -123,11 +120,12 @@ const styles = darkTheme => ({
         color: blue[700],
     },
     profileFormat: {
-        marginTop: 30,
+        marginTop: 0,
         marginBottom: '5px',
     },
     profileFormat2: {
-        marginBottom: '5px',
+        marginBottom: '0px',
+        marginLeft: -10,
     },
     centerDivCol: {
         display: "flex",
@@ -139,9 +137,18 @@ const styles = darkTheme => ({
         display: "flex",
         justifyContent: "center",
         flexDirection: 'row',
-      },
+    },
     gridMargin: {
-       
+        marginLeft:20,
+    },
+    m: {
+        marginTop: -80,
+    },
+    m2: {
+
+    },
+    usernameTxt: {
+       marginLeft: 105,
     }
 })
 
@@ -159,25 +166,24 @@ class ProfileMobile extends React.Component {
                     <div className={classes.profileContainer}>
                         {/* Profile Info Here */}
                         <div mb="44px" className={classes.profile}>
-                        
-                            <Grid container className={classes.gridMargin} >
+
+                            <Grid container >
                                 <Grid item xs={0}>
                                     <ProfilePicMobile
                                         profile={profile}
                                         loadingProfile={loadingProfile}
                                         viewingMyProfile={viewingMyProfile}
                                         handleShow={handleShow}
-                                        className={classes.profileFormat}
                                     />
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid container direction="column" alignItems="center" justifyContent="center" className={classes.m}>
+                                    <Grid container alignItems="start">
+                                        <Typography component="h1" variant="h5" className={classes.usernameTxt}>
+                                            {username}
+                                        </Typography>
+                                    </Grid>
                                     <div className={classes.profileFormat}>
                                         <Grid container alignItems="center" spacing={2}>
-                                            <Grid item className={classes.firstRow}>
-                                                <Typography component="h1" variant="h6">
-                                                    {username}
-                                                </Typography>
-                                            </Grid>
                                             <Grid item>
                                                 <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false} onClick={handleEditProfile}>
                                                     <b>Edit Profile</b>
@@ -188,10 +194,12 @@ class ProfileMobile extends React.Component {
                                             </Grid>
                                         </Grid>
                                     </div>
+
                                 </Grid>
+
                             </Grid>
                             <Grid>
-                                <Grid>
+                                <Grid className={classes.gridMargin}>
                                     <div className={classes.profileFormat2}>
                                         <Grid container spacing={1}>
                                             <Grid item>

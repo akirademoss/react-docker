@@ -79,7 +79,7 @@ const styles = darkTheme => ({
         display: "flex",
         justifyContent: "center",
         flexDirection: 'row',
-        marginTop: '50px',
+        marginTop: '25px',
     },
 })
 
@@ -104,22 +104,22 @@ class ProfileTabsMobile extends React.Component {
                             <Divider style={{ background: 'grey' }} />
                             {tab === 0 &&
                                 <div className={classes.centerDiv}>
-                                    <Typography variant="h4"> No Posts Yet</Typography>
+                                    <Typography variant="h5"> No Posts Yet</Typography>
                                 </div>
                             }
                             {tab === 1 &&
                                 <div className={classes.centerDiv}>
-                                    <Typography variant="h4"> No Newsfeed Posts</Typography>
+                                    <Typography variant="h5"> No Newsfeed Posts</Typography>
                                 </div>
                             }
                             {tab === 2 &&
                                 <div className={classes.centerDiv}>
-                                    <Typography variant="h4">No Playlists Yet</Typography>
+                                    <Typography variant="h5">No Playlists Yet</Typography>
                                 </div>
                             }
                             {tab === 3 &&
                                 <div className={classes.centerDiv}>
-                                    <Typography variant="h4">No Saved Posts Yet</Typography>
+                                    <Typography variant="h5">No Saved Posts Yet</Typography>
                                 </div>
                             }
                 </ThemeProvider>
