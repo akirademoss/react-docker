@@ -71,7 +71,7 @@ const darkTheme = createMuiTheme({
 
 const styles = darkTheme => ({
     profileContainer: {
-        maxWidth: 935,
+        maxWidth: 600,
         margin: "auto",
         padding: "0px 10px 0",
     },
@@ -79,7 +79,7 @@ const styles = darkTheme => ({
         display: "flex",
         justifyContent: "center",
         flexDirection: 'row',
-        marginTop: '50px',
+        marginTop: '25px',
     },
 })
 

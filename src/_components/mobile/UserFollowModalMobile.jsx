@@ -66,7 +66,7 @@ const styles = darkTheme => ({
     modalCancel: {
         marginTop: 20,
         position: 'absolute',
-        marginLeft: 305,
+        marginLeft: 250,
     },
     followingModalCancelBtn: {
         background: 'transparent',
@@ -82,7 +82,7 @@ const styles = darkTheme => ({
         },
         minheight: 200,
         //minWidth: 400,
-        width: 360,
+        width: 300,
         position: 'absolute',
         backgroundColor: grey[700],
         alignItems: 'left',
@@ -124,7 +124,7 @@ const styles = darkTheme => ({
         justifyContent: "center",
         flexDirection: 'row',
         flexGrow: 1,
-        width: 340,
+        width: 280,
     },
     header: {
         alignText: 'center',

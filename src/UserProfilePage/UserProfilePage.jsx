@@ -486,7 +486,7 @@ class UserProfilePage extends React.Component {
 
         this.getProfile();
         if (isMobile) {
-            await new Promise(resolve => { setTimeout(resolve, 2400); });
+            await new Promise(resolve => { setTimeout(resolve, 3000); });
         }
         else {
             await new Promise(resolve => { setTimeout(resolve, 200); });

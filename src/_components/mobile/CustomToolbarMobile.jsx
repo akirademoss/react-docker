@@ -126,7 +126,7 @@ const darkTheme = createMuiTheme({
         marginRight: darkTheme.spacing(1),
         marginLeft: -5,
         width: '100%',
-        height: 30,
+        height: 35,
         fontSize: '10px',
     },
     searchIcon: {
@@ -144,7 +144,7 @@ const darkTheme = createMuiTheme({
         // vertical padding + font size from searchIcon
         paddingLeft: '18px',
         width: '100%',
-        fontSize: '10px',
+        fontSize: '14px',
     },
     iconButtonTransparent: {
         background: 'transparent',
@@ -164,8 +164,8 @@ const darkTheme = createMuiTheme({
         "&:hover": {
             background: 'transparent',
         },
-        width: "20px",
-        height: "20px",
+        width: "24px",
+        height: "24px",
         borderRadius: 100,
     },
     menuItem: {
@@ -185,12 +185,12 @@ const darkTheme = createMuiTheme({
 
     },
     skeleton: {
-        //backgroundColor: '#a5a5a5',
-       // animation: skeleton-animation 1s infinite linear,
         color: darkTheme.palette.common.white,
         backgroundColor: grey[700],
         width: "26px",
-        height: "26px",
+        width: "26px",
+        paddingLeft: 0,
+        paddingRight: 0, 
     },
     clearIcon: {
         
@@ -346,10 +346,9 @@ const darkTheme = createMuiTheme({
                         color="inherit"
                     >
     
-                        {loadingProfile && !profile.previewImg && <Skeleton variant="circle" animation="wave" className={classes.skeleton}/>}
+                        {loadingProfile && <Skeleton variant="circle" animation="wave"  className={classes.skeleton} />}
                         {!loadingProfile && profile.previewImg && <img src={profile.previewImg} className={classes.avatarSm} />}  
-                        {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm}/>} 
-                               
+                        {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm} />}                
                     </IconButton>
                     <Menu
                         disableScrollLock={true}

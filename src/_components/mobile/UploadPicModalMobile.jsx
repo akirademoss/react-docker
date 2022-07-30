@@ -55,8 +55,9 @@ const styles = darkTheme => ({
     modalUpload: {
         [darkTheme.breakpoints.up('sm')]: {
         },
-        minheight: 200,
-        minWidth: 400,
+        marginTop: 75,
+        height: 500,
+        width: 300,
         position: 'absolute',
         backgroundColor: grey[700],
         alignItems: 'center',
@@ -74,14 +75,22 @@ const styles = darkTheme => ({
     },
     // styling for viewing image cropper tool
     cropContainer: {
+
+  
         position: 'relative',
         width: '100%',
-        minWidth: 400,
-        minHeight: 400,
+        width: 280,
+        height: 280,
         background: darkTheme.palette.common.black,
         [darkTheme.breakpoints.up('sm')]: {
             height: 400,
         },
+    },
+    buttonContainer: {
+        display: 'flex',
+        flex: '2',
+        alignItems: 'center',
+        flexDirection: 'row',
     },
     cropButton: {
         marginLeft: 16,
@@ -104,7 +113,7 @@ const styles = darkTheme => ({
     controls: {
         padding: 16,
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'stretch',
         [darkTheme.breakpoints.up('sm')]: {
         },
@@ -139,7 +148,7 @@ class UploadPicModalMobile extends React.Component {
         
         return (
 
-            <div>
+            <div >
                 <Modal
                     open={showImageCrop}
                     onClose={handleCloseImageModal}
@@ -196,7 +205,7 @@ class UploadPicModalMobile extends React.Component {
                                     onChange={setRotation}
                                 />
                             </div>
-                           
+                            <div className={classes.buttonContainer}>
                             <Button
                                 disableRipple
                                 onClick={() => { showCroppedImage() ; handleCloseImageModal() }}
@@ -215,7 +224,8 @@ class UploadPicModalMobile extends React.Component {
                                 onClick={handleCloseImageModal}
                             >
                                 Cancel
-                                </Button>
+                            </Button>
+                            </div>
                         </div>
 
                     </div>

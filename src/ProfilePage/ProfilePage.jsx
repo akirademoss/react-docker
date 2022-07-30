@@ -521,10 +521,7 @@ class ProfilePage extends React.Component {
                             handleTextClear={this.handleTextClear}
                             keyPress={this.keyPress}
                         />}
-                    <SearchResultModal
-                        show={this.state.showResult}
-                        handleCloseModal={this.handleCloseSearchResult}
-                    />
+
 
                     {!isMobile &&
                     <Profile

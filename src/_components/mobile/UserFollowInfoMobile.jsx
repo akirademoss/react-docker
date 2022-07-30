@@ -70,8 +70,7 @@ iconButtonAvatar: {
       backgroundColor: 'transparent',
       cursor: 'default',
   },
-  width: "50px",
-  height: "50px",
+  height: "48px",
 },
 followGridList: {
     alignItems: 'left',
@@ -114,7 +113,7 @@ followButton: {
 },
 item3: {
   position: 'absolute',
-  marginLeft: 240,
+  marginLeft: 185,
 },
 link: {
   color: darkTheme.palette.common.white,

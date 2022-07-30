@@ -72,14 +72,14 @@ const styles = darkTheme => ({
         flexGrow: 1,
     },
     profileContainer: {
-        maxWidth: 935,
+        maxWidth: 300,
         margin: "auto",
         padding: "60px 10px 0",
     },
     profile: {
-        marginTop: 20,
+        marginTop: 0,
         minWidth: 250,
-        marginBottom: "44px",
+        marginBottom: "20px",
     },
     editButton: {
         background: 'transparent',
@@ -93,7 +93,23 @@ const styles = darkTheme => ({
         borderLeft: '1px solid white',
         borderRight: '1px solid white',
         textTransform: 'none',
-        fontSize: '12px',
+        fontSize: '11px',
+        marginLeft: 105,
+    },
+    editButton2: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        borderRadius: 5,
+        borderBottom: '1px solid white',
+        borderTop: '1px solid white',
+        borderLeft: '1px solid white',
+        borderRight: '1px solid white',
+        textTransform: 'none',
+        fontSize: '11px',
+        marginLeft: 60,
     },
     followButton: {
         backgroundColor: blue[700],
@@ -101,7 +117,7 @@ const styles = darkTheme => ({
         '&:hover': {
             backgroundColor: blue[800],
         },
-        fontSize: '12px',
+        fontSize: '11px',
     },
     followingButton: {
         textTransform: 'none',
@@ -112,8 +128,10 @@ const styles = darkTheme => ({
         "&:hover": {
             background: 'transparent',
         },
+        height: 28,
     },
     pplAlt: {
+        marginTop: -5,
         fontSize: '14px',
     },
     followingBoarder: {
@@ -140,7 +158,7 @@ const styles = darkTheme => ({
     },
     textButton: {
         textTransform: 'none',
-        fontSize: '14px',
+        fontSize: '16px',
         "&:hover": {
             background: 'transparent',
             backgroundColor: 'transparent',
@@ -158,104 +176,126 @@ const styles = darkTheme => ({
     },
     profileFormat: {
         marginBottom: '20px',
+        marginBottom: '5px',
+    },
+    profileFormat2: {
+        marginBottom: '0px',
+        marginLeft: -10,
     },
     buttonTypography: {
         fontSize: '10px',
+    },
+    gridMargin: {
+        marginLeft: 20,
+    },
+    m: {
+        marginTop: -80,
+    },
+    usernameTxt: {
+        marginLeft: 105,
+        marginBottom: 10,
     }
 })
 
 class UserProfileMobile extends React.Component {
     render() {
         const { classes, userProfile, loadingUserProfile, handleShow, username,
-            loadingFollowStatus, isFollowing, followStatusLoaded, follow, handleShowUnfollow, 
-            handleShowFollowers, loadingUserFollowerCount, userFollowerCount, handleShowFollowing, 
+            loadingFollowStatus, isFollowing, followStatusLoaded, follow, handleShowUnfollow,
+            handleShowFollowers, loadingUserFollowerCount, userFollowerCount, handleShowFollowing,
             loadingUserFollowingCount, userFollowingCount, name, bio, link, } = this.props;
 
         return (
             <div>
                 <ThemeProvider theme={darkTheme}>
-                
+
                     {/* User Profile Here */}
                     {(followStatusLoaded == true) &&
-                    <div className={classes.profileContainer}>
-                        {/* User Profile Info Here */}
-                        <div className={classes.profile}>
-                            <Grid container>
-                                <Grid item xs={4}>
-                                    <ProfilePicMobile
-                                        profile={userProfile}
-                                        loadingProfile={loadingUserProfile}
-                                        viewingMyProfile={false}
-                                        handleShow={handleShow}
-                                    />
-                                </Grid>
-                                <Grid item xs={8}>
-                                    <div className={classes.profileFormat}>
-                                        <Grid container alignItems="center" spacing={2}>
-                                            <Grid item>
-                                                <Typography component="h1" variant="h6">
-                                                    {username}
-                                                </Typography>
-                                            </Grid>
+                        <div className={classes.profileContainer}>
+                            {/* User Profile Info Here */}
+                            <div className={classes.profile}>
+                                <Grid container>
+                                    <Grid item xs={0}>
+                                        <ProfilePicMobile
+                                            profile={userProfile}
+                                            loadingProfile={loadingUserProfile}
+                                            viewingMyProfile={false}
+                                            handleShow={handleShow}
+                                        />
+                                    </Grid>
+                                    <Grid container direction="column" alignItems="center" justifyContent="center" className={classes.m}>
+                                        <Grid container alignItems="start">
+                                            <Typography component="h1" variant="h5" className={classes.usernameTxt}>
+                                                {username}
+                                            </Typography>
                                         </Grid>
-                                        <Grid container alignItems="center" spacing={2}>
-                                            <Grid item>
-                                                <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
-                                                    <b>Message</b>
-                                                </Button>
-                                            </Grid>
-                                            {!loadingFollowStatus && (isFollowing == 'False') && (followStatusLoaded == true) &&
-                                                <Grid item>
-                                                    <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={follow}>
-                                                        Follow                                                   
-                                                </Button>
-                                                </Grid>}
-                                            {!loadingFollowStatus && (isFollowing == 'True') && (followStatusLoaded == true) &&
-                                                <Grid item>
-                                                    <div className={classes.followingBoarder}>
-                                                        <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={handleShowUnfollow}>
-                                                            {<PeopleAltIcon className={classes.pplAlt} />}
-                                                        </IconButton>
-                                                    </div>
-                                                </Grid>}
+                                        <div className={classes.profileFormat}>
+                                            <Grid container alignItems="center" spacing={2}>
+                                                {!loadingFollowStatus && (isFollowing == 'False') && (followStatusLoaded == true) &&
+                                                    <Grid item>
+                                                        <Button disableRipple className={classes.editButton} variant="outlined" fullWidth={false}>
+                                                            <b>Message</b>
+                                                        </Button>
+                                                    </Grid>}
+                                                {!loadingFollowStatus && (isFollowing == 'False') && (followStatusLoaded == true) &&
+                                                    <Grid item>
+                                                        <Button className={classes.followButton} variant="contained" fullWidth={false} onClick={follow}>
+                                                            Follow
+                                                        </Button>
+                                                    </Grid>}
+                                                {!loadingFollowStatus && (isFollowing == 'True') && (followStatusLoaded == true) &&
+                                                    <Grid item>
+                                                        <Button disableRipple className={classes.editButton2} variant="outlined" fullWidth={false}>
+                                                            <b>Message</b>
+                                                        </Button>
+                                                    </Grid>}
+                                                {!loadingFollowStatus && (isFollowing == 'True') && (followStatusLoaded == true) &&
+                                                    <Grid item>
+                                                        <div className={classes.followingBoarder}>
+                                                            <IconButton variant="contained" className={classes.followingButton} fullWidth={false} onClick={handleShowUnfollow}>
+                                                                {<PeopleAltIcon className={classes.pplAlt} />}
+                                                            </IconButton>
+                                                        </div>
+                                                    </Grid>}
 
-                                        </Grid>
-                                    </div>
+                                            </Grid>
+                                        </div>
+                                    </Grid>
                                 </Grid>
                                 <Grid>
-                                    <div className={classes.profileFormat}>
-                                        <Grid container spacing={1}>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} >
-                                                    <b>0</b>
+                                    <Grid className={classes.gridMargin}>
+                                        <div className={classes.profileFormat2}>
+                                            <Grid container spacing={1}>
+                                                <Grid item>
+                                                    <Button disableRipple variant="text" className={classes.textButton} >
+                                                        <b>0</b>
                                                     &nbsp;posts
                                                 </Button>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={handleShowFollowers}>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Button disableRipple variant="text" className={classes.textButton} onClick={handleShowFollowers}>
 
-                                                    {!loadingUserFollowerCount && (followStatusLoaded == true) && <b>{userFollowerCount} </b>}
+                                                        {!loadingUserFollowerCount && (followStatusLoaded == true) && <b>{userFollowerCount} </b>}
                                                     &nbsp;followers
                                                 </Button>
-                                            </Grid>
-                                            <Grid item>
-                                                <Button disableRipple variant="text" className={classes.textButton} onClick={handleShowFollowing}>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Button disableRipple variant="text" className={classes.textButton} onClick={handleShowFollowing}>
 
-                                                    {!loadingUserFollowingCount && (followStatusLoaded == true) && <b>{userFollowingCount} </b>}
+                                                        {!loadingUserFollowingCount && (followStatusLoaded == true) && <b>{userFollowingCount} </b>}
                                                     &nbsp;following
                                                 </Button>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </div>
-                                    <Typography variant="subtitle1" bold>
-                                        <b>{name}</b>
-                                    </Typography>
-                                    <Typography variant="subtitle1">{bio}</Typography>
-                                    <b><a className={classes.linkText} variant="subtitle1" href={"https://" + link} target="_blank" rel="noreferrer noopener">{link}</a></b>
+                                        </div>
+                                        <Typography variant="subtitle1" bold>
+                                            <b>{name}</b>
+                                        </Typography>
+                                        <Typography variant="subtitle1">{bio}</Typography>
+                                        <b><a className={classes.linkText} variant="subtitle1" href={"https://" + link} target="_blank" rel="noreferrer noopener">{link}</a></b>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </div>
-                    </div>}
+                            </div>
+                        </div>}
                 </ThemeProvider>
             </div>
         );

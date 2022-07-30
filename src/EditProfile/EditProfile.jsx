@@ -404,6 +404,7 @@ class EditProfile extends React.Component {
               handleShow={this.handleShow}
               username={this.props.user.username}
               handleSubmit={this.handleSubmit}
+              handleChange={this.handleChange}
               name={name}
               bio={bio}
               link={link}
@@ -460,6 +461,7 @@ class EditProfile extends React.Component {
               loadingProfile={loadingProfile}
               handleShow={this.handleShow}
               username={this.props.user.username}
+              handleChange={this.handleChange}
               handleSubmit={this.handleSubmit}
               name={name}
               bio={bio}
