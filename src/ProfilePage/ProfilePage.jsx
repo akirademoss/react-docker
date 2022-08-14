@@ -178,9 +178,7 @@ class ProfilePage extends React.Component {
         const dispatch = await this.props.userSearch(value);
 
         console.log(this.props.searchResults)
-        setTimeout(() => this.setState({ searchResults: this.props.searchResults}), 100);  
         setTimeout(() => console.log(this.props.searchResults), 100)  
-        console.log(this.state.searchResults)
     }
 
     keyPress = async (e) => {
@@ -744,7 +742,7 @@ class ProfilePage extends React.Component {
 }
 
 ProfilePage.defaultProps= {
-    searchResults: {}
+    searchResults: []
 }
 
 function mapStateToProps(state) {

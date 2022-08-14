@@ -482,7 +482,7 @@ class CustomToolbar extends React.Component {
                                         onInputChange={(e, value) => handleTextChange}
                                         onChange={(event, value) => history.push('/' + value.username + '/user')}
                                         forcePopupIcon={false}
-                                        loading={!(searchResults.length == 0)}
+                                        loading={(searchResults.length == 0)}
                                         className={classes.autocomplete}
                                         renderInput={(params) => {
                                             const { InputLabelProps, InputProps, ...rest } = params;
