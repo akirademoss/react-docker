@@ -118,6 +118,7 @@ class HomePage extends React.Component {
 
     this.state = {
       text: '',
+      searchResults: {},
     };
 
     this.handleTextChange = this.handleTextChange.bind(this);
@@ -131,7 +132,9 @@ class HomePage extends React.Component {
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
-    this.throttleHandleChange(value)
+    if(value.length > 2){
+      this.throttleHandleChange(value)
+    }
   }
 
   throttleHandleChange = async (value) => {
@@ -165,6 +168,8 @@ class HomePage extends React.Component {
 
             {!isMobile &&
               <PublicCustomToolbar
+                searchResults={this.props.searchResults}
+                loadingSearchResults={this.props.loadingSearchResults}
                 handleTextChange={this.handleTextChange}
                 searchText={this.state.text}
                 handleTextClear={this.handleTextClear}
@@ -221,9 +226,10 @@ class HomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
+  const { searchResults, loadingSearchResults } = state.getSearchResults;
   const { users, authentication } = state;
   const { user } = authentication;
-  return { user, users };
+  return { user, users, searchResults, loadingSearchResults };
 }
 
 const actionCreators = {

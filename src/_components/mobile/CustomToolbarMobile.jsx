@@ -101,7 +101,6 @@ const darkTheme = createMuiTheme({
     logo: {
         margin: "auto",
         width: "75px",
-      
     },
     grow: {
         flexGrow: 1,

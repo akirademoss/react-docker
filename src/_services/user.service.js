@@ -21,7 +21,7 @@ class UserService {
       .post(API_URL + "/users/search", { name })
       .then((response) => {
         if (response.data) {
-          localStorage.setItem("userSearchResults", JSON.stringify(response.data));
+          localStorage.setItem("searchResults", JSON.stringify(response.data));
         }
         return response.data;
       });

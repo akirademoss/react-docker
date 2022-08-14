@@ -133,23 +133,29 @@ class HomePrivate extends React.Component {
       isLoggedIn: false,
       profile: { name: '', bio: '', link: '', previewImg: '' },
       text: '',
+      searchResults: {},
     };
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
+    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 1200);
 
   }
 
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
-    this.throttleHandleChange(value)
+    if(value.length > 2){
+      this.throttleHandleChange(value)
+    }
   };
 
   throttleHandleChange = async (value) =>{
     console.log("ENTERING THROTTLE FUNCTION")
     const dispatch = await this.props.userSearch(value);
+
+    console.log(this.props.searchResults)
+    setTimeout(() => console.log(this.props.searchResults), 50)
   }
 
   keyPress = async (e) => {
@@ -244,6 +250,8 @@ class HomePrivate extends React.Component {
           <div className={classes.grow}>
             {!isMobile &&
             <CustomToolbar
+              searchResults={this.props.searchResults}
+              loadingSearchResults={this.props.loadingSearchResults}
               user={this.props.user}
               profile={this.props.profile}
               loadingProfile={loadingProfile}
@@ -325,8 +333,9 @@ class HomePrivate extends React.Component {
 function mapStateToProps(state) {
   const { users, authentication } = state;
   const { user } = authentication;
+  const { searchResults, loadingSearchResults } = state.getSearchResults;
   const { profile, loadingProfile } = state.getProfile;
-  return { user, users, profile, loadingProfile };
+  return { user, users, profile, loadingProfile, searchResults, loadingSearchResults };
 }
 
 const actionCreators = {

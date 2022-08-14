@@ -21,7 +21,9 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import ClearIcon from "@material-ui/icons/Clear";
 import { ThemeProvider } from "@material-ui/styles";
-
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 
 const darkTheme = createMuiTheme({
@@ -133,7 +135,7 @@ const styles = darkTheme => ({
         justifyContent: 'center',
     },
     inputInput: {
-        padding: darkTheme.spacing(1, 1, 1, 0),
+        padding: darkTheme.spacing(1, 0, 1, 0),
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${darkTheme.spacing(4)}px)`,
         width: '100%',
@@ -170,15 +172,67 @@ const styles = darkTheme => ({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
+        marginRight: -30,
+        paddingLeft: 0,
+        paddingRight: 0,
     },
     clear: {
         fontSize: '18px',
-    }
+    },
+    iconButtonAvatar: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
+        height: "48px",
+    },
+    avatarFollow: {
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        margin: "auto",
+        width: "32px",
+        height: "32px",
+        borderRadius: 100,
+    },
+    followGrid: {
+        alignItems: 'center',
+        display: 'inline-flex',
+        flexDirection: 'row',
+        width: '100%',
+    },
+    followGridList: {
+        alignItems: 'left',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+    },
+    link: {
+        color: darkTheme.palette.common.white,
+        fontSize: '13px',
+        "&:hover": {
+            cursor: 'default',
+        },
+    },
 })
+
+const filterOptions = createFilterOptions({
+    stringify: ({ name, username }) => `${name} ${username}`
+});
+
+const array = [];
+
+async function handlePageChange(username){
+    history.push('/' + username + '/user');
+} 
 
 class PublicCustomToolbar extends React.Component {
     render() {
-        const { classes, handleTextChange, searchText, handleTextClear, keyPress } = this.props;
+        const { classes, handleTextChange, searchText, handleTextClear, keyPress, searchResults, loadingSearchResults } = this.props;
 
         const endAdornment = () => {
             if (searchText) {
@@ -211,20 +265,60 @@ class PublicCustomToolbar extends React.Component {
                                 <div className={classes.searchIcon}>
                                     <SearchIcon />
                                 </div>
-                                <InputBase
-                                    fullWidth={true}
-                                    type="text"
-                                    placeholder="Search…"
-                                    name="text"
-                                    onChange={handleTextChange}
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    value={searchText}
-                                    endAdornment={endAdornment()}
-                                    onKeyDown={keyPress}
-                                />
+
+                                {searchResults &&
+                                    <Autocomplete
+                                        id="combo-box-demo"
+                                        options={searchResults}
+                                        filterOptions={filterOptions}
+                                        getOptionLabel={({ username, name, previewImg }) => {
+                                            return `${username} ${name} ${previewImg}`;
+                                        }}
+                                        filterSelectedOptions
+                                        renderOption={({ username, name, previewImg }) => {
+                                            return (
+                                                <div>
+                                                    <Grid container spacing={0} className={classes.followGrid}>
+                                                        <Grid item>
+                                                            <IconButton
+                                                                disableRipple
+                                                                color="inherit"
+                                                                className={classes.iconButtonAvatar}
+                                                            //onClick={handlePageChange}
+                                                            >
+                                                                {loadingSearchResults && !previewImg && <Skeleton variant="circle" animation="wave" className={classes.skeleton} />}
+                                                                {!loadingSearchResults && previewImg && <img src={previewImg} className={classes.avatarFollow} />}
+                                                                {!loadingSearchResults && !previewImg && <AccountCircle className={classes.avatarFollow} />}
+                                                            </IconButton>
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Grid container className={classes.followGridList}>
+                                                                <Grid item>
+                                                                    <Typography variant="subtitle2" className={classes.link}><b>{username}</b> </Typography>
+                                                                </Grid>
+                                                                {{name} && <Grid item>
+                                                                    <Typography variant="subtitle2" className={classes.link}>{name}</Typography>
+                                                                </Grid>}
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Grid>
+                                                </div>
+                                            );
+                                        }}
+                                        fullWidth={true}
+                                        inputValue={searchText}
+                                        open={searchText.length > 2}
+                                        onInputChange={(e, value) => handleTextChange}
+                                        onChange={(event, value) => history.push('/login')}
+                                        forcePopupIcon={false}
+                                        loading={!(searchResults.length == 0)}
+                                        className={classes.autocomplete}
+                                        renderInput={(params) => {
+                                            const { InputLabelProps, InputProps, ...rest } = params;
+                                            return <InputBase {...params.InputProps} {...rest} fullWidth={true} type="text" placeholder="Search…" name="text" onChange={handleTextChange} classes={{ input: classes.inputInput }} value={searchText} endAdornment={endAdornment()} onKeyDown={keyPress} />
+                                        }}
+                                    />}
+
                             </div>
                         </section>
                         <section className={classes.rightToolbar}>

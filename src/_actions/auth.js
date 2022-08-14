@@ -110,8 +110,8 @@ function userSearch(name){
     UserService.userSearch(name)
     .then(
     
-      userSearch => {
-        dispatch(success(userSearch));
+      searchResults => {
+        dispatch(success(searchResults));
       },
       error => {
         dispatch(failure(error.toString()));
@@ -120,8 +120,8 @@ function userSearch(name){
     );
   };
 
-  function request(userSearch) { return { type: userConstants.USER_SEARCH_REQUEST, userSearch } }
-  function success(userSearch) { return { type: userConstants.USER_SEARCH_SUCCESS, userSearch } }
+  function request(searchResults) { return { type: userConstants.USER_SEARCH_REQUEST} }
+  function success(searchResults) { return { type: userConstants.USER_SEARCH_SUCCESS, searchResults } }
   function failure(error) { return { type: userConstants.USER_SEARCH_FAILURE, error } }
 }
 
