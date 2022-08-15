@@ -203,12 +203,12 @@ class UserProfilePage extends React.Component {
             unfollowId: null,
             unfollowUsername: null,
             text: '',
-            searchResults: {},
+            pendingReq: true,
         };
 
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
-        this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 1200);
+        this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
     }
 
     handleTextClear = () => {
@@ -218,6 +218,7 @@ class UserProfilePage extends React.Component {
     handleTextChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
+        this.setState({ pendingReq: true });
         if(value.length > 2){
             this.throttleHandleChange(value)
         }
@@ -226,7 +227,7 @@ class UserProfilePage extends React.Component {
     throttleHandleChange = async (value) => {
         console.log("ENTERING THROTTLE FUNCTION")
         const dispatch = await this.props.userSearch(value);
-
+        this.setState({ pendingReq: false });
         console.log(this.props.searchResults)
         setTimeout(() => console.log(this.props.searchResults), 50) 
     }
@@ -509,7 +510,7 @@ class UserProfilePage extends React.Component {
     }
 
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showUnfollowList, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, } = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showUnfollowList, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, pendingReq } = this.state;
         const { classes } = this.props;
         const { loadingProfile } = this.props;
         const { loadingUserProfile } = this.props;
@@ -526,6 +527,7 @@ class UserProfilePage extends React.Component {
                 <div className={classes.grow}>
                     {!isMobile &&
                         <CustomToolbar
+                            pendingReq={pendingReq}
                             searchResults={this.props.searchResults}
                             loadingSearchResults={this.props.loadingSearchResults}
                             user={this.props.user}
@@ -547,6 +549,9 @@ class UserProfilePage extends React.Component {
                         />}
                         {isMobile &&
                         <CustomToolbarMobile
+                            pendingReq={pendingReq}
+                            searchResults={this.props.searchResults}
+                            loadingSearchResults={this.props.loadingSearchResults}
                             user={this.props.user}
                             profile={this.props.profile}
                             loadingProfile={loadingProfile}
@@ -747,6 +752,10 @@ class UserProfilePage extends React.Component {
         );
     }
 }
+
+UserProfilePage.defaultProps= {
+    searchResults: []
+  }
 
 function mapStateToProps(state) {
     const { users, authentication } = state;

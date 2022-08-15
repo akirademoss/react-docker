@@ -149,12 +149,12 @@ class ProfilePage extends React.Component {
             removeId: null,
             removeUsername: null,
             text: '',
-            searchResults: {},
+            pendingReq: true,
         };
 
         this.handleLogout = this.handleLogout.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
-        this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 1200);
+        this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
     }
 
 
@@ -168,6 +168,7 @@ class ProfilePage extends React.Component {
     handleTextChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
+        this.setState({ pendingReq: true });
         if(value.length > 2){
             this.throttleHandleChange(value)
         }
@@ -176,7 +177,7 @@ class ProfilePage extends React.Component {
     throttleHandleChange = async (value) => {
         console.log("ENTERING THROTTLE FUNCTION")
         const dispatch = await this.props.userSearch(value);
-
+        this.setState({ pendingReq: false });
         console.log(this.props.searchResults)
         setTimeout(() => console.log(this.props.searchResults), 100)  
     }
@@ -481,7 +482,7 @@ class ProfilePage extends React.Component {
     }
 
     render() {
-        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername} = this.state;
+        const { anchorEl, messagesOpen, notificationsOpen, profileOpen, tab, imageSrc, crop, rotation, zoom, show, showImageCrop, showUnfollow, showRemove, viewingMyProfile, showFollowers, showFollowing, unfollowPreviewImg, unfollowUsername, removePreviewImg, removeUsername, pendingReq} = this.state;
         const { classes, loadingProfile } = this.props;
         const { loadingMyFollowerCount, loadingMyFollowingCount, myFollowerCountLoaded, myFollowingCountLoaded } = this.props;
         const { loadingFollowingInfo, loadingFollowerInfo } = this.props;
@@ -495,6 +496,7 @@ class ProfilePage extends React.Component {
                 <div className={classes.grow}>
                     {!isMobile &&
                         <CustomToolbar
+                            pendingReq={pendingReq}
                             searchResults={this.props.searchResults}
                             loadingSearchResults={this.props.loadingSearchResults}
                             user={this.props.user}
@@ -516,6 +518,9 @@ class ProfilePage extends React.Component {
                         />}
                     {isMobile &&
                         <CustomToolbarMobile
+                            pendingReq={pendingReq}
+                            searchResults={this.props.searchResults}
+                            loadingSearchResults={this.props.loadingSearchResults}
                             user={this.props.user}
                             profile={this.props.profile}
                             loadingProfile={loadingProfile}

@@ -21,8 +21,9 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import ClearIcon from "@material-ui/icons/Clear";
 import { ThemeProvider } from "@material-ui/styles";
-
-
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 const darkTheme = createMuiTheme({
     overrides: {
@@ -35,8 +36,8 @@ const darkTheme = createMuiTheme({
                 borderRight: '1px solid grey',
                 borderColor: fade('#ffffff', 0.5),
             }
-        }, 
-        MuiInputAdornment:{
+        },
+        MuiInputAdornment: {
             root: {
                 paddingLeft: 0,
                 paddingRight: 0,
@@ -71,10 +72,10 @@ const darkTheme = createMuiTheme({
     MuiAppBar: {
         color: 'secondary',
     }
-  });
-  
-  
-  const styles = darkTheme => ({
+});
+
+
+const styles = darkTheme => ({
     navBar: {
         boxShadow: 'none',
         minHeight: 5,
@@ -84,13 +85,13 @@ const darkTheme = createMuiTheme({
         width: '100%',
         display: 'flex',
         flexDirection: 'row',
-        
+
     },
     homeButton: {
         marginRight: 0,
         marginLeft: -12,
         marginTop: 0,
-        
+
         width: '100%',
         background: 'transparent',
         background: 'transparent',
@@ -154,7 +155,7 @@ const darkTheme = createMuiTheme({
             cursor: 'default',
         },
         width: "28px",
-        
+
     },
     avatarSm: {
         color: darkTheme.palette.common.white,
@@ -180,7 +181,7 @@ const darkTheme = createMuiTheme({
         color: darkTheme.palette.common.white,
         fontSize: "15px",
         paddingLeft: 0,
-        paddingRight: 0, 
+        paddingRight: 0,
 
     },
     skeleton: {
@@ -189,10 +190,10 @@ const darkTheme = createMuiTheme({
         width: "26px",
         width: "26px",
         paddingLeft: 0,
-        paddingRight: 0, 
+        paddingRight: 0,
     },
     clearIcon: {
-        
+
         color: darkTheme.palette.common.white,
         background: 'transparent',
         "&:hover": {
@@ -200,7 +201,9 @@ const darkTheme = createMuiTheme({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
-        width: 0,
+        marginRight: -30,
+        paddingLeft: 0,
+        paddingRight: 0,
     },
     clear: {
         fontSize: '15px',
@@ -211,173 +214,263 @@ const darkTheme = createMuiTheme({
         width: 0,
         marginLeft: -10,
     },
-  })
+    iconButtonAvatar: {
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+            backgroundColor: 'transparent',
+            cursor: 'default',
+        },
+        height: "48px",
+    },
+    avatarFollow: {
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        margin: "auto",
+        width: "26px",
+        height: "26px",
+        borderRadius: 100,
+        marginLeft: -20,
+    },
+    followGrid: {
+        alignItems: 'center',
+        display: 'inline-flex',
+        flexDirection: 'row',
+        width: '100%',
+    },
+    followGridList: {
+        alignItems: 'left',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+    },
+    link: {
+        color: darkTheme.palette.common.white,
+        fontSize: '11px',
+        "&:hover": {
+            cursor: 'default',
+        },
+    },
+})
 
-  class CustomToolbarMobile extends React.Component {
+
+const filterOptions = createFilterOptions({
+    stringify: ({ name, username }) => `${name} ${username}`
+});
+
+async function handlePageChange(username) {
+    history.push('/' + username + '/user');
+}
+
+class CustomToolbarMobile extends React.Component {
     render() {
-      const { classes, user, profile, loadingProfile, handleMenu, handleClose, handleViewProfile, 
-        handleEditProfile, handleLogout, messagesOpen, anchorEl, notificationsOpen, profileOpen,
-        handleTextChange, searchText, handleTextClear, keyPress } = this.props;
+        const { classes, user, profile, loadingProfile, handleMenu, handleClose, handleViewProfile,
+            handleEditProfile, handleLogout, messagesOpen, anchorEl, notificationsOpen, profileOpen,
+            handleTextChange, searchText, handleTextClear, keyPress, searchResults, loadingSearchResults,
+            pendingReq } = this.props;
 
         const endAdornment = () => {
             if (searchText) {
-              return (
-                <InputAdornment position="end" >
-                  <IconButton 
-                    disableRipple
-                    onClick={handleTextClear}
-                    className={classes.clearIcon}
-                    className={classes.adornment}
-                  >
-                    <ClearIcon className={classes.clear} />
-                  </IconButton>
-                </InputAdornment>
-              );
+                return (
+                    <InputAdornment position="end" >
+                        <IconButton
+                            disableRipple
+                            onClick={handleTextClear}
+                            className={classes.clearIcon}
+                         
+                        >
+                            <ClearIcon className={classes.clear} />
+                        </IconButton>
+                    </InputAdornment>
+                );
             }
 
             return "";
-           
-          }
+
+        }
         return (
-            
+
             <div>
                 <ThemeProvider theme={darkTheme}>
-                <Toolbar  className={classes.navBar}>
-                    <div>
-                        <Button disableRipple className={classes.homeButton}
-                            onClick={() => history.push('/' + user.username + '/home')}
-                        >
-                            <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo} />
-                        </Button>
-                    </div>
-
-                    <section className={classes.searchAlign}>
-                        <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon className={classes.icon}/>
-                            </div>
-                            <InputBase
-                                fullWidth={true}
-                                type="text"
-                                placeholder="Search…"
-                                name="text"
-                                onChange={handleTextChange}
-                                classes={{
-                                    input: classes.inputInput,
-                                  }}
-                                value={searchText}
-                                endAdornment={endAdornment()}
-                                onKeyDown={keyPress}
-                            />
+                    <Toolbar className={classes.navBar}>
+                        <div>
+                            <Button disableRipple className={classes.homeButton}
+                                onClick={() => history.push('/' + user.username + '/home')}
+                            >
+                                <img src={process.env.PUBLIC_URL + '/static/images/logox6-200.png'} className={classes.logo} />
+                            </Button>
                         </div>
-                    </section>
 
-                    <IconButton
-                        disableRipple
-                        name="messages"
-                        className={classes.iconButtonTransparent}
-                        aria-owns={messagesOpen ? 'message-alerts' : null}
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                    >
-                        {<MailIcon className={classes.avatarSm} />}
-                    </IconButton>
-                    
-                    <Menu
-                        disableScrollLock={true}
-                        color="secondary"
-                        id="message-alerts"
-                        anchorEl={anchorEl}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={messagesOpen}
-                        onClose={handleClose}
-                    >
-                        <MenuItem disableRipple onClick={handleClose} className={classes.menuItem}>Messages</MenuItem>
-                    </Menu>
+                        <section className={classes.searchAlign}>
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon className={classes.icon} />
+                                </div>
 
-                    <IconButton
-                        disableRipple
-                        className={classes.iconButtonTransparent}
-                        name="notifications"
-                        aria-owns={notificationsOpen ? 'notifications-alerts' : null}
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                    >
-                        {<NotificationsIcon className={classes.avatarSm}/>}
-                    </IconButton>
-                    <Menu
-                        disableScrollLock={true}
-                        color="secondary"
-                        id="notifications-alerts"
-                        anchorEl={anchorEl}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={notificationsOpen}
-                        onClose={handleClose}
-                    >
-                        <MenuItem disableRipple onClick={handleClose} className={classes.menuItem}>Notifications</MenuItem>
-                    </Menu>
+                                <Autocomplete
+                                    id="combo-box-demo"
+                                    options={searchResults}
+                                    filterOptions={filterOptions}
+                                    getOptionLabel={({ username, name, previewImg }) => {
+                                        return `${username} ${name} ${previewImg}`;
+                                    }}
+                                    filterSelectedOptions
+                                    renderOption={({ username, name, previewImg }) => {
+                                        return (
+                                            <div>
+                                                <Grid container spacing={0} className={classes.followGrid}>
+                                                    <Grid item>
+                                                        <IconButton
+                                                            disableRipple
+                                                            color="inherit"
+                                                            className={classes.iconButtonAvatar}
+                                                        //onClick={handlePageChange}
+                                                        >
+                                                            {loadingSearchResults && !previewImg && <Skeleton variant="circle" animation="wave" className={classes.skeleton} />}
+                                                            {!loadingSearchResults && previewImg && <img src={previewImg} className={classes.avatarFollow} />}
+                                                            {!loadingSearchResults && !previewImg && <AccountCircle className={classes.avatarFollow} />}
+                                                        </IconButton>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <Grid container className={classes.followGridList}>
+                                                            <Grid item>
+                                                                <Typography variant="subtitle2" className={classes.link}><b>{username}</b> </Typography>
+                                                            </Grid>
+                                                            {{ name } && <Grid item>
+                                                                <Typography variant="subtitle2" className={classes.link}>{name}</Typography>
+                                                            </Grid>}
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </div>
+                                        );
+                                    }}
+                                    fullWidth={true}
+                                    inputValue={searchText}
+                                    open={searchText.length > 2}
+                                    onInputChange={(e, value) => handleTextChange}
+                                    onChange={(event, value) => history.push('/' + value.username + '/user')}
+                                    forcePopupIcon={false}
+                                    loading={loadingSearchResults || pendingReq}
+                                    className={classes.autocomplete}
+                                    renderInput={(params) => {
+                                        const { InputLabelProps, InputProps, ...rest } = params;
+                                        return <InputBase {...params.InputProps} {...rest} fullWidth={true} type="text" placeholder="Search…" name="text" onChange={handleTextChange} classes={{ input: classes.inputInput }} value={searchText} endAdornment={endAdornment()} onKeyDown={keyPress} />
+                                    }}
+                                />
 
-                    <IconButton
-                        disableRipple
-                        className={classes.iconButtonTransparent}
-                        name="profile"
-                        aria-owns={profileOpen ? 'profile-menu' : null}
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                    >
-    
-                        {loadingProfile && <Skeleton variant="circle" animation="wave"  className={classes.skeleton} />}
-                        {!loadingProfile && profile.previewImg && <img src={profile.previewImg} className={classes.avatarSm} />}  
-                        {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm} />}                
-                    </IconButton>
-                    <Menu
-                        disableScrollLock={true}
-                        color="secondary"
-                        id="profile-menu"
-                        anchorEl={anchorEl}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={profileOpen}
-                        onClose={handleClose}
-                        style={{
-                            padding: 8
-                        }}
-                    >
-                        <MenuItem disableRipple onClick={handleViewProfile} className={classes.menuItem}>Your Profile</MenuItem>
-                        <MenuItem disableRipple onClick={handleEditProfile} className={classes.menuItem}>Edit Profile</MenuItem>
-                        <MenuItem disableRipple onClick={handleLogout} className={classes.menuItem}>Logout</MenuItem>
-                    </Menu>
-                </Toolbar>
+                            </div>
+                        </section>
+
+                        <IconButton
+                            disableRipple
+                            name="messages"
+                            className={classes.iconButtonTransparent}
+                            aria-owns={messagesOpen ? 'message-alerts' : null}
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            {<MailIcon className={classes.avatarSm} />}
+                        </IconButton>
+
+                        <Menu
+                            disableScrollLock={true}
+                            color="secondary"
+                            id="message-alerts"
+                            anchorEl={anchorEl}
+                            getContentAnchorEl={null}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={messagesOpen}
+                            onClose={handleClose}
+                        >
+                            <MenuItem disableRipple onClick={handleClose} className={classes.menuItem}>Messages</MenuItem>
+                        </Menu>
+
+                        <IconButton
+                            disableRipple
+                            className={classes.iconButtonTransparent}
+                            name="notifications"
+                            aria-owns={notificationsOpen ? 'notifications-alerts' : null}
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            {<NotificationsIcon className={classes.avatarSm} />}
+                        </IconButton>
+                        <Menu
+                            disableScrollLock={true}
+                            color="secondary"
+                            id="notifications-alerts"
+                            anchorEl={anchorEl}
+                            getContentAnchorEl={null}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={notificationsOpen}
+                            onClose={handleClose}
+                        >
+                            <MenuItem disableRipple onClick={handleClose} className={classes.menuItem}>Notifications</MenuItem>
+                        </Menu>
+
+                        <IconButton
+                            disableRipple
+                            className={classes.iconButtonTransparent}
+                            name="profile"
+                            aria-owns={profileOpen ? 'profile-menu' : null}
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+
+                            {loadingProfile && <Skeleton variant="circle" animation="wave" className={classes.skeleton} />}
+                            {!loadingProfile && profile.previewImg && <img src={profile.previewImg} className={classes.avatarSm} />}
+                            {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatarSm} />}
+                        </IconButton>
+                        <Menu
+                            disableScrollLock={true}
+                            color="secondary"
+                            id="profile-menu"
+                            anchorEl={anchorEl}
+                            getContentAnchorEl={null}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={profileOpen}
+                            onClose={handleClose}
+                            style={{
+                                padding: 8
+                            }}
+                        >
+                            <MenuItem disableRipple onClick={handleViewProfile} className={classes.menuItem}>Your Profile</MenuItem>
+                            <MenuItem disableRipple onClick={handleEditProfile} className={classes.menuItem}>Edit Profile</MenuItem>
+                            <MenuItem disableRipple onClick={handleLogout} className={classes.menuItem}>Logout</MenuItem>
+                        </Menu>
+                    </Toolbar>
                 </ThemeProvider>
             </div>
-               );
-        }
+        );
     }
-    
+}
+
 export default (withStyles(styles, { withTheme: true })(CustomToolbarMobile));;

@@ -133,18 +133,19 @@ class HomePrivate extends React.Component {
       isLoggedIn: false,
       profile: { name: '', bio: '', link: '', previewImg: '' },
       text: '',
-      searchResults: {},
+      pendingReq: true,
     };
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 1200);
+    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
 
   }
 
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
+    this.setState({ pendingReq: true });
     if(value.length > 2){
       this.throttleHandleChange(value)
     }
@@ -153,7 +154,7 @@ class HomePrivate extends React.Component {
   throttleHandleChange = async (value) =>{
     console.log("ENTERING THROTTLE FUNCTION")
     const dispatch = await this.props.userSearch(value);
-
+    this.setState({ pendingReq: false });
     console.log(this.props.searchResults)
     setTimeout(() => console.log(this.props.searchResults), 50)
   }
@@ -239,7 +240,7 @@ class HomePrivate extends React.Component {
     this.getProfile();
   }
   render() {
-    const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen } = this.state;
+    const { auth, anchorEl, messagesOpen, notificationsOpen, profileOpen, pendingReq } = this.state;
     const open = Boolean(anchorEl);
     const { classes } = this.props;
     const { loadingProfile } = this.props;
@@ -250,6 +251,7 @@ class HomePrivate extends React.Component {
           <div className={classes.grow}>
             {!isMobile &&
             <CustomToolbar
+              pendingReq={pendingReq}
               searchResults={this.props.searchResults}
               loadingSearchResults={this.props.loadingSearchResults}
               user={this.props.user}
@@ -271,6 +273,9 @@ class HomePrivate extends React.Component {
             />}
             {isMobile &&
             <CustomToolbarMobile
+              pendingReq={pendingReq}
+              searchResults={this.props.searchResults}
+              loadingSearchResults={this.props.loadingSearchResults}
               user={this.props.user}
               profile={this.props.profile}
               loadingProfile={loadingProfile}
@@ -328,6 +333,10 @@ class HomePrivate extends React.Component {
       </ThemeProvider>
     );
   }
+}
+
+HomePrivate.defaultProps= {
+  searchResults: []
 }
 
 function mapStateToProps(state) {

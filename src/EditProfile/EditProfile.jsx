@@ -162,18 +162,20 @@ class EditProfile extends React.Component {
       showImageCrop: false,
       text: '',
       searchResults: {},
+      pendingReq: true,
     };
 
     this.handleLogout = this.handleLogout.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
-    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 1200);
+    this.throttleHandleChange = debounce(this.throttleHandleChange.bind(this), 300);
   }
 
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
+    this.setState({ pendingReq: true });
     if(value.length > 2){
       this.throttleHandleChange(value)
     }
@@ -182,7 +184,7 @@ class EditProfile extends React.Component {
   throttleHandleChange = async (value) => {
     console.log("ENTERING THROTTLE FUNCTION")
     const dispatch = await this.props.userSearch(value);
-
+    this.setState({ pendingReq: false });
     console.log(this.props.searchResults)
     setTimeout(() => console.log(this.props.searchResults), 50)
   }
@@ -375,7 +377,7 @@ class EditProfile extends React.Component {
   }
 
   render() {
-    const { anchorEl, messagesOpen, notificationsOpen, profileOpen, name, bio, link, imageSrc, crop, rotation, zoom, show, profile, showImageCrop } = this.state;
+    const { anchorEl, messagesOpen, notificationsOpen, profileOpen, name, bio, link, imageSrc, crop, rotation, zoom, show, profile, showImageCrop, pendingReq } = this.state;
     const { classes } = this.props;
     const { loadingProfile } = this.props;
     return (
@@ -385,6 +387,7 @@ class EditProfile extends React.Component {
         {!isMobile &&
           <div>
             <CustomToolbar
+              pendingReq={pendingReq}
               searchResults={this.props.searchResults}
               loadingSearchResults={this.props.loadingSearchResults}
               user={this.props.user}
@@ -446,6 +449,9 @@ class EditProfile extends React.Component {
         {isMobile &&
           <div>
             <CustomToolbarMobile
+              pendingReq={pendingReq}
+              searchResults={this.props.searchResults}
+              loadingSearchResults={this.props.loadingSearchResults}
               user={this.props.user}
               profile={this.props.profile}
               loadingProfile={loadingProfile}
@@ -503,6 +509,10 @@ class EditProfile extends React.Component {
       </ThemeProvider>
     );
   }
+}
+
+EditProfile.defaultProps= {
+  searchResults: []
 }
 
 function mapStateToProps(state) {

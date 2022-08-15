@@ -139,8 +139,7 @@ class UserFollowInfo extends React.Component {
             <div>
               <Grid container spacing={0} className={classes.followGrid}>
                 <Grid item>
-                  
-                    
+        
                       <IconButton
                         disableRipple
                         color="inherit"
@@ -151,8 +150,7 @@ class UserFollowInfo extends React.Component {
                         {followingInfo.previewImg && <img src={followingInfo.previewImg} className={classes.avatarFollow} />}
                         {!followingInfo.previewImg && <AccountCircle className={classes.avatarFollow}/>}
                       </IconButton>
-                 
-                  
+          
                 </Grid>
                 <Grid item>
                   <Grid container className={classes.followGridList}>

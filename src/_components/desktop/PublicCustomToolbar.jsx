@@ -232,7 +232,7 @@ async function handlePageChange(username){
 
 class PublicCustomToolbar extends React.Component {
     render() {
-        const { classes, handleTextChange, searchText, handleTextClear, keyPress, searchResults, loadingSearchResults } = this.props;
+        const { classes, handleTextChange, searchText, handleTextClear, keyPress, searchResults, loadingSearchResults, pendingReq } = this.props;
 
         const endAdornment = () => {
             if (searchText) {
@@ -311,7 +311,7 @@ class PublicCustomToolbar extends React.Component {
                                         onInputChange={(e, value) => handleTextChange}
                                         onChange={(event, value) => history.push('/login')}
                                         forcePopupIcon={false}
-                                        loading={!(searchResults.length == 0)}
+                                        loading={loadingSearchResults || pendingReq}
                                         className={classes.autocomplete}
                                         renderInput={(params) => {
                                             const { InputLabelProps, InputProps, ...rest } = params;

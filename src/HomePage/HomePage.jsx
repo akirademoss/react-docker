@@ -118,7 +118,7 @@ class HomePage extends React.Component {
 
     this.state = {
       text: '',
-      searchResults: {},
+      pendingReq: true,
     };
 
     this.handleTextChange = this.handleTextChange.bind(this);
@@ -132,6 +132,7 @@ class HomePage extends React.Component {
   handleTextChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
+    this.setState({ pendingReq: true });
     if(value.length > 2){
       this.throttleHandleChange(value)
     }
@@ -140,6 +141,7 @@ class HomePage extends React.Component {
   throttleHandleChange = async (value) => {
     console.log("ENTERING THROTTLE FUNCTION")
     const dispatch = await this.props.userSearch(value);
+    this.setState({ pendingReq: false });
   }
 
   keyPress = async (e) => {
@@ -158,7 +160,7 @@ class HomePage extends React.Component {
   }
 
   render() {
-
+    const { pendingReq } = this.state;
     const { classes } = this.props;
     return (
       <ThemeProvider theme={darkTheme}>
@@ -168,6 +170,7 @@ class HomePage extends React.Component {
 
             {!isMobile &&
               <PublicCustomToolbar
+                pendingReq={pendingReq}
                 searchResults={this.props.searchResults}
                 loadingSearchResults={this.props.loadingSearchResults}
                 handleTextChange={this.handleTextChange}
@@ -178,6 +181,9 @@ class HomePage extends React.Component {
 
             {isMobile &&
               <PublicCustomToolbarMobile
+                pendingReq={pendingReq}
+                searchResults={this.props.searchResults}
+                loadingSearchResults={this.props.loadingSearchResults}
                 handleTextChange={this.handleTextChange}
                 searchText={this.state.text}
                 handleTextClear={this.handleTextClear}
@@ -223,6 +229,10 @@ class HomePage extends React.Component {
       </ThemeProvider>
     );
   }
+}
+
+HomePage.defaultProps= {
+  searchResults: []
 }
 
 function mapStateToProps(state) {
