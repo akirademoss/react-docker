@@ -181,6 +181,7 @@ class UserProfile extends React.Component {
                                         loadingProfile={loadingUserProfile}
                                         viewingMyProfile={false}
                                         handleShow={handleShow}
+                                        grey={false}
                                     />
                                 </Grid>
                                 <Grid item xs={8}>

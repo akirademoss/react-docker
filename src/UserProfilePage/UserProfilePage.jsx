@@ -35,6 +35,10 @@ import DelFollowModalMobile from "../_components/mobile/DelFollowModalMobile";
 import debounce from 'lodash.debounce';
 import { isMobile, browserName } from "react-device-detect";
 
+//components
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Box from '@material-ui/core/Box';
+
 
 // CSS styling
 const darkTheme = createMuiTheme({
@@ -171,7 +175,11 @@ const styles = darkTheme => ({
     },
     profileFormat: {
         marginBottom: '20px',
-    }
+    },
+    progress: {
+        color: darkTheme.palette.common.white,
+       
+    },
 });
 
 // Profile page class
@@ -204,6 +212,7 @@ class UserProfilePage extends React.Component {
             unfollowUsername: null,
             text: '',
             pendingReq: true,
+            loadingpage: true,
         };
 
         this.handleTextChange = this.handleTextChange.bind(this);
@@ -592,7 +601,14 @@ class UserProfilePage extends React.Component {
                         link={this.props.userProfile.link}
                     />}
 
+                    {isMobile && !this.state.followStatusLoaded &&
+                        <div>
+                            <LinearProgress className={classes.progress}/>
+                        </div>
+                    }
+
                     {isMobile && this.props.follow != undefined && 
+                    
                     <UserProfileMobile
                         userProfile={this.props.userProfile}
                         loadingUserProfile={loadingUserProfile}

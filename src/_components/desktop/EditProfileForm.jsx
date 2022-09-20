@@ -121,6 +121,7 @@ class EditProfileForm extends React.Component {
                                         loadingProfile={loadingProfile}
                                         viewingMyProfile={true}
                                         handleShow={handleShow}
+                                        grey={true}
                                     />
                                 </Grid>
                                 <Grid item>

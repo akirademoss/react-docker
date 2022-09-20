@@ -140,6 +140,7 @@ class Profile extends React.Component {
                                         loadingProfile={loadingProfile}
                                         viewingMyProfile={viewingMyProfile}
                                         handleShow={handleShow}
+                                        grey={false}
                                     />
                                 </Grid>
                                 <Grid item xs={8}>

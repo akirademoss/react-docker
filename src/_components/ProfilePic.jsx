@@ -74,6 +74,18 @@ const styles = darkTheme => ({
         height: "150px",
         borderRadius: 100,
     },
+    avatarGrey: {
+        color: grey[700],
+        background: 'transparent',
+        background: 'transparent',
+        "&:hover": {
+            background: 'transparent',
+        },
+        margin: "auto",
+        width: "150px",
+        height: "150px",
+        borderRadius: 100,
+    },
     avatarMd: {
         background: 'transparent',
         background: 'transparent',
@@ -101,7 +113,7 @@ const styles = darkTheme => ({
 
 class ProfilePic extends React.Component {
     render() {
-        const { classes, profile, loadingProfile, viewingMyProfile, handleShow } = this.props;
+        const { classes, profile, loadingProfile, viewingMyProfile, handleShow, grey } = this.props;
         return (
 
             <div>
@@ -119,8 +131,9 @@ class ProfilePic extends React.Component {
 
                             {loadingProfile && <Skeleton variant="circle" animation="wave" className={classes.skeleton} />}
                             {!loadingProfile && profile.previewImg && <img src={profile.previewImg} className={classes.avatar} />}
-                            {!profile.previewImg && !loadingProfile && <AccountCircle className={classes.avatar} />}
-
+                            
+                            {!profile.previewImg && !loadingProfile && !grey && <AccountCircle className={classes.avatar} />}
+                            {!profile.previewImg && !loadingProfile && grey && <AccountCircle className={classes.avatarGrey} />}
                         </IconButton>
                     </label>
                 </Hidden>

@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 //styles and color imports
 import { withStyles } from '@material-ui/core/styles';
@@ -194,7 +195,11 @@ const styles = darkTheme => ({
     usernameTxt: {
         marginLeft: 105,
         marginBottom: 10,
-    }
+    },
+    progress: {
+        color: darkTheme.palette.common.white,
+        marginTop: 42,
+    },
 })
 
 class UserProfileMobile extends React.Component {
@@ -207,6 +212,11 @@ class UserProfileMobile extends React.Component {
         return (
             <div>
                 <ThemeProvider theme={darkTheme}>
+                    {!followStatusLoaded &&
+                        <div>
+                            <LinearProgress className={classes.progress}/>
+                        </div>
+                    }
 
                     {/* User Profile Here */}
                     {(followStatusLoaded == true) &&
@@ -220,6 +230,7 @@ class UserProfileMobile extends React.Component {
                                             loadingProfile={loadingUserProfile}
                                             viewingMyProfile={false}
                                             handleShow={handleShow}
+                                            grey={false}
                                         />
                                     </Grid>
                                     <Grid container direction="column" alignItems="center" justifyContent="center" className={classes.m}>

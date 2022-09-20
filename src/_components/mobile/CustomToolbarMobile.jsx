@@ -37,6 +37,17 @@ const darkTheme = createMuiTheme({
                 borderColor: fade('#ffffff', 0.5),
             }
         },
+        MuiAutocomplete:{
+            paper: {
+                borderBottom: '1px solid white',
+                
+                borderLeft: '1px solid white',
+                borderRight: '1px solid white',
+            },
+            popper:{
+
+            }
+        },
         MuiInputAdornment: {
             root: {
                 paddingLeft: 0,
@@ -246,6 +257,7 @@ const styles = darkTheme => ({
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
+        
     },
     link: {
         color: darkTheme.palette.common.white,

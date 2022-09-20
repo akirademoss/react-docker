@@ -174,6 +174,7 @@ class ProfileMobile extends React.Component {
                                         loadingProfile={loadingProfile}
                                         viewingMyProfile={viewingMyProfile}
                                         handleShow={handleShow}
+                                        grey={false}
                                     />
                                 </Grid>
                                 <Grid container direction="column" alignItems="center" justifyContent="center" className={classes.m}>

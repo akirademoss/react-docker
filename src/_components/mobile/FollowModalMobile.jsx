@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Modal from "@material-ui/core/Modal";
 import List from "@material-ui/core/List";
 import CloseIcon from '@material-ui/icons/Close';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 import FollowInfoMobile from "./FollowInfoMobile";
 
 
@@ -137,6 +137,10 @@ const styles = darkTheme => ({
         marginTop: '0px',
         marginBottom: '15px',
     },
+    progress: {
+        color: darkTheme.palette.common.white,
+        marginTop: 10,
+    },
 })
 
 class FollowModalMobile extends React.Component {
@@ -175,6 +179,11 @@ class FollowModalMobile extends React.Component {
                             </Grid>
                         </Grid>
                         <hr className={classes.hl}></hr>
+                        {loadingInfo && followCount !=0 &&
+                            <div className={classes.centerDiv}> 
+                            <CircularProgress color="primary" size="1rem" className={classes.progress}/>
+                            </div>
+                        }
                         <List className={classes.list}>
                             {infoLoaded && !loadingInfo &&
                                 followInfo.map((followingInfo, i) => (

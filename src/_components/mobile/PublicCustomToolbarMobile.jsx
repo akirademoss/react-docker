@@ -40,7 +40,17 @@ const darkTheme = createMuiTheme({
             adornedEnd: {
                 color: '#ffffff',
             },
-        }
+        },
+        MuiAutocomplete:{
+            paper: {
+                borderBottom: '1px solid white',
+                borderLeft: '1px solid white',
+                borderRight: '1px solid white',
+            },
+            popper:{
+                backgroundColor: fade('#000000', 0.9),
+            }
+        },
     },
     palette: {
         type: 'dark',
@@ -204,8 +214,9 @@ const styles = darkTheme => ({
             backgroundColor: 'transparent',
             cursor: 'default',
         },
-        width: 0,
         marginRight: -30,
+        paddingLeft: 0,
+        paddingRight: 0,
     },
     clear: {
         fontSize: '15px',
@@ -279,7 +290,7 @@ class PublicCustomToolbarMobile extends React.Component {
                             disableRipple
                             onClick={handleTextClear}
                             className={classes.clearIcon}
-                            className={classes.adornment}
+                            
                         >
                             <ClearIcon className={classes.clear} />
                         </IconButton>
