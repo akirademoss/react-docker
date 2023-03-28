@@ -5,20 +5,22 @@
 #cd sample
 
 # pull official base image
-FROM node:slim-15.5
+FROM node:16-alpine3.16
 
 # set working directory
 WORKDIR /app
+
+# add app
+COPY . ./
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
 RUN npm install 
 
-RUN npm install react-scripts@7.3.0 -g 
+RUN npm install react-scripts@4.0.1 -g  
 
-# add app
-COPY . ./
+EXPOSE 3000 
 
 # start app
 CMD ["npm", "start"]
