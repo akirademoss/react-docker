@@ -176,4 +176,14 @@ sketch
 .history
 .ionide
 
+#database backend
+/.env
+/.vscode
+/config/*
+/data/*
+/logs/*
+/www/**
+.DS_Store
+/buildtest
+
 # End of https://www.toptal.com/developers/gitignore/api/react,visualstudiocode,node
