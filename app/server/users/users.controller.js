@@ -34,7 +34,6 @@ function authenticateSchema(req, res, next) {
 }
 
 function authenticate(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     console.log("test")
     /*userService.authenticate(req.body)
         .then(user => res.json(user))
@@ -51,7 +50,6 @@ function authenticate(req, res, next) {
 //TESSSST
 
 function refreshToken(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     console.log("test");
     console.log(req.body);
     console.log(req.cookies.cart);
@@ -68,7 +66,6 @@ function refreshToken(req, res, next) {
 
 //TESSSST
 function getRefreshTokens(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     // users can get their own refresh tokens and admins can get any user's refresh tokens
     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -82,13 +79,11 @@ function getRefreshTokens(req, res, next) {
 //TEST
 function setTokenCookie(res, token)
 {
-    res.set('Access-Control-Allow-Origin', '*');
     // create http only cookie with refresh token that expires in 7 days
     const cookieOptions = {
         httpOnly: true,
         expires: new Date(Date.now() + 7*24*60*60*1000)
     };
-    res.set('Access-Control-Allow-Origin', '*');
     res.cookie('refreshToken', token, cookieOptions);
 }
 
@@ -104,26 +99,22 @@ function registerSchema(req, res, next) {
 
 
 function register(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     userService.create(req.body)
         .then(() => res.json({ message: 'Registration successful' }))
         .catch(next);
 }
 
 function getAll(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     userService.getAll()
         .then(users => res.json(users))
         .catch(next);
 }
 
 function getCurrent(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     res.json(req.user);
 }
 
 function getById(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     userService.getById(req.params.id)
         .then(user => res.json(user))
         .catch(next);
@@ -140,21 +131,18 @@ function updateSchema(req, res, next) {
 }
 
 function update(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     userService.update(req.params.id, req.body)
         .then(user => res.json(user))
         .catch(next);
 }
 
 function _delete(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     userService.delete(req.params.id)
         .then(() => res.json({ message: 'User deleted successfully' }))
         .catch(next);
 }
 
 function getUserDetails(req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
     console.log(req.body)
     console.log(req.params)
     userService.getUserDetails(req.body.username)
@@ -163,7 +151,6 @@ function getUserDetails(req, res, next) {
 }
 
 function searchUsers(req, res, next){
-    res.set('Access-Control-Allow-Origin', '*');
     const name = req.body.name;
     userService.searchUsers(name)
     .then(results => res.json(results))

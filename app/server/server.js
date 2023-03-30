@@ -65,6 +65,11 @@ app.post('/register', async (req,res, next) => {
 // global error handler
 app.use(errorHandler);
 
+//cors
+app.use(cors({
+  origin: 'http://127.0.0.1:3000',
+}))
+
 // start server
 const port = process.env.NODE_ENV === 'production' ? (process.env.PORT || 80) : 4000;
 app.listen(port, () => console.log('Server listening on port ' + port));
