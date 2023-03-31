@@ -613,7 +613,6 @@ class ProfilePage extends React.Component {
                     {!isMobile &&
                     <UploadPicModal
                         showImageCrop={showImageCrop}
-                        handleCloseImageModal={this.handleCloseImageModal}
                         imageSrc={imageSrc}
                         crop={crop}
                         rotation={rotation}
@@ -628,7 +627,6 @@ class ProfilePage extends React.Component {
                     {isMobile &&
                     <UploadPicModalMobile
                         showImageCrop={showImageCrop}
-                        handleCloseImageModal={this.handleCloseImageModal}
                         imageSrc={imageSrc}
                         crop={crop}
                         rotation={rotation}
